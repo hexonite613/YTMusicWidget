@@ -11,7 +11,10 @@
 
 ## ✏️To-Do List
 - Study C#
-- Bring Youtube API
-- Implement google login
+- ~~Bring Youtube API~~
+- ~~Implement google login~~
+- Adjust login label position
+- Main content form edit
+- New photo for Main page
 - Bring user playlists
 - Develop designs
