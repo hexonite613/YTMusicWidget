@@ -31,6 +31,9 @@
             this.components = new System.ComponentModel.Container();
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.playlistListBox = new System.Windows.Forms.ListBox();
+            this.playlist_label = new System.Windows.Forms.Label();
             this.Logout_label = new System.Windows.Forms.Label();
             this.Login_com_label = new System.Windows.Forms.Label();
             this.login_text = new System.Windows.Forms.Label();
@@ -38,8 +41,8 @@
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pos_change = new System.Windows.Forms.Label();
             this.Title = new System.Windows.Forms.Label();
-            this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
             this.Main.SuspendLayout();
+            this.main_content.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -73,6 +76,44 @@
             this.Main.Name = "Main";
             this.Main.Size = new System.Drawing.Size(586, 450);
             this.Main.TabIndex = 6;
+            // 
+            // main_content
+            // 
+            this.main_content.BorderColor = System.Drawing.Color.Black;
+            this.main_content.Controls.Add(this.playlistListBox);
+            this.main_content.Controls.Add(this.playlist_label);
+            this.main_content.CustomBorderThickness = new System.Windows.Forms.Padding(0);
+            this.main_content.FillColor = System.Drawing.Color.Black;
+            this.main_content.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.main_content.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
+            this.main_content.Location = new System.Drawing.Point(0, 3);
+            this.main_content.Name = "main_content";
+            this.main_content.Size = new System.Drawing.Size(586, 450);
+            this.main_content.TabIndex = 7;
+            this.main_content.Visible = false;
+            // 
+            // playlistListBox
+            // 
+            this.playlistListBox.BackColor = System.Drawing.Color.Black;
+            this.playlistListBox.ForeColor = System.Drawing.Color.White;
+            this.playlistListBox.FormattingEnabled = true;
+            this.playlistListBox.ItemHeight = 15;
+            this.playlistListBox.Location = new System.Drawing.Point(16, 55);
+            this.playlistListBox.Name = "playlistListBox";
+            this.playlistListBox.Size = new System.Drawing.Size(290, 379);
+            this.playlistListBox.TabIndex = 3;
+            // 
+            // playlist_label
+            // 
+            this.playlist_label.AutoSize = true;
+            this.playlist_label.Font = new System.Drawing.Font("YouTube Sans", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.playlist_label.ForeColor = System.Drawing.Color.White;
+            this.playlist_label.Location = new System.Drawing.Point(91, 23);
+            this.playlist_label.Name = "playlist_label";
+            this.playlist_label.Size = new System.Drawing.Size(127, 29);
+            this.playlist_label.TabIndex = 2;
+            this.playlist_label.Text = "플레이리스트";
+            this.playlist_label.Click += new System.EventHandler(this.playlist_label_Click);
             // 
             // Logout_label
             // 
@@ -161,19 +202,6 @@
             this.Title.TabIndex = 0;
             this.Title.Text = "Youtube Music Widget";
             // 
-            // main_content
-            // 
-            this.main_content.BorderColor = System.Drawing.Color.Black;
-            this.main_content.CustomBorderThickness = new System.Windows.Forms.Padding(0);
-            this.main_content.FillColor = System.Drawing.Color.Black;
-            this.main_content.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.main_content.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
-            this.main_content.Location = new System.Drawing.Point(410, 381);
-            this.main_content.Name = "main_content";
-            this.main_content.Size = new System.Drawing.Size(586, 450);
-            this.main_content.TabIndex = 7;
-            this.main_content.Visible = false;
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -185,6 +213,8 @@
             this.Text = "Form1";
             this.Main.ResumeLayout(false);
             this.Main.PerformLayout();
+            this.main_content.ResumeLayout(false);
+            this.main_content.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
@@ -197,11 +227,12 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label pos_change;
         private System.Windows.Forms.Label Title;
-        private System.Windows.Forms.Label login_test;
         private System.Windows.Forms.Label Login_com_label;
         private System.Windows.Forms.Label login_text;
         private System.Windows.Forms.Label Logout_label;
         private Guna.UI2.WinForms.Guna2GroupBox main_content;
+        private System.Windows.Forms.Label playlist_label;
+        private System.Windows.Forms.ListBox playlistListBox;
     }
 }
 
