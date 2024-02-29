@@ -5,7 +5,7 @@
 
 ## ⏱️Development Time
 - 2024.02.15~
-- Excluded time: 2024.02.20~2024.02.28(📘Test Period)
+- Excluded time: 2024.02.20~2024.02.29(📘Test Period)
 
 ## 🖽Framework
 - C#
@@ -17,5 +17,6 @@
 - Adjust login label position
 - Main content form edit
 - New photo for Main page
-- Bring user playlists
+- ~~Bring user playlists~~			
+ㄴBring playlist musics
 - Develop designs

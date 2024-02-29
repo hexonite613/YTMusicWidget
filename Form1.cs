@@ -242,7 +242,7 @@ namespace YTMusicWidget
                 e.Graphics.DrawImage(playlistItem.Image, imageBounds);
             }
 
-            var textBounds = new Rectangle(e.Bounds.Left + playlistItem.thumbwidth, e.Bounds.Top, e.Bounds.Width - 100, e.Bounds.Height);
+            var textBounds = new Rectangle(e.Bounds.Left + playlistItem.thumbwidth+10, e.Bounds.Top, e.Bounds.Width - 100, e.Bounds.Height);
             TextRenderer.DrawText(e.Graphics, playlistItem.Title, listBox.Font, textBounds, listBox.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
         }
 
