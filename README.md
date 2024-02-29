@@ -5,6 +5,7 @@
 
 ## ⏱️Development Time
 - 2024.02.15~
+- Excluded time: 2024.02.20~2024.02.28(📘Test Period)
 
 ## 🖽Framework
 - C#
