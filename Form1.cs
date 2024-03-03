@@ -12,6 +12,7 @@ using System.Net.Http;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using static YTMusicWidget.Form1;
 
 namespace YTMusicWidget
 {
@@ -25,6 +26,8 @@ namespace YTMusicWidget
             playlistListBox.DrawMode = DrawMode.OwnerDrawVariable;
             playlistListBox.MeasureItem += Playlist_MeasureItem;
             playlistListBox.DrawItem += Playlist_DrawItem;
+            playlistListBox.SelectedIndexChanged += playlist_music_list_SelectedIndexChangedAsync;
+            playlist_music_list.DrawItem += playlist_music_list_DrawItem;
             Task.Run(() => Authenticate().Wait());
 
         }
@@ -151,7 +154,26 @@ namespace YTMusicWidget
         public class Playlist
         {
             public string Title { get; set; }
-            public List<PlaylistItem> Items { get; } = new List<PlaylistItem>();
+            public List<PlaylistItems> Items { get; } = new List<PlaylistItems>();
+        }
+
+
+        public class PlaylistItems
+        {
+            public string Title { get; }
+            public Image Image { get; }
+            public int thumbheight { get; }
+            public int thumbwidth { get; }
+            public string Id { get; }
+
+            public PlaylistItems(string title, Image image, int thumbheight, int thumbwidth, string id)
+            {
+                Title = title;
+                Image = image;
+                this.thumbheight = thumbheight;
+                this.thumbwidth = thumbwidth;
+                Id = id;
+            }
         }
 
         private async Task GetPlaylists()
@@ -170,11 +192,11 @@ namespace YTMusicWidget
                 var response = await request.ExecuteAsync();
 
                 // 플레이리스트를 ListBox에 추가
-                var playlistsToAdd = new List<PlaylistItem>();
+                var playlistsToAdd = new List<PlaylistItems>();
                 foreach (var playlist in response.Items)
                 {
                     // 이미 ListBox에 추가된 플레이리스트인지 확인
-                    if (!playlistListBox.Items.Cast<PlaylistItem>().Any(p => p.Title == playlist.Snippet.Title))
+                    if (!playlistListBox.Items.Cast<PlaylistItems>().Any(p => p.Title == playlist.Snippet.Title))
                     {
                         var thumbnailUrl = playlist.Snippet.Thumbnails.Default__.Url;
                         var playlistImage = await GetImageFromUrl(thumbnailUrl);
@@ -182,7 +204,7 @@ namespace YTMusicWidget
                         var thumbwidth = playlistImage.Width;
 
                         // 플레이리스트 아이템 생성
-                        var playlistItem = new PlaylistItem(playlist.Snippet.Title, playlistImage, thumbheight, thumbwidth);
+                        var playlistItem = new PlaylistItems(playlist.Snippet.Title, playlistImage, thumbheight, thumbwidth, playlist.Id);
 
                         // 임시 목록에 플레이리스트 아이템 추가
                         playlistsToAdd.Add(playlistItem);
@@ -192,7 +214,6 @@ namespace YTMusicWidget
                 // UI 업데이트를 UI 스레드에서 수행
                 Invoke((MethodInvoker)delegate
                 {
-                    // 임시 목록에 있는 플레이리스트를 ListBox에 추가
                     foreach (var playlistItem in playlistsToAdd)
                     {
                         playlistListBox.Items.Add(playlistItem);
@@ -219,7 +240,7 @@ namespace YTMusicWidget
         private void Playlist_MeasureItem(object sender, MeasureItemEventArgs e)
         {
             var listBox = (ListBox)sender;
-            var playlistItem = (PlaylistItem)listBox.Items[e.Index];
+            var playlistItem = (PlaylistItems)listBox.Items[e.Index];
             e.ItemHeight =playlistItem.thumbheight; 
         }
 
@@ -229,7 +250,7 @@ namespace YTMusicWidget
                 return;
 
             var listBox = (ListBox)sender;
-            var playlistItem = (PlaylistItem)listBox.Items[e.Index];
+            var playlistItem = (PlaylistItems)listBox.Items[e.Index];
 
             if (playlistItem == null)
                 return;
@@ -247,25 +268,101 @@ namespace YTMusicWidget
         }
 
 
-        public class PlaylistItem
+        public class Playlist_Music_Items
         {
             public string Title { get; }
             public Image Image { get; }
-            public int thumbheight { get; }
-            public int thumbwidth { get; }
+            public string Id { get; }
 
-            public PlaylistItem(string title, Image image, int thumbheight, int thumbwidth)
+            public Playlist_Music_Items(string title, Image image, string id)
             {
                 Title = title;
                 Image = image;
-                this.thumbheight = thumbheight;
-                this.thumbwidth = thumbwidth;
+                Id = id;
             }
         }
 
-        private void playlist_label_Click(object sender, EventArgs e)
+        private async void playlist_music_list_SelectedIndexChangedAsync(object sender, EventArgs e)
         {
-            Task.Run(() => { UpdateUI(); });
+            if (playlistListBox.SelectedItem != null)
+            {
+                var selectedPlaylist = (PlaylistItems)playlistListBox.SelectedItem;
+                await GetPlaylist_Music(selectedPlaylist.Id);
+            }
         }
+
+        private async Task GetPlaylist_Music(string playlistId)
+        {
+            try
+            {
+                var service = new YouTubeService(new BaseClientService.Initializer()
+                {
+                    HttpClientInitializer = _credential,
+                    ApplicationName = "ytmusicwidget"
+                });
+
+                var request = service.PlaylistItems.List("snippet");
+                request.PlaylistId = playlistId;
+
+                var response = await request.ExecuteAsync();
+
+                // 플레이리스트 음악들을 ListBox에 추가
+                var musicItemsToAdd = new List<Playlist_Music_Items>(); 
+                foreach (var item in response.Items)
+                {
+                    var thumbnailUrl = item.Snippet.Thumbnails.Default__.Url;
+                    var musicImage = await GetImageFromUrl(thumbnailUrl);
+                    var music_thumbheight = musicImage.Height;
+                    var music_thumbwidth = musicImage.Width;
+
+                    var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
+                    musicItemsToAdd.Add(musicItem);
+                }
+
+                // UI 업데이트를 UI 스레드에서 수행
+                Invoke((MethodInvoker)delegate
+                {
+                    playlist_music_list.Items.Clear();
+                    foreach (var musicItem in musicItemsToAdd)
+                    {
+                        playlist_music_list.Items.Add(musicItem);
+                    }
+                });
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"플레이리스트 음악 가져오기 중 오류가 발생했습니다: {ex.Message}");
+            }
+        }
+
+
+
+        private void playlist_music_list_DrawItem(object sender, DrawItemEventArgs e)
+        {
+            if (e.Index < 0)
+                return;
+
+            var listBox = (ListBox)sender;
+            var musicItem = (Playlist_Music_Items)listBox.Items[e.Index];
+
+            if (musicItem == null)
+                return;
+
+            e.DrawBackground();
+
+            // 썸네일 이미지 그리기
+            if (musicItem.Image != null)
+            {
+                var thumbnailWidth = 100; 
+                var thumbnailHeight = e.Bounds.Height; 
+                var thumbnailBounds = new Rectangle(e.Bounds.Left, e.Bounds.Top, thumbnailWidth, thumbnailHeight);
+                e.Graphics.DrawImage(musicItem.Image, thumbnailBounds);
+            }
+
+            // 음악 이름 그리기
+            var textBounds = new Rectangle(e.Bounds.Left + 100, e.Bounds.Top, e.Bounds.Width - 100, e.Bounds.Height);
+            TextRenderer.DrawText(e.Graphics, musicItem.Title, listBox.Font, textBounds, listBox.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
+        }
+
     }
 }

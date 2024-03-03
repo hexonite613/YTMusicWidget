@@ -32,6 +32,8 @@
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
             this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.playlist_music_list = new System.Windows.Forms.ListBox();
+            this.playlist_music_label = new System.Windows.Forms.Label();
             this.playlistListBox = new System.Windows.Forms.ListBox();
             this.playlist_label = new System.Windows.Forms.Label();
             this.Logout_label = new System.Windows.Forms.Label();
@@ -80,6 +82,8 @@
             // main_content
             // 
             this.main_content.BorderColor = System.Drawing.Color.Black;
+            this.main_content.Controls.Add(this.playlist_music_list);
+            this.main_content.Controls.Add(this.playlist_music_label);
             this.main_content.Controls.Add(this.playlistListBox);
             this.main_content.Controls.Add(this.playlist_label);
             this.main_content.CustomBorderThickness = new System.Windows.Forms.Padding(0);
@@ -92,6 +96,28 @@
             this.main_content.TabIndex = 7;
             this.main_content.Visible = false;
             // 
+            // playlist_music_list
+            // 
+            this.playlist_music_list.BackColor = System.Drawing.Color.Black;
+            this.playlist_music_list.ForeColor = System.Drawing.Color.White;
+            this.playlist_music_list.FormattingEnabled = true;
+            this.playlist_music_list.ItemHeight = 15;
+            this.playlist_music_list.Location = new System.Drawing.Point(295, 56);
+            this.playlist_music_list.Name = "playlist_music_list";
+            this.playlist_music_list.Size = new System.Drawing.Size(273, 379);
+            this.playlist_music_list.TabIndex = 6;
+            // 
+            // playlist_music_label
+            // 
+            this.playlist_music_label.AutoSize = true;
+            this.playlist_music_label.Font = new System.Drawing.Font("YouTube Sans", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.playlist_music_label.ForeColor = System.Drawing.Color.White;
+            this.playlist_music_label.Location = new System.Drawing.Point(364, 23);
+            this.playlist_music_label.Name = "playlist_music_label";
+            this.playlist_music_label.Size = new System.Drawing.Size(127, 29);
+            this.playlist_music_label.TabIndex = 5;
+            this.playlist_music_label.Text = "플레이리스트";
+            // 
             // playlistListBox
             // 
             this.playlistListBox.BackColor = System.Drawing.Color.Black;
@@ -100,7 +126,7 @@
             this.playlistListBox.ItemHeight = 15;
             this.playlistListBox.Location = new System.Drawing.Point(16, 55);
             this.playlistListBox.Name = "playlistListBox";
-            this.playlistListBox.Size = new System.Drawing.Size(290, 379);
+            this.playlistListBox.Size = new System.Drawing.Size(273, 379);
             this.playlistListBox.TabIndex = 3;
             // 
             // playlist_label
@@ -113,7 +139,6 @@
             this.playlist_label.Size = new System.Drawing.Size(127, 29);
             this.playlist_label.TabIndex = 2;
             this.playlist_label.Text = "플레이리스트";
-            this.playlist_label.Click += new System.EventHandler(this.playlist_label_Click);
             // 
             // Logout_label
             // 
@@ -233,6 +258,8 @@
         private Guna.UI2.WinForms.Guna2GroupBox main_content;
         private System.Windows.Forms.Label playlist_label;
         private System.Windows.Forms.ListBox playlistListBox;
+        private System.Windows.Forms.ListBox playlist_music_list;
+        private System.Windows.Forms.Label playlist_music_label;
     }
 }
 
