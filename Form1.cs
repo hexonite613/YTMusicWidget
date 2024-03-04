@@ -28,6 +28,8 @@ namespace YTMusicWidget
             playlistListBox.DrawItem += Playlist_DrawItem;
             playlistListBox.SelectedIndexChanged += playlist_music_list_SelectedIndexChangedAsync;
             playlist_music_list.DrawItem += playlist_music_list_DrawItem;
+            playlist_music_list.DrawMode = DrawMode.OwnerDrawVariable;
+            playlist_music_list.MeasureItem += Playlist_Music_MeasureItem;
             Task.Run(() => Authenticate().Wait());
 
         }
@@ -188,6 +190,7 @@ namespace YTMusicWidget
 
                 var request = service.Playlists.List("snippet");
                 request.Mine = true;
+                request.MaxResults = 50;
 
                 var response = await request.ExecuteAsync();
 
@@ -198,7 +201,7 @@ namespace YTMusicWidget
                     // 이미 ListBox에 추가된 플레이리스트인지 확인
                     if (!playlistListBox.Items.Cast<PlaylistItems>().Any(p => p.Title == playlist.Snippet.Title))
                     {
-                        var thumbnailUrl = playlist.Snippet.Thumbnails.Default__.Url;
+                        var thumbnailUrl = playlist.Snippet.Thumbnails.High.Url;
                         var playlistImage = await GetImageFromUrl(thumbnailUrl);
                         var thumbheight= playlistImage.Height;
                         var thumbwidth = playlistImage.Width;
@@ -226,6 +229,19 @@ namespace YTMusicWidget
             }
         }
 
+        //썸네일 이미지 수정
+        private Image ResizeImage(Image image, Size size)
+        {
+            Bitmap result = new Bitmap(size.Width, size.Height);
+            using (Graphics graphics = Graphics.FromImage(result))
+            {
+                graphics.DrawImage(image, new Rectangle(Point.Empty, size));
+            }
+            return result;
+        }
+
+
+        //thumbnail 가져오기
         private async Task<Image> GetImageFromUrl(string url)
         {
             using (var httpClient = new HttpClient())
@@ -233,10 +249,12 @@ namespace YTMusicWidget
                 var response = await httpClient.GetAsync(url);
                 using (var stream = await response.Content.ReadAsStreamAsync())
                 {
-                    return Image.FromStream(stream);
+                    Image play_thumb=Image.FromStream(stream);
+                    return ResizeImage(play_thumb, new Size(177, 100));
                 }
             }
         }
+
         private void Playlist_MeasureItem(object sender, MeasureItemEventArgs e)
         {
             var listBox = (ListBox)sender;
@@ -246,6 +264,7 @@ namespace YTMusicWidget
 
         private void Playlist_DrawItem(object sender, DrawItemEventArgs e)
         {
+            
             if (e.Index < 0)
                 return;
 
@@ -259,26 +278,24 @@ namespace YTMusicWidget
 
             if (playlistItem.Image != null) 
             {
-                var imageBounds = new Rectangle(e.Bounds.Left, e.Bounds.Top, playlistItem.thumbwidth, playlistItem.thumbheight);
+                var imageBounds = new Rectangle(e.Bounds.Left, e.Bounds.Top, e.Bounds.Height, e.Bounds.Height);
                 e.Graphics.DrawImage(playlistItem.Image, imageBounds);
             }
 
-            var textBounds = new Rectangle(e.Bounds.Left + playlistItem.thumbwidth+10, e.Bounds.Top, e.Bounds.Width - 100, e.Bounds.Height);
+            var textBounds = new Rectangle(e.Bounds.Left + e.Bounds.Height, e.Bounds.Top, e.Bounds.Width - e.Bounds.Height, e.Bounds.Height);
             TextRenderer.DrawText(e.Graphics, playlistItem.Title, listBox.Font, textBounds, listBox.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
         }
 
-
+        //Playlist 고른 후 음악 아이템 추가
         public class Playlist_Music_Items
         {
             public string Title { get; }
             public Image Image { get; }
-            public string Id { get; }
 
-            public Playlist_Music_Items(string title, Image image, string id)
+            public Playlist_Music_Items(string title, Image image)
             {
                 Title = title;
                 Image = image;
-                Id = id;
             }
         }
 
@@ -303,6 +320,7 @@ namespace YTMusicWidget
 
                 var request = service.PlaylistItems.List("snippet");
                 request.PlaylistId = playlistId;
+                request.MaxResults = 50;
 
                 var response = await request.ExecuteAsync();
 
@@ -310,12 +328,12 @@ namespace YTMusicWidget
                 var musicItemsToAdd = new List<Playlist_Music_Items>(); 
                 foreach (var item in response.Items)
                 {
-                    var thumbnailUrl = item.Snippet.Thumbnails.Default__.Url;
+                    var thumbnailUrl = item.Snippet.Thumbnails.High.Url;
                     var musicImage = await GetImageFromUrl(thumbnailUrl);
                     var music_thumbheight = musicImage.Height;
                     var music_thumbwidth = musicImage.Width;
 
-                    var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
+                    var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage);
                     musicItemsToAdd.Add(musicItem);
                 }
 
@@ -335,6 +353,12 @@ namespace YTMusicWidget
             }
         }
 
+        private void Playlist_Music_MeasureItem(object sender, MeasureItemEventArgs e)
+        {
+            var listBox = (ListBox)sender;
+            var musicItem = (Playlist_Music_Items)listBox.Items[e.Index];
+            e.ItemHeight = musicItem.Image.Height;
+        }
 
 
         private void playlist_music_list_DrawItem(object sender, DrawItemEventArgs e)
@@ -350,19 +374,17 @@ namespace YTMusicWidget
 
             e.DrawBackground();
 
+
             // 썸네일 이미지 그리기
             if (musicItem.Image != null)
             {
-                var thumbnailWidth = 100; 
-                var thumbnailHeight = e.Bounds.Height; 
-                var thumbnailBounds = new Rectangle(e.Bounds.Left, e.Bounds.Top, thumbnailWidth, thumbnailHeight);
-                e.Graphics.DrawImage(musicItem.Image, thumbnailBounds);
+                var imageBounds = new Rectangle(e.Bounds.Left, e.Bounds.Top, e.Bounds.Height, e.Bounds.Height);
+                e.Graphics.DrawImage(musicItem.Image, imageBounds);
             }
 
             // 음악 이름 그리기
-            var textBounds = new Rectangle(e.Bounds.Left + 100, e.Bounds.Top, e.Bounds.Width - 100, e.Bounds.Height);
+            var textBounds = new Rectangle(e.Bounds.Left + e.Bounds.Height, e.Bounds.Top, e.Bounds.Width - e.Bounds.Height, e.Bounds.Height);
             TextRenderer.DrawText(e.Graphics, musicItem.Title, listBox.Font, textBounds, listBox.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
         }
-
     }
 }

@@ -18,5 +18,6 @@
 - Main content form edit
 - New photo for Main page
 - ~~Bring user playlists~~			
-ㄴBring playlist musics
+- ~~Bring playlist musics~~
+- Get more than 50 playlists/musics
 - Develop designs
