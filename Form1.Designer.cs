@@ -32,17 +32,22 @@
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
             this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.Mus_page_label = new System.Windows.Forms.Label();
+            this.guna2VScrollBar2 = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.playlist_music_list = new System.Windows.Forms.ListBox();
+            this.Next_page_mus = new Guna.UI2.WinForms.Guna2Button();
+            this.Before_page_mus = new Guna.UI2.WinForms.Guna2Button();
             this.playlist_music_label = new System.Windows.Forms.Label();
             this.playlistListBox = new System.Windows.Forms.ListBox();
             this.playlist_label = new System.Windows.Forms.Label();
+            this.Login_Button = new Guna.UI2.WinForms.Guna2Button();
             this.Logout_label = new System.Windows.Forms.Label();
             this.Login_com_label = new System.Windows.Forms.Label();
-            this.login_text = new System.Windows.Forms.Label();
             this.pos_complete = new System.Windows.Forms.Label();
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.pos_change = new System.Windows.Forms.Label();
             this.Title = new System.Windows.Forms.Label();
+            this.guna2VScrollBar1 = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.Main.SuspendLayout();
             this.main_content.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
@@ -63,9 +68,9 @@
             this.Main.BackColor = System.Drawing.Color.Black;
             this.Main.BorderColor = System.Drawing.Color.Black;
             this.Main.Controls.Add(this.main_content);
+            this.Main.Controls.Add(this.Login_Button);
             this.Main.Controls.Add(this.Logout_label);
             this.Main.Controls.Add(this.Login_com_label);
-            this.Main.Controls.Add(this.login_text);
             this.Main.Controls.Add(this.pos_complete);
             this.Main.Controls.Add(this.pictureBox1);
             this.Main.Controls.Add(this.pos_change);
@@ -82,6 +87,10 @@
             // main_content
             // 
             this.main_content.BorderColor = System.Drawing.Color.Black;
+            this.main_content.Controls.Add(this.guna2VScrollBar2);
+            this.main_content.Controls.Add(this.Mus_page_label);
+            this.main_content.Controls.Add(this.Next_page_mus);
+            this.main_content.Controls.Add(this.Before_page_mus);
             this.main_content.Controls.Add(this.playlist_music_list);
             this.main_content.Controls.Add(this.playlist_music_label);
             this.main_content.Controls.Add(this.playlistListBox);
@@ -96,27 +105,95 @@
             this.main_content.TabIndex = 7;
             this.main_content.Visible = false;
             // 
+            // Mus_page_label
+            // 
+            this.Mus_page_label.AutoSize = true;
+            this.Mus_page_label.Font = new System.Drawing.Font("YouTube Sans", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Mus_page_label.ForeColor = System.Drawing.Color.White;
+            this.Mus_page_label.Location = new System.Drawing.Point(427, 395);
+            this.Mus_page_label.Name = "Mus_page_label";
+            this.Mus_page_label.Size = new System.Drawing.Size(16, 18);
+            this.Mus_page_label.TabIndex = 12;
+            this.Mus_page_label.Text = "0";
+            // 
+            // guna2VScrollBar2
+            // 
+            this.guna2VScrollBar2.AutoRoundedCorners = true;
+            this.guna2VScrollBar2.AutoScroll = true;
+            this.guna2VScrollBar2.BindingContainer = this.playlist_music_list;
+            this.guna2VScrollBar2.BorderRadius = 8;
+            this.guna2VScrollBar2.FillColor = System.Drawing.Color.Black;
+            this.guna2VScrollBar2.InUpdate = false;
+            this.guna2VScrollBar2.LargeChange = 10;
+            this.guna2VScrollBar2.Location = new System.Drawing.Point(558, 39);
+            this.guna2VScrollBar2.Name = "guna2VScrollBar2";
+            this.guna2VScrollBar2.ScrollbarSize = 18;
+            this.guna2VScrollBar2.Size = new System.Drawing.Size(18, 347);
+            this.guna2VScrollBar2.TabIndex = 8;
+            this.guna2VScrollBar2.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(170)))), ((int)(((byte)(170)))));
+            this.guna2VScrollBar2.ThumbSize = 5F;
+            this.guna2VScrollBar2.ThumbStyle = Guna.UI2.WinForms.Enums.ThumbStyle.Inset;
+            // 
             // playlist_music_list
             // 
             this.playlist_music_list.BackColor = System.Drawing.Color.Black;
             this.playlist_music_list.ForeColor = System.Drawing.Color.White;
             this.playlist_music_list.FormattingEnabled = true;
             this.playlist_music_list.ItemHeight = 15;
-            this.playlist_music_list.Location = new System.Drawing.Point(295, 56);
+            this.playlist_music_list.Location = new System.Drawing.Point(304, 38);
             this.playlist_music_list.Name = "playlist_music_list";
-            this.playlist_music_list.Size = new System.Drawing.Size(273, 379);
+            this.playlist_music_list.Size = new System.Drawing.Size(273, 349);
             this.playlist_music_list.TabIndex = 6;
+            this.playlist_music_list.SelectedIndexChanged += new System.EventHandler(this.playlist_music_list_SelectedIndexChanged);
+            // 
+            // Next_page_mus
+            // 
+            this.Next_page_mus.AutoRoundedCorners = true;
+            this.Next_page_mus.BorderRadius = 12;
+            this.Next_page_mus.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Next_page_mus.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Next_page_mus.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Next_page_mus.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Next_page_mus.Enabled = false;
+            this.Next_page_mus.FillColor = System.Drawing.Color.Black;
+            this.Next_page_mus.Font = new System.Drawing.Font("YouTube Sans", 11F);
+            this.Next_page_mus.ForeColor = System.Drawing.Color.White;
+            this.Next_page_mus.Location = new System.Drawing.Point(473, 393);
+            this.Next_page_mus.Name = "Next_page_mus";
+            this.Next_page_mus.Size = new System.Drawing.Size(87, 26);
+            this.Next_page_mus.TabIndex = 11;
+            this.Next_page_mus.Text = "다음";
+            this.Next_page_mus.Click += new System.EventHandler(this.Next_page_mus_Click);
+            // 
+            // Before_page_mus
+            // 
+            this.Before_page_mus.AutoRoundedCorners = true;
+            this.Before_page_mus.BorderRadius = 12;
+            this.Before_page_mus.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Before_page_mus.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Before_page_mus.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Before_page_mus.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Before_page_mus.Enabled = false;
+            this.Before_page_mus.FillColor = System.Drawing.Color.Black;
+            this.Before_page_mus.Font = new System.Drawing.Font("YouTube Sans", 11F);
+            this.Before_page_mus.ForeColor = System.Drawing.Color.White;
+            this.Before_page_mus.Location = new System.Drawing.Point(313, 391);
+            this.Before_page_mus.Name = "Before_page_mus";
+            this.Before_page_mus.Size = new System.Drawing.Size(87, 26);
+            this.Before_page_mus.TabIndex = 9;
+            this.Before_page_mus.Text = "이전";
+            this.Before_page_mus.Click += new System.EventHandler(this.Before_page_mus_Click);
             // 
             // playlist_music_label
             // 
             this.playlist_music_label.AutoSize = true;
             this.playlist_music_label.Font = new System.Drawing.Font("YouTube Sans", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.playlist_music_label.ForeColor = System.Drawing.Color.White;
-            this.playlist_music_label.Location = new System.Drawing.Point(364, 23);
+            this.playlist_music_label.Location = new System.Drawing.Point(378, 6);
             this.playlist_music_label.Name = "playlist_music_label";
-            this.playlist_music_label.Size = new System.Drawing.Size(127, 29);
+            this.playlist_music_label.Size = new System.Drawing.Size(113, 29);
             this.playlist_music_label.TabIndex = 5;
-            this.playlist_music_label.Text = "플레이리스트";
+            this.playlist_music_label.Text = "음악 리스트";
             // 
             // playlistListBox
             // 
@@ -124,9 +201,9 @@
             this.playlistListBox.ForeColor = System.Drawing.Color.White;
             this.playlistListBox.FormattingEnabled = true;
             this.playlistListBox.ItemHeight = 15;
-            this.playlistListBox.Location = new System.Drawing.Point(16, 55);
+            this.playlistListBox.Location = new System.Drawing.Point(16, 37);
             this.playlistListBox.Name = "playlistListBox";
-            this.playlistListBox.Size = new System.Drawing.Size(273, 379);
+            this.playlistListBox.Size = new System.Drawing.Size(273, 349);
             this.playlistListBox.TabIndex = 3;
             // 
             // playlist_label
@@ -134,11 +211,29 @@
             this.playlist_label.AutoSize = true;
             this.playlist_label.Font = new System.Drawing.Font("YouTube Sans", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.playlist_label.ForeColor = System.Drawing.Color.White;
-            this.playlist_label.Location = new System.Drawing.Point(91, 23);
+            this.playlist_label.Location = new System.Drawing.Point(91, 5);
             this.playlist_label.Name = "playlist_label";
             this.playlist_label.Size = new System.Drawing.Size(127, 29);
             this.playlist_label.TabIndex = 2;
             this.playlist_label.Text = "플레이리스트";
+            // 
+            // Login_Button
+            // 
+            this.Login_Button.AutoRoundedCorners = true;
+            this.Login_Button.BorderRadius = 21;
+            this.Login_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Login_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Login_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Login_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Login_Button.FillColor = System.Drawing.Color.Black;
+            this.Login_Button.Font = new System.Drawing.Font("YouTube Sans", 14.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Login_Button.ForeColor = System.Drawing.Color.White;
+            this.Login_Button.Location = new System.Drawing.Point(224, 346);
+            this.Login_Button.Name = "Login_Button";
+            this.Login_Button.Size = new System.Drawing.Size(120, 45);
+            this.Login_Button.TabIndex = 8;
+            this.Login_Button.Text = "Login";
+            this.Login_Button.Click += new System.EventHandler(this.Login_Button_Click);
             // 
             // Logout_label
             // 
@@ -146,7 +241,7 @@
             this.Logout_label.BackColor = System.Drawing.Color.Transparent;
             this.Logout_label.Font = new System.Drawing.Font("YouTube Sans", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.Logout_label.ForeColor = System.Drawing.Color.White;
-            this.Logout_label.Location = new System.Drawing.Point(248, 395);
+            this.Logout_label.Location = new System.Drawing.Point(257, 394);
             this.Logout_label.Name = "Logout_label";
             this.Logout_label.Size = new System.Drawing.Size(50, 18);
             this.Logout_label.TabIndex = 1;
@@ -166,18 +261,6 @@
             this.Login_com_label.Text = "님, 환영합니다";
             this.Login_com_label.Visible = false;
             this.Login_com_label.Click += new System.EventHandler(this.Login_com_label_Click);
-            // 
-            // login_text
-            // 
-            this.login_text.AutoSize = true;
-            this.login_text.Font = new System.Drawing.Font("YouTube Sans", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.login_text.ForeColor = System.Drawing.Color.White;
-            this.login_text.Location = new System.Drawing.Point(258, 352);
-            this.login_text.Name = "login_text";
-            this.login_text.Size = new System.Drawing.Size(70, 29);
-            this.login_text.TabIndex = 6;
-            this.login_text.Text = "로그인";
-            this.login_text.Click += new System.EventHandler(this.login_text_Click);
             // 
             // pos_complete
             // 
@@ -227,6 +310,24 @@
             this.Title.TabIndex = 0;
             this.Title.Text = "Youtube Music Widget";
             // 
+            // guna2VScrollBar1
+            // 
+            this.guna2VScrollBar1.AutoRoundedCorners = true;
+            this.guna2VScrollBar1.AutoScroll = true;
+            this.guna2VScrollBar1.BindingContainer = this.playlistListBox;
+            this.guna2VScrollBar1.BorderRadius = 8;
+            this.guna2VScrollBar1.FillColor = System.Drawing.Color.Black;
+            this.guna2VScrollBar1.InUpdate = false;
+            this.guna2VScrollBar1.LargeChange = 10;
+            this.guna2VScrollBar1.Location = new System.Drawing.Point(254, 4);
+            this.guna2VScrollBar1.Name = "guna2VScrollBar1";
+            this.guna2VScrollBar1.ScrollbarSize = 18;
+            this.guna2VScrollBar1.Size = new System.Drawing.Size(18, 374);
+            this.guna2VScrollBar1.TabIndex = 7;
+            this.guna2VScrollBar1.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(170)))), ((int)(((byte)(170)))));
+            this.guna2VScrollBar1.ThumbSize = 5F;
+            this.guna2VScrollBar1.ThumbStyle = Guna.UI2.WinForms.Enums.ThumbStyle.Inset;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -253,13 +354,18 @@
         private System.Windows.Forms.Label pos_change;
         private System.Windows.Forms.Label Title;
         private System.Windows.Forms.Label Login_com_label;
-        private System.Windows.Forms.Label login_text;
         private System.Windows.Forms.Label Logout_label;
         private Guna.UI2.WinForms.Guna2GroupBox main_content;
         private System.Windows.Forms.Label playlist_label;
         private System.Windows.Forms.ListBox playlistListBox;
         private System.Windows.Forms.ListBox playlist_music_list;
         private System.Windows.Forms.Label playlist_music_label;
+        private Guna.UI2.WinForms.Guna2VScrollBar guna2VScrollBar1;
+        private Guna.UI2.WinForms.Guna2VScrollBar guna2VScrollBar2;
+        private Guna.UI2.WinForms.Guna2Button Login_Button;
+        private Guna.UI2.WinForms.Guna2Button Next_page_mus;
+        private Guna.UI2.WinForms.Guna2Button Before_page_mus;
+        private System.Windows.Forms.Label Mus_page_label;
     }
 }
 
