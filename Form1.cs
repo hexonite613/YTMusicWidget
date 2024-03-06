@@ -2,6 +2,7 @@
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
@@ -290,11 +291,13 @@ namespace YTMusicWidget
         {
             public string Title { get; }
             public Image Image { get; }
+            public string VideoId { get; }
 
-            public Playlist_Music_Items(string title, Image image)
+            public Playlist_Music_Items(string title, Image image, string videoId)
             {
                 Title = title;
                 Image = image;
+                VideoId = videoId;
             }
         }
 
@@ -352,7 +355,7 @@ namespace YTMusicWidget
                     var music_thumbheight = musicImage.Height;
                     var music_thumbwidth = musicImage.Width;
 
-                    var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage);
+                    var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId); // 올바른 videoId 설정
                     musicItemsToAdd.Add(musicItem);
                 }
 
@@ -372,6 +375,7 @@ namespace YTMusicWidget
                 MessageBox.Show($"플레이리스트 음악 가져오기 중 오류가 발생했습니다: {ex.Message}");
             }
         }
+
 
         private void UpdatePageInfo()
         {
@@ -419,6 +423,27 @@ namespace YTMusicWidget
         //음악 선택시
         private void playlist_music_list_SelectedIndexChanged(object sender, EventArgs e)
         {
+            if (playlist_music_list.SelectedItem != null)
+            {
+                // 선택한 음악 항목 가져오기
+                Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
+
+                // 음악 재생
+                PlayMusic(selectedMusic.VideoId);
+            }
+        }
+
+        private async void PlayMusic(string videoId)
+        {
+            // EnsureCoreWebView2Async()를 호출하여 CoreWebView2가 초기화되도록 함
+            await music_player.EnsureCoreWebView2Async();
+
+            // YouTube 동영상 URL 생성
+            string url = $"https://www.youtube.com/embed/{videoId}?autoplay=1&mute=0";
+
+            // WebView2를 사용하여 동영상 재생
+            music_player.CoreWebView2.Navigate(url);
+            music_player.Visible = true;
 
         }
 

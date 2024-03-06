@@ -20,4 +20,8 @@
 - ~~Bring user playlists~~			
 - ~~Bring playlist musics~~
 - ~~Get more than 50 playlists/musics~~
+- ~~Implement play music~~
+- Enhance playing music
+- - Play music on the background
+- - Autoplay music with no mute
 - Develop designs

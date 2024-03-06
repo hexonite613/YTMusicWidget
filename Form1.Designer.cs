@@ -32,9 +32,10 @@
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
             this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
-            this.Mus_page_label = new System.Windows.Forms.Label();
+            this.music_player = new Microsoft.Web.WebView2.WinForms.WebView2();
             this.guna2VScrollBar2 = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.playlist_music_list = new System.Windows.Forms.ListBox();
+            this.Mus_page_label = new System.Windows.Forms.Label();
             this.Next_page_mus = new Guna.UI2.WinForms.Guna2Button();
             this.Before_page_mus = new Guna.UI2.WinForms.Guna2Button();
             this.playlist_music_label = new System.Windows.Forms.Label();
@@ -50,6 +51,7 @@
             this.guna2VScrollBar1 = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.Main.SuspendLayout();
             this.main_content.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.music_player)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -88,6 +90,7 @@
             // 
             this.main_content.BorderColor = System.Drawing.Color.Black;
             this.main_content.Controls.Add(this.guna2VScrollBar2);
+            this.main_content.Controls.Add(this.music_player);
             this.main_content.Controls.Add(this.Mus_page_label);
             this.main_content.Controls.Add(this.Next_page_mus);
             this.main_content.Controls.Add(this.Before_page_mus);
@@ -105,16 +108,17 @@
             this.main_content.TabIndex = 7;
             this.main_content.Visible = false;
             // 
-            // Mus_page_label
+            // music_player
             // 
-            this.Mus_page_label.AutoSize = true;
-            this.Mus_page_label.Font = new System.Drawing.Font("YouTube Sans", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.Mus_page_label.ForeColor = System.Drawing.Color.White;
-            this.Mus_page_label.Location = new System.Drawing.Point(427, 395);
-            this.Mus_page_label.Name = "Mus_page_label";
-            this.Mus_page_label.Size = new System.Drawing.Size(16, 18);
-            this.Mus_page_label.TabIndex = 12;
-            this.Mus_page_label.Text = "0";
+            this.music_player.AllowExternalDrop = true;
+            this.music_player.CreationProperties = null;
+            this.music_player.DefaultBackgroundColor = System.Drawing.Color.White;
+            this.music_player.Location = new System.Drawing.Point(112, 54);
+            this.music_player.Name = "music_player";
+            this.music_player.Size = new System.Drawing.Size(379, 355);
+            this.music_player.TabIndex = 13;
+            this.music_player.Visible = false;
+            this.music_player.ZoomFactor = 1D;
             // 
             // guna2VScrollBar2
             // 
@@ -145,6 +149,17 @@
             this.playlist_music_list.Size = new System.Drawing.Size(273, 349);
             this.playlist_music_list.TabIndex = 6;
             this.playlist_music_list.SelectedIndexChanged += new System.EventHandler(this.playlist_music_list_SelectedIndexChanged);
+            // 
+            // Mus_page_label
+            // 
+            this.Mus_page_label.AutoSize = true;
+            this.Mus_page_label.Font = new System.Drawing.Font("YouTube Sans", 11.25F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.Mus_page_label.ForeColor = System.Drawing.Color.White;
+            this.Mus_page_label.Location = new System.Drawing.Point(427, 395);
+            this.Mus_page_label.Name = "Mus_page_label";
+            this.Mus_page_label.Size = new System.Drawing.Size(16, 18);
+            this.Mus_page_label.TabIndex = 12;
+            this.Mus_page_label.Text = "0";
             // 
             // Next_page_mus
             // 
@@ -341,6 +356,7 @@
             this.Main.PerformLayout();
             this.main_content.ResumeLayout(false);
             this.main_content.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.music_player)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
@@ -366,6 +382,7 @@
         private Guna.UI2.WinForms.Guna2Button Next_page_mus;
         private Guna.UI2.WinForms.Guna2Button Before_page_mus;
         private System.Windows.Forms.Label Mus_page_label;
+        private Microsoft.Web.WebView2.WinForms.WebView2 music_player;
     }
 }
 
