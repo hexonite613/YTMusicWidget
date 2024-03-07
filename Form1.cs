@@ -3,15 +3,19 @@ using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using Google.Apis.YouTube.v3;
 using Google.Apis.YouTube.v3.Data;
+using Microsoft.Web.WebView2.Core;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
+using System.Runtime.ConstrainedExecution;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using CefSharp;
+using CefSharp.WinForms;
 
 namespace YTMusicWidget
 {
@@ -433,18 +437,48 @@ namespace YTMusicWidget
             }
         }
 
-        private async void PlayMusic(string videoId)
+
+
+        private async void LoadMusicPlayer()
         {
-            // EnsureCoreWebView2Async()를 호출하여 CoreWebView2가 초기화되도록 함
-            await music_player.EnsureCoreWebView2Async();
+            try
+            {
+                // 사용자가 로그인한 상태인지 확인
+                if (_credential != null)
+                {
+                    // Google OAuth를 통해 얻은 인증 정보를 사용하여 YouTube에 로그인
+                    await music_player.EnsureCoreWebView2Async(null);
+                    music_player.CoreWebView2.AddWebResourceRequestedFilter("https://accounts.google.com/*", CoreWebView2WebResourceContext.All);
 
-            // YouTube 동영상 URL 생성
-            string url = $"https://www.youtube.com/embed/{videoId}?autoplay=1&mute=0";
+                    // music_player를 초기화하고 YouTube 페이지로 이동하여 영상을 재생
+                    string url = "https://music.youtube.com/";
+                    music_player.Source = new Uri(url);
+                }
+                else
+                {
+                    // 사용자가 로그인하지 않은 경우에는 로그인을 요청하거나 적절한 조치를 취함
+                    MessageBox.Show("로그인되지 않았습니다. 로그인이 필요합니다.");
+                    // 로그인 프로세스를 시작하거나 사용자에게 로그인을 요청하는 방법을 구현해야 합니다.
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"음악 플레이어를 로드하는 중 오류가 발생했습니다: {ex.Message}");
+            }
+        }
 
-            // WebView2를 사용하여 동영상 재생
-            music_player.CoreWebView2.Navigate(url);
+
+        private void PlayMusic(string videoId)
+        {
+            LoadMusicPlayer();
+            if (music_player.Source != null)
+            {
+                // 음악을 클릭할 때마다 music_player에서 해당 음악의 YouTube 영상을 로드
+                Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
+                string url = $"https://music.youtube.com/watch?v={videoId}";
+                music_player.Source= new Uri(url);
+            }
             music_player.Visible = true;
-
         }
 
         //이전 페이지(음악)
