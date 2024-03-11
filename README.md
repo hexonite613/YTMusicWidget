@@ -23,5 +23,5 @@
 - ~~Implement play music~~
 - Enhance playing music
 - - Play music on the background
-- - Autoplay music with no mute
+- - ~~Autoplay music with no mute~~
 - Develop designs

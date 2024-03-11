@@ -359,7 +359,7 @@ namespace YTMusicWidget
                     var music_thumbheight = musicImage.Height;
                     var music_thumbwidth = musicImage.Width;
 
-                    var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId); // 올바른 videoId 설정
+                    var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
                     musicItemsToAdd.Add(musicItem);
                 }
 
@@ -439,45 +439,28 @@ namespace YTMusicWidget
 
 
 
-        private async void LoadMusicPlayer()
-        {
-            try
-            {
-                // 사용자가 로그인한 상태인지 확인
-                if (_credential != null)
-                {
-                    // Google OAuth를 통해 얻은 인증 정보를 사용하여 YouTube에 로그인
-                    await music_player.EnsureCoreWebView2Async(null);
-                    music_player.CoreWebView2.AddWebResourceRequestedFilter("https://accounts.google.com/*", CoreWebView2WebResourceContext.All);
 
-                    // music_player를 초기화하고 YouTube 페이지로 이동하여 영상을 재생
-                    string url = "https://music.youtube.com/";
-                    music_player.Source = new Uri(url);
-                }
-                else
-                {
-                    // 사용자가 로그인하지 않은 경우에는 로그인을 요청하거나 적절한 조치를 취함
-                    MessageBox.Show("로그인되지 않았습니다. 로그인이 필요합니다.");
-                    // 로그인 프로세스를 시작하거나 사용자에게 로그인을 요청하는 방법을 구현해야 합니다.
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"음악 플레이어를 로드하는 중 오류가 발생했습니다: {ex.Message}");
-            }
+
+
+        private void InitializeCefSharp()
+        {
+            var settings = new CefSettings();
+            settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
+            settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0";
+
+            Cef.Initialize(settings, true, browserProcessHandler: null);
         }
+
 
 
         private void PlayMusic(string videoId)
         {
-            LoadMusicPlayer();
-            if (music_player.Source != null)
-            {
-                // 음악을 클릭할 때마다 music_player에서 해당 음악의 YouTube 영상을 로드
-                Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
-                string url = $"https://music.youtube.com/watch?v={videoId}";
-                music_player.Source= new Uri(url);
-            }
+
+            InitializeCefSharp();
+            Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
+            string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
+            music_player.Load(url); 
+
             music_player.Visible = true;
         }
 

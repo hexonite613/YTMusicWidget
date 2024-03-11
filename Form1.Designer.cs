@@ -48,11 +48,10 @@
             this.pos_change = new System.Windows.Forms.Label();
             this.Title = new System.Windows.Forms.Label();
             this.guna2VScrollBar1 = new Guna.UI2.WinForms.Guna2VScrollBar();
-            this.music_player = new Microsoft.Web.WebView2.WinForms.WebView2();
+            this.music_player = new CefSharp.WinForms.ChromiumWebBrowser();
             this.Main.SuspendLayout();
             this.main_content.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.music_player)).BeginInit();
             this.SuspendLayout();
             // 
             // guna2BorderlessForm1
@@ -322,10 +321,10 @@
             this.guna2VScrollBar1.FillColor = System.Drawing.Color.Black;
             this.guna2VScrollBar1.InUpdate = false;
             this.guna2VScrollBar1.LargeChange = 10;
-            this.guna2VScrollBar1.Location = new System.Drawing.Point(254, 4);
+            this.guna2VScrollBar1.Location = new System.Drawing.Point(270, 38);
             this.guna2VScrollBar1.Name = "guna2VScrollBar1";
             this.guna2VScrollBar1.ScrollbarSize = 18;
-            this.guna2VScrollBar1.Size = new System.Drawing.Size(18, 374);
+            this.guna2VScrollBar1.Size = new System.Drawing.Size(18, 338);
             this.guna2VScrollBar1.TabIndex = 7;
             this.guna2VScrollBar1.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(170)))), ((int)(((byte)(170)))));
             this.guna2VScrollBar1.ThumbSize = 5F;
@@ -333,14 +332,12 @@
             // 
             // music_player
             // 
-            this.music_player.AllowExternalDrop = true;
-            this.music_player.CreationProperties = null;
-            this.music_player.DefaultBackgroundColor = System.Drawing.Color.White;
-            this.music_player.Location = new System.Drawing.Point(71, 28);
+            this.music_player.ActivateBrowserOnCreation = false;
+            this.music_player.Location = new System.Drawing.Point(112, 71);
             this.music_player.Name = "music_player";
-            this.music_player.Size = new System.Drawing.Size(443, 375);
+            this.music_player.Size = new System.Drawing.Size(365, 278);
             this.music_player.TabIndex = 13;
-            this.music_player.ZoomFactor = 1D;
+            this.music_player.Visible = false;
             // 
             // Form1
             // 
@@ -356,7 +353,6 @@
             this.main_content.ResumeLayout(false);
             this.main_content.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.music_player)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -381,7 +377,7 @@
         private Guna.UI2.WinForms.Guna2Button Next_page_mus;
         private Guna.UI2.WinForms.Guna2Button Before_page_mus;
         private System.Windows.Forms.Label Mus_page_label;
-        private Microsoft.Web.WebView2.WinForms.WebView2 music_player;
+        private CefSharp.WinForms.ChromiumWebBrowser music_player;
     }
 }
 
