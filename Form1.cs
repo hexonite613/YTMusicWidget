@@ -459,8 +459,7 @@ namespace YTMusicWidget
             InitializeCefSharp();
             Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
-            music_player.Load(url); 
-
+            music_player.Load(url);
             music_player.Visible = true;
         }
 
