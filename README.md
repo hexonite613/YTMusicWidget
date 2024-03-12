@@ -15,6 +15,7 @@
 - ~~Bring Youtube API~~
 - ~~Implement google login~~
 - Adjust login label position
+- -Login Automatically in Chrominum
 - Main content form edit
 - New photo for Main page
 - ~~Bring user playlists~~			
