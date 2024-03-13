@@ -16,9 +16,12 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
+using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium;
 
 namespace YTMusicWidget
 {
+
     public partial class Form1 : Form
     {
         private static readonly string[] Scopes = { YouTubeService.Scope.Youtube };
@@ -44,6 +47,8 @@ namespace YTMusicWidget
 
         private async Task Authenticate()
         {
+            string email = "";
+            string password = "";
             if (_credential == null)
             {
                 try
@@ -56,6 +61,12 @@ namespace YTMusicWidget
                                "user",
                                CancellationToken.None,
                                new FileDataStore("token.json", true));
+                               StreamReader reader = new StreamReader(stream);
+                               string json = reader.ReadToEnd();
+                               // 예제로 간단하게 JSON 파싱
+                               dynamic credentials = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                               email = credentials.email;
+                               password = credentials.password;
                     }
                     UpdateUI();
                 }
@@ -437,11 +448,6 @@ namespace YTMusicWidget
             }
         }
 
-
-
-
-
-
         private void InitializeCefSharp()
         {
             var settings = new CefSettings();
@@ -452,11 +458,70 @@ namespace YTMusicWidget
         }
 
 
+        private async void auto_login()
+        {
+            InitializeCefSharp();
+            music_player.Load("https://accounts.google.com/v3/signin/identifier?hl=en-gb&ifkv=ATuJsjzFNnW8drDFFmYQObch_Bgwm5Gv7kJMlSx-EIBaimeoKHmyjIy7UVVhLJai8pJTPealUc8miQ&flowName=GlifWebSignIn&flowEntry=ServiceLogin&dsh=S-99628198%3A1710327457882380&theme=glif&ddm=0");
+
+            // 페이지가 로드될 때까지 대기합니다.
+            while (!music_player.IsBrowserInitialized)
+            {
+                await Task.Delay(100); // 100밀리초 대기
+            }
+
+            // credential.json 파일에서 로그인 정보를 읽어옵니다.
+            string email = "";
+            string password = "";
+
+            try
+            {
+                using (var stream = new FileStream("credential.json", FileMode.Open, FileAccess.Read))
+                {
+                    StreamReader reader = new StreamReader(stream);
+                    string json = reader.ReadToEnd();
+                    dynamic credentials = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
+                    email = credentials.email;
+                    password = credentials.password;
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"로그인 정보를 읽는 동안 오류가 발생했습니다: {ex.Message}");
+                return;
+            }
+
+            // 페이지가 로드될 때까지 대기합니다.
+            while (!music_player.IsBrowserInitialized)
+            {
+                await Task.Delay(100); // 100밀리초 대기
+            }
+
+            // 로그인 폼이 존재하는지 확인하는 스크립트를 실행합니다.
+            string script = "document.getElementById('identifierId') != null";
+            var result = await music_player.GetMainFrame().EvaluateScriptAsync(script);
+
+            // 스크립트 실행 결과를 확인합니다.
+            if (result.Success && (bool)result.Result)
+            {
+                // 로그인 폼이 존재하므로 로그인을 시도합니다.
+                music_player.GetMainFrame().ExecuteJavaScriptAsync($"document.getElementById('identifierId').value = '{email}';");
+                await Task.Delay(2000); // 2초 대기
+                music_player.GetMainFrame().ExecuteJavaScriptAsync("document.querySelector('#identifierNext').click();");
+                await Task.Delay(2000); // 2초 대기
+                music_player.GetMainFrame().ExecuteJavaScriptAsync($"document.getElementsByName('password')[0].value = '{password}';");
+                await Task.Delay(2000); // 2초 대기
+                music_player.GetMainFrame().ExecuteJavaScriptAsync("document.querySelector('#passwordNext').click();");
+            }
+            else
+            {
+                MessageBox.Show("로그인 폼이 발견되지 않았습니다.");
+            }
+        }
 
         private void PlayMusic(string videoId)
         {
-
-            InitializeCefSharp();
+            // 이미 초기화되었기 때문에 InitializeCefSharp() 호출을 생략합니다.
+            auto_login();
             Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             music_player.Load(url);
