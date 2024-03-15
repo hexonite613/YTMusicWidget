@@ -451,32 +451,21 @@ namespace YTMusicWidget
         {
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
-            settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:121.0) Gecko/20100101 Firefox/121.0";
+            settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 /CefSharp Browser" + Cef.CefSharpVersion;
 
             Cef.Initialize(settings, true, browserProcessHandler: null);
         }
 
-
         private async Task AuthenticateAndLoadPlayer()
         {
-            // credential.json 파일에서 사용자 정보 가져오기
             try
             {
-                using (var stream = new FileStream("C:\\Users\\sungt\\source\\repos\\hexonite613\\YTMusicWidget\\bin\\Debug\\credential.json", FileMode.Open, FileAccess.Read))
-                {
-                    _credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                            GoogleClientSecrets.FromStream(stream).Secrets,
-                            Scopes,
-                            "user",
-                            CancellationToken.None,
-                            new FileDataStore("token.json", true));
-                    StreamReader reader = new StreamReader(stream);
-                    string json = reader.ReadToEnd();
-                    // 예제로 간단하게 JSON 파싱
-                    dynamic credentials = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                    string email = credentials.email;
-                    string password = credentials.password;
-                }
+                _credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
+                    GoogleClientSecrets.FromStream(new FileStream("credential.json", FileMode.Open, FileAccess.Read)).Secrets,
+                    Scopes,
+                    "user",
+                    CancellationToken.None,
+                    new FileDataStore("token.json", true));
             }
             catch (Exception ex)
             {
