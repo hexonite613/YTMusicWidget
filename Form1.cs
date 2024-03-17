@@ -18,6 +18,11 @@ using CefSharp;
 using CefSharp.WinForms;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
+using Google.Apis.Auth.OAuth2.Requests;
+using Google.Apis.Oauth2.v2.Data;
+using Google.Apis.Oauth2.v2;
 
 namespace YTMusicWidget
 {
@@ -29,6 +34,7 @@ namespace YTMusicWidget
         public Form1()
         {
             InitializeComponent();
+            InitializeCefSharp();
             playlistListBox.DrawMode = DrawMode.OwnerDrawVariable;
             playlistListBox.MeasureItem += Playlist_MeasureItem;
             playlistListBox.DrawItem += Playlist_DrawItem;
@@ -36,38 +42,42 @@ namespace YTMusicWidget
             playlist_music_list.DrawItem += playlist_music_list_DrawItem;
             playlist_music_list.DrawMode = DrawMode.OwnerDrawVariable;
             playlist_music_list.MeasureItem += Playlist_Music_MeasureItem;
-            Task.Run(() => Authenticate().Wait());
+            Task.Run(() => Authenticate());
 
         }
+
+        private void InitializeCefSharp()
+        {
+            var settings = new CefSettings();
+            settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
+            settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 /CefSharp Browser" + Cef.CefSharpVersion;
+
+            Cef.Initialize(settings, true, browserProcessHandler: null);
+        }
+
 
         private void Login_Button_Click(object sender, EventArgs e)
         {
+            // 로그인 버튼 클릭 시 groupbox1로 웹 브라우저 이동
+            music_player.Parent = Main;
+
+            // groupbox1에 있는 웹 브라우저 크기 설정
+            music_player.Size = new Size(Main.Size.Width - 20, Main.Size.Height - 20);
             Task.Run(() => Authenticate());
         }
 
-        private async Task Authenticate()
+        private void Authenticate()
         {
-            string email = "";
-            string password = "";
             if (_credential == null)
             {
                 try
                 {
-                    using (var stream = new FileStream("credential.json", FileMode.Open, FileAccess.Read))
-                    {
-                        _credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                               GoogleClientSecrets.FromStream(stream).Secrets,
-                               Scopes,
-                               "user",
-                               CancellationToken.None,
-                               new FileDataStore("token.json", true));
-                               StreamReader reader = new StreamReader(stream);
-                               string json = reader.ReadToEnd(); 
-                               dynamic credentials = Newtonsoft.Json.JsonConvert.DeserializeObject(json);
-                               email = credentials.email;
-                               password = credentials.password;
-                    }
-                    UpdateUI();
+                    music_player.Visible = true;
+                    // music_player 웹 브라우저에서 로그인 페이지 열기
+                    music_player.Load("https://accounts.google.com/Login");
+
+                    // music_player 웹 브라우저 이벤트 핸들러 추가
+                    music_player.FrameLoadEnd += MusicPlayer_FrameLoadEnd;
                 }
                 catch (Exception ex)
                 {
@@ -79,6 +89,74 @@ namespace YTMusicWidget
                 UpdateUI();
             }
         }
+
+        private async void MusicPlayer_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
+        {
+            // 로그인이 완료되었을 때의 URL을 확인하고 사용자 정보를 가져오기
+            if (e.Url.StartsWith("https://accounts.google.com/o/oauth2/approval?"))
+            {
+                // 사용자에게 승인 받은 경우
+                // OAuth 인증 코드를 추출
+                var uri = new Uri(e.Url);
+                var queryParams = uri.Query.TrimStart('?').Split('&');
+                string authorizationCode = queryParams.FirstOrDefault(param => param.StartsWith("code="))?.Substring(5);
+
+                if (string.IsNullOrEmpty(authorizationCode))
+                {
+                    MessageBox.Show("인증 코드를 찾을 수 없습니다.");
+                    return;
+                }
+
+                try
+                {
+                    // OAuth 인증 코드를 사용하여 액세스 토큰 요청
+                    var tokenRequest = new AuthorizationCodeTokenRequest
+                    {
+                        ClientId = "YOUR_CLIENT_ID",
+                        ClientSecret = "YOUR_CLIENT_SECRET",
+                        Code = authorizationCode,
+                        RedirectUri = "YOUR_REDIRECT_URI"
+                    };
+
+                    var service = new YouTubeService(new BaseClientService.Initializer()
+                    {
+                        HttpClientInitializer = _credential,
+                        ApplicationName = "YoutubeAPIExample"
+                    });
+
+
+                    Userinfo userInfo = await service.Userinfo.Get().ExecuteAsync();
+
+                    if (tokenResponse.IsError)
+                    {
+                        MessageBox.Show($"토큰 요청 실패: {tokenResponse.Error}");
+                        return;
+                    }
+
+                    // 액세스 토큰을 사용하여 Google API 호출하여 사용자 정보 가져오기
+                    var userInfoClient = new userinfo(tokenResponse.AccessToken);
+                    var userInfoResponse = await userInfoClient.GetAsync();
+
+                    if (userInfoResponse.IsError)
+                    {
+                        MessageBox.Show($"사용자 정보 요청 실패: {userInfoResponse.Error}");
+                        return;
+                    }
+
+                    // 사용자 정보 가져오기 성공 시 처리
+                    MessageBox.Show($"로그인 성공: {userInfoResponse.Claims.FirstOrDefault(c => c.Type == "email")?.Value}");
+
+
+                    _credential = userInfoResponse;
+                    UpdateUI();
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show($"오류 발생: {ex.Message}");
+                }
+            }
+        }
+
 
         private async Task GetUserName()
         {
@@ -447,14 +525,6 @@ namespace YTMusicWidget
             }
         }
 
-        private void InitializeCefSharp()
-        {
-            var settings = new CefSettings();
-            settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
-            settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 /CefSharp Browser" + Cef.CefSharpVersion;
-
-            Cef.Initialize(settings, true, browserProcessHandler: null);
-        }
 
         private async Task AuthenticateAndLoadPlayer()
         {
