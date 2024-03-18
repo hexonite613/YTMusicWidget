@@ -23,6 +23,8 @@ using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
 using Google.Apis.Auth.OAuth2.Requests;
 using Google.Apis.Oauth2.v2.Data;
 using Google.Apis.Oauth2.v2;
+using Google.Apis.Auth.OAuth2.Responses;
+using Newtonsoft.Json;
 
 namespace YTMusicWidget
 {
@@ -72,12 +74,16 @@ namespace YTMusicWidget
             {
                 try
                 {
-                    music_player.Visible = true;
-                    // music_player 웹 브라우저에서 로그인 페이지 열기
-                    music_player.Load("https://accounts.google.com/Login");
-
-                    // music_player 웹 브라우저 이벤트 핸들러 추가
-                    music_player.FrameLoadEnd += MusicPlayer_FrameLoadEnd;
+                    music_player.Invoke((MethodInvoker)delegate {
+                        music_player.Visible = true;
+                        // music_player 웹 브라우저에서 로그인 페이지 열기
+                        music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
+                            "client_id=814015211726-acnmh4e56kf6tkqiidg3fa9cfts5ugb5.apps.googleusercontent.com" +
+                            "&redirect_uri=urn:ietf:wg:oauth:2.0:oob" +
+                            "&response_type=code" +
+                            "&scope=https://www.googleapis.com/auth/youtube");
+                        music_player.FrameLoadEnd += Browser_FrameLoadEnd;
+                    });
                 }
                 catch (Exception ex)
                 {
@@ -90,70 +96,88 @@ namespace YTMusicWidget
             }
         }
 
-        private async void MusicPlayer_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
+        private void Browser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
         {
-            // 로그인이 완료되었을 때의 URL을 확인하고 사용자 정보를 가져오기
-            if (e.Url.StartsWith("https://accounts.google.com/o/oauth2/approval?"))
+
+            if (e.Frame.IsMain)
             {
-                // 사용자에게 승인 받은 경우
-                // OAuth 인증 코드를 추출
-                var uri = new Uri(e.Url);
-                var queryParams = uri.Query.TrimStart('?').Split('&');
-                string authorizationCode = queryParams.FirstOrDefault(param => param.StartsWith("code="))?.Substring(5);
-
-                if (string.IsNullOrEmpty(authorizationCode))
+                Uri url = new Uri(e.Url);
+                if (url.Host.Equals("localhost"))
                 {
-                    MessageBox.Show("인증 코드를 찾을 수 없습니다.");
-                    return;
+                    string code = GetAuthorizationCode(url);
+                    ExchangeCodeForAccessToken(code);
                 }
+            }
+        }
 
-                try
+        private string GetAuthorizationCode(Uri url)
+        {
+            // URL에서 쿼리 문자열을 가져옴
+            string queryString = url.Query;
+
+            // 쿼리 문자열에서 approval code를 찾음
+            string[] queryParts = queryString.Split('&');
+            foreach (string part in queryParts)
+            {
+                if (part.StartsWith("code="))
                 {
-                    // OAuth 인증 코드를 사용하여 액세스 토큰 요청
-                    var tokenRequest = new AuthorizationCodeTokenRequest
-                    {
-                        ClientId = "YOUR_CLIENT_ID",
-                        ClientSecret = "YOUR_CLIENT_SECRET",
-                        Code = authorizationCode,
-                        RedirectUri = "YOUR_REDIRECT_URI"
-                    };
-
-                    var service = new YouTubeService(new BaseClientService.Initializer()
-                    {
-                        HttpClientInitializer = _credential,
-                        ApplicationName = "YoutubeAPIExample"
-                    });
-
-
-                    Userinfo userInfo = await service.Userinfo.Get().ExecuteAsync();
-
-                    if (tokenResponse.IsError)
-                    {
-                        MessageBox.Show($"토큰 요청 실패: {tokenResponse.Error}");
-                        return;
-                    }
-
-                    // 액세스 토큰을 사용하여 Google API 호출하여 사용자 정보 가져오기
-                    var userInfoClient = new userinfo(tokenResponse.AccessToken);
-                    var userInfoResponse = await userInfoClient.GetAsync();
-
-                    if (userInfoResponse.IsError)
-                    {
-                        MessageBox.Show($"사용자 정보 요청 실패: {userInfoResponse.Error}");
-                        return;
-                    }
-
-                    // 사용자 정보 가져오기 성공 시 처리
-                    MessageBox.Show($"로그인 성공: {userInfoResponse.Claims.FirstOrDefault(c => c.Type == "email")?.Value}");
-
-
-                    _credential = userInfoResponse;
-                    UpdateUI();
+                    // approval code를 반환
+                    return part.Split('=')[1];
                 }
-                catch (Exception ex)
+            }
+
+            // approval code를 찾지 못한 경우
+            throw new Exception("Approval code not found in the URL.");
+        }
+
+        private class TokenResponse
+        {
+            public string access_token { get; set; }
+            public string token_type { get; set; }
+            public int expires_in { get; set; }
+        }
+
+        private async void ExchangeCodeForAccessToken(string code)
+        {
+            try
+            {
+                string clientId = "814015211726-acnmh4e56kf6tkqiidg3fa9cfts5ugb5.apps.googleusercontent.com"; 
+                string clientSecret = "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";
+                string redirectUri = "urn:ietf:wg:oauth:2.0:oob";
+                string tokenEndpoint = "https://oauth2.googleapis.com/token";
+
+                // POST 요청으로 액세스 토큰 요청
+                HttpClient client = new HttpClient();
+                var content = new FormUrlEncodedContent(new[]
                 {
-                    MessageBox.Show($"오류 발생: {ex.Message}");
+            new KeyValuePair<string, string>("code", code),
+            new KeyValuePair<string, string>("client_id", clientId),
+            new KeyValuePair<string, string>("client_secret", clientSecret),
+            new KeyValuePair<string, string>("redirect_uri", redirectUri),
+            new KeyValuePair<string, string>("grant_type", "authorization_code")
+        });
+
+
+                HttpResponseMessage response = await client.PostAsync(tokenEndpoint, content);
+
+                // 응답 처리
+                if (response.IsSuccessStatusCode)
+                {
+                    string responseBody = await response.Content.ReadAsStringAsync();
+                    var tokenResponse = JsonConvert.DeserializeObject<TokenResponse>(responseBody);
+                    string accessToken = tokenResponse.access_token;
+
+                    await GetUserName();
                 }
+                else
+                {
+                    // 에러 처리
+                    MessageBox.Show("액세스 토큰 요청 실패: " + response.ReasonPhrase);
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show("오류 발생: " + ex.Message);
             }
         }
 
