@@ -74,16 +74,15 @@ namespace YTMusicWidget
             {
                 try
                 {
-                    music_player.Invoke((MethodInvoker)delegate {
-                        music_player.Visible = true;
-                        // music_player 웹 브라우저에서 로그인 페이지 열기
-                        music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
-                            "client_id=814015211726-acnmh4e56kf6tkqiidg3fa9cfts5ugb5.apps.googleusercontent.com" +
-                            "&redirect_uri=urn:ietf:wg:oauth:2.0:oob" +
-                            "&response_type=code" +
-                            "&scope=https://www.googleapis.com/auth/youtube");
-                        music_player.FrameLoadEnd += Browser_FrameLoadEnd;
-                    });
+
+                    music_player.FrameLoadEnd += Browser_FrameLoadEnd;
+                    music_player.Visible = true;
+                    // music_player 웹 브라우저에서 로그인 페이지 열기
+                    music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
+                "client_id=814015211726-acnmh4e56kf6tkqiidg3fa9cfts5ugb5.apps.googleusercontent.com" +
+                "&redirect_uri=urn:ietf:wg:oauth:2.0:oob" +
+                "&response_type=code" +
+                "&scope=https://www.googleapis.com/auth/youtube");
                 }
                 catch (Exception ex)
                 {
