@@ -2,28 +2,17 @@
 using Google.Apis.Services;
 using Google.Apis.Util.Store;
 using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
-using Microsoft.Web.WebView2.Core;
 using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Runtime.ConstrainedExecution;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
-using OpenQA.Selenium.Chrome;
-using OpenQA.Selenium;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.ListView;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.Button;
-using Google.Apis.Auth.OAuth2.Requests;
-using Google.Apis.Oauth2.v2.Data;
-using Google.Apis.Oauth2.v2;
-using Google.Apis.Auth.OAuth2.Responses;
 using Newtonsoft.Json;
 
 namespace YTMusicWidget
@@ -60,10 +49,8 @@ namespace YTMusicWidget
 
         private void Login_Button_Click(object sender, EventArgs e)
         {
-            // 로그인 버튼 클릭 시 groupbox1로 웹 브라우저 이동
             music_player.Parent = Main;
 
-            // groupbox1에 있는 웹 브라우저 크기 설정
             music_player.Size = new Size(Main.Size.Width - 20, Main.Size.Height - 20);
             Task.Run(() => Authenticate());
         }
