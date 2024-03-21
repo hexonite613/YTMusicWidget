@@ -14,6 +14,10 @@ using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
 using Newtonsoft.Json;
+using System.Text;
+using System.Security.Policy;
+using System.Web;
+using System.Collections.Specialized;
 
 namespace YTMusicWidget
 {
@@ -50,8 +54,8 @@ namespace YTMusicWidget
         private void Login_Button_Click(object sender, EventArgs e)
         {
             music_player.Parent = Main;
-
-            music_player.Size = new Size(Main.Size.Width - 20, Main.Size.Height - 20);
+            music_player.Location = new Point(0, 0);
+            music_player.Size = new Size(Main.Size.Width, Main.Size.Height);
             Task.Run(() => Authenticate());
         }
 
@@ -64,10 +68,10 @@ namespace YTMusicWidget
 
                     music_player.Invoke((MethodInvoker)delegate {
                         music_player.Visible = true;
-                        // music_player 웹 브라우저에서 로그인 페이지 열기
+                        // client id 숨기기
                         music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
-                            "client_id=814015211726-acnmh4e56kf6tkqiidg3fa9cfts5ugb5.apps.googleusercontent.com" +
-                            "&redirect_uri=urn:ietf:wg:oauth:2.0:oob" +
+                            "client_id=814015211726-nr4imda5f449vmnd6d67v5pfu2c9iubc.apps.googleusercontent.com" +
+                            "&redirect_uri=https://127.0.0.1" +
                             "&response_type=code" +
                             "&scope=https://www.googleapis.com/auth/youtube");
                         music_player.FrameLoadEnd += Browser_FrameLoadEnd;
@@ -90,7 +94,7 @@ namespace YTMusicWidget
             if (e.Frame.IsMain)
             {
                 Uri url = new Uri(e.Url);
-                if (url.AbsoluteUri.StartsWith("https://accounts.google.com/o/oauth2/approval/v2"))
+                if (url.AbsoluteUri.StartsWith("https://127.0.0.1"))
                 {
                     string code = GetAuthorizationCode(url);
                     ExchangeCodeForAccessToken(code);
@@ -100,22 +104,18 @@ namespace YTMusicWidget
 
         private string GetAuthorizationCode(Uri url)
         {
-            // URL에서 쿼리 문자열을 가져옴
             string queryString = url.Query;
+            NameValueCollection queryParameters = HttpUtility.ParseQueryString(queryString);
+            string code = queryParameters["code"];
 
-            // 쿼리 문자열에서 approval code를 찾음
-            string[] queryParts = queryString.Split('&');
-            foreach (string part in queryParts)
+            if (!string.IsNullOrEmpty(code))
             {
-                if (part.StartsWith("approvalCode="))
-                {
-                    // approval code를 반환
-                    return part.Split('=')[1];
-                }
+                return code;
             }
-
-            // approval code를 찾지 못한 경우
-            throw new Exception("Approval code not found in the URL.");
+            else
+            {
+                throw new Exception("Authorization code not found in the URL.");
+            }
         }
 
         private class TokenResponse
@@ -127,27 +127,27 @@ namespace YTMusicWidget
 
         private async void ExchangeCodeForAccessToken(string code)
         {
+            code = HttpUtility.UrlDecode(code, System.Text.Encoding.UTF8);
             try
             {
-                string clientId = "814015211726-acnmh4e56kf6tkqiidg3fa9cfts5ugb5.apps.googleusercontent.com";
-                string clientSecret = "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";
-                string redirectUri = "urn:ietf:wg:oauth:2.0:oob";
+                string clientId = "814015211726-nr4imda5f449vmnd6d67v5pfu2c9iubc.apps.googleusercontent.com";
+                string clientSecret = "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";
+                string redirectUri = "https://127.0.0.1";
                 string tokenEndpoint = "https://oauth2.googleapis.com/token";
+
 
                 // POST 요청으로 액세스 토큰 요청
                 HttpClient client = new HttpClient();
-                var content = new FormUrlEncodedContent(new[]
-                {
-            new KeyValuePair<string, string>("grant_type", "authorization_code"),
-            new KeyValuePair<string, string>("code", code),
-            new KeyValuePair<string, string>("redirect_uri", redirectUri),
-            new KeyValuePair<string, string>("response_type", "token"),
-            new KeyValuePair<string, string>("scope", "https://www.googleapis.com/auth/youtube"),
-            new KeyValuePair<string, string>("client_id", clientId),
-            new KeyValuePair<string, string>("client_secret", clientSecret)
-        });
 
+                // 쿼리 문자열 구성
+                string query = $"code={Uri.EscapeDataString(code)}&" +
+                               $"client_id={Uri.EscapeDataString(clientId)}&" +
+                               $"client_secret={Uri.EscapeDataString(clientSecret)}&" +
+                               $"redirect_uri={Uri.EscapeDataString(redirectUri)}&" +
+                               "grant_type=authorization_code";
 
+                // 요청 본문을 구성하여 전송
+                var content = new StringContent(query, Encoding.UTF8, "application/x-www-form-urlencoded");
                 HttpResponseMessage response = await client.PostAsync(tokenEndpoint, content);
 
                 // 응답 처리
@@ -162,7 +162,8 @@ namespace YTMusicWidget
                 else
                 {
                     // 에러 처리
-                    MessageBox.Show("액세스 토큰 요청 실패: " + response.ReasonPhrase);
+                    string errorResponse = await response.Content.ReadAsStringAsync();
+                    MessageBox.Show("액세스 토큰 요청 실패: " + errorResponse);
                 }
             }
             catch (Exception ex)
