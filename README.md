@@ -5,7 +5,7 @@
 
 ## ⏱️Development Time
 - 2024.02.15~
-- Excluded time: 2024.02.20~2024.02.29(📘Test Period), 2024.03.23~2024.03.29(🛠️Network Project)
+- Excluded time: 2024.02.20 ~ 2024.02.29(📘Test Period), 2024.03.23 ~ 2024.03.29(🛠️Network Project)
 
 ## 🖽Framework
 - C#
