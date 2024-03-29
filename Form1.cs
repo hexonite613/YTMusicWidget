@@ -68,7 +68,7 @@ namespace YTMusicWidget
 
                     music_player.Invoke((MethodInvoker)delegate {
                         music_player.Visible = true;
-                        // client id 숨기기
+                        // music_player 웹 브라우저에서 로그인 페이지 열기
                         music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
                             "client_id=814015211726-nr4imda5f449vmnd6d67v5pfu2c9iubc.apps.googleusercontent.com" +
                             "&redirect_uri=https://127.0.0.1" +
@@ -104,16 +104,23 @@ namespace YTMusicWidget
 
         private string GetAuthorizationCode(Uri url)
         {
+            // URL의 쿼리 문자열을 가져옴
             string queryString = url.Query;
+
+            // 쿼리 문자열을 파싱하여 쿼리 매개변수를 가져옴
             NameValueCollection queryParameters = HttpUtility.ParseQueryString(queryString);
+
+            // 'code' 매개변수의 값을 반환
             string code = queryParameters["code"];
 
+            // 'code' 매개변수가 null이 아니고 비어 있지 않은 경우에만 반환
             if (!string.IsNullOrEmpty(code))
             {
                 return code;
             }
             else
             {
+                // 인증 코드가 존재하지 않는 경우
                 throw new Exception("Authorization code not found in the URL.");
             }
         }
@@ -134,6 +141,7 @@ namespace YTMusicWidget
                 string clientSecret = "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";
                 string redirectUri = "https://127.0.0.1";
                 string tokenEndpoint = "https://oauth2.googleapis.com/token";
+                string apiKey = "AIzaSyCtIn4e8mi1GL-cIgbCazVzQ36DB5Oqg1A";
 
 
                 // POST 요청으로 액세스 토큰 요청
@@ -144,7 +152,8 @@ namespace YTMusicWidget
                                $"client_id={Uri.EscapeDataString(clientId)}&" +
                                $"client_secret={Uri.EscapeDataString(clientSecret)}&" +
                                $"redirect_uri={Uri.EscapeDataString(redirectUri)}&" +
-                               "grant_type=authorization_code";
+                               $"key={Uri.EscapeDataString(apiKey)}&" +
+                               "grant_type=token";
 
                 // 요청 본문을 구성하여 전송
                 var content = new StringContent(query, Encoding.UTF8, "application/x-www-form-urlencoded");
