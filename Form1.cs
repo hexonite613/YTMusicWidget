@@ -140,8 +140,8 @@ namespace YTMusicWidget
                 {
                     // 응답 데이터 읽기
                     string responseBody = await response.Content.ReadAsStringAsync();
-                    Console.WriteLine(responseBody);
-                    await GetUserName();
+                    MessageBox.Show(responseBody);
+                    await GetUserName(token);
                 }
                 else
                 {
@@ -154,26 +154,43 @@ namespace YTMusicWidget
         }
 
 
-        private async Task GetUserName()
+        private async Task GetUserName(String token)
         {
-            var service = new YouTubeService(new BaseClientService.Initializer()
             {
-                HttpClientInitializer = _credential,
-                ApplicationName = "YoutubeAPIExample"
-            });
-
-            var request = service.Channels.List("snippet");
-            request.Mine = true;
-
-            var response = await request.ExecuteAsync();
-            if (response.Items != null && response.Items.Count > 0)
-            {
-                var channel = response.Items[0];
-                var userName = channel.Snippet.Title;
-                this.Invoke((MethodInvoker)delegate
+                try
                 {
-                    Login_com_label.Text = $"{userName}님, 환영합니다!";
-                });
+                    // GoogleCredential 객체 생성
+                    GoogleCredential credential = GoogleCredential.FromAccessToken(token);
+
+                    // YouTube API 서비스 생성
+                    var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+                    {
+                        HttpClientInitializer = credential,
+                        ApplicationName = "YouTube API Example"
+                    });
+
+                    // 현재 사용자의 채널 정보 요청
+                    var channelsListRequest = youtubeService.Channels.List("snippet");
+                    channelsListRequest.Mine = true;
+
+                    // API 호출 및 응답 받기
+                    var channelsListResponse = await channelsListRequest.ExecuteAsync();
+
+                    // 채널 정보 출력
+                    var channel = channelsListResponse.Items[0];
+                    string userName = channel.Snippet.Title;
+                    Invoke((MethodInvoker)delegate
+                    {
+
+                        Login_Button.Visible = false;
+                        Login_com_label.Text = userName + "님, 환영합니다";
+                        Login_com_label.Visible = true;
+                    });
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("오류 발생: " + ex.Message);
+                }
             }
         }
 
@@ -216,7 +233,6 @@ namespace YTMusicWidget
             {
                 Login_Button.Visible = false;
                 Login_com_label.Visible = true;
-                Task.Run(() => GetUserName());
                 Task.Run(() => GetPlaylists());
             });
         }
