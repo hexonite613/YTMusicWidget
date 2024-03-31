@@ -13,17 +13,17 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
-using Newtonsoft.Json;
-using System.Text;
-using System.Security.Policy;
-using System.Web;
-using System.Collections.Specialized;
+using System.Security.Cryptography;
+using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+
 
 namespace YTMusicWidget
 {
 
     public partial class Form1 : Form
     {
+        //액세스 토큰 저장
+        private static readonly string AccessTokenFilePath = "access_token.txt";
         private static readonly string[] Scopes = { YouTubeService.Scope.Youtube };
         private static UserCredential _credential;
         public Form1()
@@ -138,10 +138,8 @@ namespace YTMusicWidget
                 HttpResponseMessage response = await client.GetAsync(apiUrl);
                 if (response.IsSuccessStatusCode)
                 {
-                    // 응답 데이터 읽기
-                    string responseBody = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show(responseBody);
-                    await GetUserName(token);
+                    SaveAccessToken(token);
+                    await GetUserName();
                 }
                 else
                 {
@@ -153,9 +151,53 @@ namespace YTMusicWidget
             }
         }
 
-
-        private async Task GetUserName(String token)
+        //보안을 위해서 액세스 토큰 저장시 암호화
+        public static void SaveAccessToken(string accessToken)
         {
+            using (FileStream fs = new FileStream(AccessTokenFilePath, FileMode.OpenOrCreate))
+            {
+                // 암호화된 액세스 토큰 생성
+                byte[] encryptedToken = ProtectData(accessToken);
+                fs.Write(encryptedToken, 0, encryptedToken.Length);
+                fs.Close();
+            }
+        }
+
+        private static byte[] ProtectData(string data)
+        {
+            // 데이터를 바이트 배열로 변환하여 보호
+            byte[] plaintextBytes = System.Text.Encoding.UTF8.GetBytes(data);
+            return ProtectedData.Protect(plaintextBytes, null, DataProtectionScope.CurrentUser);
+        }
+
+        //복호화
+        private static string UnprotectData(byte[] protectedData)
+        {
+            // 암호화된 데이터를 복호화하여 원래 데이터로 변환
+            byte[] plaintextBytes = ProtectedData.Unprotect(protectedData, null, DataProtectionScope.CurrentUser);
+            return System.Text.Encoding.UTF8.GetString(plaintextBytes);
+        }
+
+
+        public static string GetAccessToken()
+        {
+            //파일 확인
+            if (File.Exists(AccessTokenFilePath))
+            {
+                byte[] encryptedToken = File.ReadAllBytes(AccessTokenFilePath);
+                // 복호화
+                return UnprotectData(encryptedToken);
+            }
+            else
+            {
+                return null;
+            }
+        }
+
+
+        private async Task GetUserName()
+        {
+            string token=GetAccessToken();
             {
                 try
                 {
@@ -198,17 +240,14 @@ namespace YTMusicWidget
         {
             try
             {
-                if (_credential != null)
+                if (File.Exists(AccessTokenFilePath))
                 {
-                    await _credential.RevokeTokenAsync(CancellationToken.None);
-                    _credential = null;
-                    MessageBox.Show("로그아웃이 성공적으로 완료되었습니다.");
-
-                    this.Invoke((MethodInvoker)delegate
+                    Invoke((MethodInvoker)delegate
                     {
-                        Login_com_label.Text = "로그인을 해주세요";
-                        Login_Button.Visible = true;
+                        File.Delete(AccessTokenFilePath);
                         Login_com_label.Visible = false;
+                        Login_Button.Visible = true;
+                        MessageBox.Show("로그아웃 되었습니다.");
                     });
                 }
                 else
