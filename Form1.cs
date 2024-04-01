@@ -15,6 +15,8 @@ using CefSharp;
 using CefSharp.WinForms;
 using System.Security.Cryptography;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
+using YTMusicWidget.Properties;
+using System.Runtime;
 
 
 namespace YTMusicWidget
@@ -65,10 +67,9 @@ namespace YTMusicWidget
             {
                 try
                 {
-
                     music_player.Invoke((MethodInvoker)delegate {
                         music_player.Visible = true;
-                        // music_player 웹 브라우저에서 로그인 페이지 열기
+                        music_player.Load("www.youtube.com");
                         music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
                             "client_id=814015211726-nr4imda5f449vmnd6d67v5pfu2c9iubc.apps.googleusercontent.com" +
                             "&redirect_uri=https://127.0.0.1" +
@@ -197,7 +198,7 @@ namespace YTMusicWidget
 
         private async Task GetUserName()
         {
-            string token=GetAccessToken();
+            string token = GetAccessToken();
             {
                 try
                 {
