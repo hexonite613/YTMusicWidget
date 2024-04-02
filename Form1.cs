@@ -17,6 +17,7 @@ using System.Security.Cryptography;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
 using YTMusicWidget.Properties;
 using System.Runtime;
+using Newtonsoft.Json.Linq;
 
 
 namespace YTMusicWidget
@@ -69,7 +70,6 @@ namespace YTMusicWidget
                 {
                     music_player.Invoke((MethodInvoker)delegate {
                         music_player.Visible = true;
-                        music_player.Load("www.youtube.com");
                         music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
                             "client_id=814015211726-nr4imda5f449vmnd6d67v5pfu2c9iubc.apps.googleusercontent.com" +
                             "&redirect_uri=https://127.0.0.1" +
@@ -141,6 +141,7 @@ namespace YTMusicWidget
                 {
                     SaveAccessToken(token);
                     await GetUserName();
+                    UpdateUI();
                 }
                 else
                 {
@@ -209,7 +210,7 @@ namespace YTMusicWidget
                     var youtubeService = new YouTubeService(new BaseClientService.Initializer()
                     {
                         HttpClientInitializer = credential,
-                        ApplicationName = "YouTube API Example"
+                        ApplicationName = "ytmusicwidget"
                     });
 
                     // 현재 사용자의 채널 정보 요청
@@ -245,6 +246,7 @@ namespace YTMusicWidget
                 {
                     Invoke((MethodInvoker)delegate
                     {
+                        Cef.GetGlobalCookieManager().DeleteCookies(string.Empty, string.Empty);
                         File.Delete(AccessTokenFilePath);
                         Login_com_label.Visible = false;
                         Login_Button.Visible = true;
@@ -262,7 +264,7 @@ namespace YTMusicWidget
             }
         }
 
-        private void Logout_label_Click_1(object sender, EventArgs e)
+        private void Logout_label_Click(object sender, EventArgs e)
         {
             Task.Run(() => Logout());
         }
@@ -280,6 +282,7 @@ namespace YTMusicWidget
         private void Login_com_label_Click(object sender, EventArgs e)
         {
             main_content.Visible = true;
+            music_player.Parent = main_content;
         }
 
         private void pos_change_Click(object sender, EventArgs e)
@@ -326,9 +329,11 @@ namespace YTMusicWidget
         {
             try
             {
+                string token = GetAccessToken();
+                GoogleCredential credential = GoogleCredential.FromAccessToken(token);
                 var service = new YouTubeService(new BaseClientService.Initializer()
                 {
-                    HttpClientInitializer = _credential,
+                    HttpClientInitializer = credential,
                     ApplicationName = "ytmusicwidget"
                 });
 
@@ -469,9 +474,11 @@ namespace YTMusicWidget
         {
             try
             {
+                string token = GetAccessToken();
+                GoogleCredential credential = GoogleCredential.FromAccessToken(token);
                 var service = new YouTubeService(new BaseClientService.Initializer()
                 {
-                    HttpClientInitializer = _credential,
+                    HttpClientInitializer = credential,
                     ApplicationName = "ytmusicwidget"
                 });
 
@@ -578,27 +585,8 @@ namespace YTMusicWidget
         }
 
 
-        private async Task AuthenticateAndLoadPlayer()
+        private void PlayMusic(string videoId)
         {
-            try
-            {
-                _credential = await GoogleWebAuthorizationBroker.AuthorizeAsync(
-                    GoogleClientSecrets.FromStream(new FileStream("credential.json", FileMode.Open, FileAccess.Read)).Secrets,
-                    Scopes,
-                    "user",
-                    CancellationToken.None,
-                    new FileDataStore("token.json", true));
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"로그인 중 오류가 발생했습니다: {ex.Message}");
-            }
-        }
-
-        private async void PlayMusic(string videoId)
-        {
-            InitializeCefSharp();
-            await AuthenticateAndLoadPlayer();
             Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             music_player.Load(url);

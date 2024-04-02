@@ -15,7 +15,7 @@
 - ~~Bring Youtube API~~
 - ~~Implement google login~~
 - Adjust login label position
-- -Login Automatically in Chrominum
+- -~~Login Automatically in Chrominum~~
 - Main content form edit
 - New photo for Main page
 - ~~Bring user playlists~~			
@@ -25,4 +25,5 @@
 - Enhance playing music
 - - Play music on the background
 - - ~~Autoplay music with no mute~~
+- Seperate codes in different files(organize)
 - Develop designs

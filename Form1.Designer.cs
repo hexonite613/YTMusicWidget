@@ -248,7 +248,7 @@
             this.Logout_label.Size = new System.Drawing.Size(50, 18);
             this.Logout_label.TabIndex = 1;
             this.Logout_label.Text = "Logout";
-            this.Logout_label.Click += new System.EventHandler(this.Logout_label_Click_1);
+            this.Logout_label.Click += new System.EventHandler(this.Logout_label_Click);
             // 
             // Login_com_label
             // 
