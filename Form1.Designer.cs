@@ -377,7 +377,7 @@
         private Guna.UI2.WinForms.Guna2Button Next_page_mus;
         private Guna.UI2.WinForms.Guna2Button Before_page_mus;
         private System.Windows.Forms.Label Mus_page_label;
-        private CefSharp.WinForms.ChromiumWebBrowser music_player;
+        internal CefSharp.WinForms.ChromiumWebBrowser music_player;
     }
 }
 

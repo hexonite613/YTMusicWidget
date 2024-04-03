@@ -1,6 +1,5 @@
 ﻿using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
-using Google.Apis.Util.Store;
 using Google.Apis.YouTube.v3;
 using System;
 using System.Collections.Generic;
@@ -8,16 +7,10 @@ using System.Drawing;
 using System.IO;
 using System.Linq;
 using System.Net.Http;
-using System.Threading;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
-using System.Security.Cryptography;
-using static System.Windows.Forms.VisualStyles.VisualStyleElement.StartPanel;
-using YTMusicWidget.Properties;
-using System.Runtime;
-using Newtonsoft.Json.Linq;
 
 
 namespace YTMusicWidget
@@ -25,10 +18,9 @@ namespace YTMusicWidget
 
     public partial class Form1 : Form
     {
-        //액세스 토큰 저장
-        private static readonly string AccessTokenFilePath = "access_token.txt";
-        private static readonly string[] Scopes = { YouTubeService.Scope.Youtube };
-        private static UserCredential _credential;
+        //authorize 객체 생성
+        private readonly Authorize Authorize;
+
         public Form1()
         {
             InitializeComponent();
@@ -40,7 +32,8 @@ namespace YTMusicWidget
             playlist_music_list.DrawItem += playlist_music_list_DrawItem;
             playlist_music_list.DrawMode = DrawMode.OwnerDrawVariable;
             playlist_music_list.MeasureItem += Playlist_Music_MeasureItem;
-            Task.Run(() => Authenticate());
+            Authorize = new Authorize(this);
+            Task.Run(() => Authorize.Authenticate());
 
         }
 
@@ -59,147 +52,15 @@ namespace YTMusicWidget
             music_player.Parent = Main;
             music_player.Location = new Point(0, 0);
             music_player.Size = new Size(Main.Size.Width, Main.Size.Height);
-            Task.Run(() => Authenticate());
-        }
-
-        private void Authenticate()
-        {
-            if (_credential == null)
-            {
-                try
-                {
-                    music_player.Invoke((MethodInvoker)delegate {
-                        music_player.Visible = true;
-                        music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
-                            "client_id=814015211726-nr4imda5f449vmnd6d67v5pfu2c9iubc.apps.googleusercontent.com" +
-                            "&redirect_uri=https://127.0.0.1" +
-                            "&response_type=token" +
-                            "&scope=https://www.googleapis.com/auth/youtube");
-                        music_player.FrameLoadEnd += Browser_FrameLoadEnd;
-                    });
-                }
-                catch (Exception ex)
-                {
-                    MessageBox.Show($"로그인 중 오류가 발생했습니다: {ex.Message}");
-                }
-            }
-            else
-            {
-                UpdateUI();
-            }
-        }
-
-        private void Browser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
-        {
-
-            if (e.Frame.IsMain)
-            {
-                Uri url = new Uri(e.Url);
-                if (url.AbsoluteUri.StartsWith("https://127.0.0.1"))
-                {
-                    string token = GetAuthorizationCode(url);
-                    ExchangeCodeForAccessToken(token);
-                }
-            }
-        }
-
-        private string GetAuthorizationCode(Uri url)
-        {
-
-            string queryString = url.Fragment.TrimStart('#');
-
-            string[] queryParts = queryString.Split('&');
-            foreach (string part in queryParts)
-            {
-                if (part.StartsWith("access_token="))
-                {
-                    return part.Split('=')[1];
-                }
-            }
-
-            throw new Exception("Access token not found in the URL.");
-        }
-
-        private class TokenResponse
-        {
-            public string access_token { get; set; }
-            public string token_type { get; set; }
-            public int expires_in { get; set; }
-        }
-
-        private async void ExchangeCodeForAccessToken(string token)
-        {
-            string apiUrl = "https://www.googleapis.com/auth/youtube";
-            using (HttpClient client = new HttpClient())
-            {
-                // 인증 헤더 추가
-                client.DefaultRequestHeaders.Authorization = new System.Net.Http.Headers.AuthenticationHeaderValue("Bearer", token);
-
-                // API 호출 및 응답 받기
-                HttpResponseMessage response = await client.GetAsync(apiUrl);
-                if (response.IsSuccessStatusCode)
-                {
-                    SaveAccessToken(token);
-                    await GetUserName();
-                    UpdateUI();
-                }
-                else
-                {
-                    // 오류 처리
-                    MessageBox.Show($"로그인 중 오류가 발생했습니다: " + response.ReasonPhrase);
-                    string errorContent = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show("상세 정보: " + errorContent);
-                }
-            }
-        }
-
-        //보안을 위해서 액세스 토큰 저장시 암호화
-        public static void SaveAccessToken(string accessToken)
-        {
-            using (FileStream fs = new FileStream(AccessTokenFilePath, FileMode.OpenOrCreate))
-            {
-                // 암호화된 액세스 토큰 생성
-                byte[] encryptedToken = ProtectData(accessToken);
-                fs.Write(encryptedToken, 0, encryptedToken.Length);
-                fs.Close();
-            }
-        }
-
-        private static byte[] ProtectData(string data)
-        {
-            // 데이터를 바이트 배열로 변환하여 보호
-            byte[] plaintextBytes = System.Text.Encoding.UTF8.GetBytes(data);
-            return ProtectedData.Protect(plaintextBytes, null, DataProtectionScope.CurrentUser);
-        }
-
-        //복호화
-        private static string UnprotectData(byte[] protectedData)
-        {
-            // 암호화된 데이터를 복호화하여 원래 데이터로 변환
-            byte[] plaintextBytes = ProtectedData.Unprotect(protectedData, null, DataProtectionScope.CurrentUser);
-            return System.Text.Encoding.UTF8.GetString(plaintextBytes);
+            Task.Run(() => Authorize.Authenticate());
         }
 
 
-        public static string GetAccessToken()
-        {
-            //파일 확인
-            if (File.Exists(AccessTokenFilePath))
-            {
-                byte[] encryptedToken = File.ReadAllBytes(AccessTokenFilePath);
-                // 복호화
-                return UnprotectData(encryptedToken);
-            }
-            else
-            {
-                return null;
-            }
-        }
 
 
-        private async Task GetUserName()
+        internal async Task GetUserName()
         {
-            string token = GetAccessToken();
+            string token = Authorize.GetAccessToken();
             {
                 try
                 {
@@ -242,12 +103,12 @@ namespace YTMusicWidget
         {
             try
             {
-                if (File.Exists(AccessTokenFilePath))
+                if (File.Exists(Authorize.AccessTokenFilePath))
                 {
                     Invoke((MethodInvoker)delegate
                     {
                         Cef.GetGlobalCookieManager().DeleteCookies(string.Empty, string.Empty);
-                        File.Delete(AccessTokenFilePath);
+                        File.Delete(Authorize.AccessTokenFilePath);
                         Login_com_label.Visible = false;
                         Login_Button.Visible = true;
                         MessageBox.Show("로그아웃 되었습니다.");
@@ -269,7 +130,7 @@ namespace YTMusicWidget
             Task.Run(() => Logout());
         }
 
-        private void UpdateUI()
+        internal void UpdateUI()
         {
             this.Invoke((MethodInvoker)delegate
             {
@@ -329,7 +190,7 @@ namespace YTMusicWidget
         {
             try
             {
-                string token = GetAccessToken();
+                string token = Authorize.GetAccessToken();
                 GoogleCredential credential = GoogleCredential.FromAccessToken(token);
                 var service = new YouTubeService(new BaseClientService.Initializer()
                 {
@@ -474,7 +335,7 @@ namespace YTMusicWidget
         {
             try
             {
-                string token = GetAccessToken();
+                string token = Authorize.GetAccessToken();
                 GoogleCredential credential = GoogleCredential.FromAccessToken(token);
                 var service = new YouTubeService(new BaseClientService.Initializer()
                 {
