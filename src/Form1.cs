@@ -5,12 +5,11 @@ using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.IO;
-using System.Linq;
-using System.Net.Http;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
+using System.Configuration;
 
 
 namespace YTMusicWidget
@@ -20,19 +19,20 @@ namespace YTMusicWidget
     {
         //authorize 객체 생성
         private readonly Authorize Authorize;
+        //playlist 객체 생성
+        private readonly playlist playlist;
 
         public Form1()
         {
             InitializeComponent();
             InitializeCefSharp();
             playlistListBox.DrawMode = DrawMode.OwnerDrawVariable;
-            playlistListBox.MeasureItem += Playlist_MeasureItem;
-            playlistListBox.DrawItem += Playlist_DrawItem;
             playlistListBox.SelectedIndexChanged += playlist_music_list_SelectedIndexChangedAsync;
             playlist_music_list.DrawItem += playlist_music_list_DrawItem;
             playlist_music_list.DrawMode = DrawMode.OwnerDrawVariable;
             playlist_music_list.MeasureItem += Playlist_Music_MeasureItem;
             Authorize = new Authorize(this);
+            playlist = new playlist(this);
             Task.Run(() => Authorize.Authenticate());
 
         }
@@ -41,7 +41,7 @@ namespace YTMusicWidget
         {
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
-            settings.UserAgent = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/96.0.4664.110 Safari/537.36 /CefSharp Browser" + Cef.CefSharpVersion;
+            settings.UserAgent = ConfigurationManager.AppSettings["cef_useragent"] + Cef.CefSharpVersion;
 
             Cef.Initialize(settings, true, browserProcessHandler: null);
         }
@@ -132,11 +132,12 @@ namespace YTMusicWidget
 
         internal void UpdateUI()
         {
-            this.Invoke((MethodInvoker)delegate
+            this.Invoke((MethodInvoker)async delegate
             {
+                await GetUserName();
                 Login_Button.Visible = false;
                 Login_com_label.Visible = true;
-                Task.Run(() => GetPlaylists());
+                Task.Run(() => playlist.GetPlaylists());
             });
         }
 
@@ -186,114 +187,24 @@ namespace YTMusicWidget
             }
         }
 
-        private async Task GetPlaylists()
+        //음악 부분
+        private const int PageSize = 10; // 페이지 당 아이템 수
+        private int currentPage = 1; // 현재 페이지 번호
+        private int totalMusicCount; // 총 음악 수
+        private int totalPageCount; // 총 페이지 수
+        private string nextPageToken = null; // 다음 페이지 토큰
+        private PlaylistItems selectedPlaylist; // 선택된 플레이리스트
+
+
+
+        private async void playlist_music_list_SelectedIndexChangedAsync(object sender, EventArgs e)
         {
-            try
+            if (playlistListBox.SelectedItem != null)
             {
-                string token = Authorize.GetAccessToken();
-                GoogleCredential credential = GoogleCredential.FromAccessToken(token);
-                var service = new YouTubeService(new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = credential,
-                    ApplicationName = "ytmusicwidget"
-                });
-
-                var request = service.Playlists.List("snippet");
-                request.Mine = true;
-                request.MaxResults = 50;
-
-                var response = await request.ExecuteAsync();
-
-                // 플레이리스트를 ListBox에 추가
-                var playlistsToAdd = new List<PlaylistItems>();
-                foreach (var playlist in response.Items)
-                {
-                    // 이미 ListBox에 추가된 플레이리스트인지 확인
-                    if (!playlistListBox.Items.Cast<PlaylistItems>().Any(p => p.Title == playlist.Snippet.Title))
-                    {
-                        var thumbnailUrl = playlist.Snippet.Thumbnails.High.Url;
-                        var playlistImage = await GetImageFromUrl(thumbnailUrl);
-                        var thumbheight = playlistImage.Height;
-                        var thumbwidth = playlistImage.Width;
-
-                        // 플레이리스트 아이템 생성
-                        var playlistItem = new PlaylistItems(playlist.Snippet.Title, playlistImage, thumbheight, thumbwidth, playlist.Id);
-
-                        // 임시 목록에 플레이리스트 아이템 추가
-                        playlistsToAdd.Add(playlistItem);
-                    }
-                }
-
-                // UI 업데이트를 UI 스레드에서 수행
-                Invoke((MethodInvoker)delegate
-                {
-                    foreach (var playlistItem in playlistsToAdd)
-                    {
-                        playlistListBox.Items.Add(playlistItem);
-                    }
-                });
+                selectedPlaylist = (PlaylistItems)playlistListBox.SelectedItem;
+                currentPage = 1; // 페이지 초기화
+                await GetPlaylist_Music(selectedPlaylist.Id, currentPage);
             }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"플레이리스트 가져오기 중 오류가 발생했습니다: {ex.Message}");
-            }
-        }
-
-        //썸네일 이미지 수정
-        private Image ResizeImage(Image image, Size size)
-        {
-            Bitmap result = new Bitmap(size.Width, size.Height);
-            using (Graphics graphics = Graphics.FromImage(result))
-            {
-                graphics.DrawImage(image, new Rectangle(Point.Empty, size));
-            }
-            return result;
-        }
-
-
-        //thumbnail 가져오기
-        private async Task<Image> GetImageFromUrl(string url)
-        {
-            using (var httpClient = new HttpClient())
-            {
-                var response = await httpClient.GetAsync(url);
-                using (var stream = await response.Content.ReadAsStreamAsync())
-                {
-                    Image play_thumb = Image.FromStream(stream);
-                    return ResizeImage(play_thumb, new Size(177, 100));
-                }
-            }
-        }
-
-        private void Playlist_MeasureItem(object sender, MeasureItemEventArgs e)
-        {
-            var listBox = (ListBox)sender;
-            var playlistItem = (PlaylistItems)listBox.Items[e.Index];
-            e.ItemHeight = playlistItem.thumbheight;
-        }
-
-        private void Playlist_DrawItem(object sender, DrawItemEventArgs e)
-        {
-
-            if (e.Index < 0)
-                return;
-
-            var listBox = (ListBox)sender;
-            var playlistItem = (PlaylistItems)listBox.Items[e.Index];
-
-            if (playlistItem == null)
-                return;
-
-            e.DrawBackground();
-
-            if (playlistItem.Image != null)
-            {
-                var imageBounds = new Rectangle(e.Bounds.Left, e.Bounds.Top, e.Bounds.Height, e.Bounds.Height);
-                e.Graphics.DrawImage(playlistItem.Image, imageBounds);
-            }
-
-            var textBounds = new Rectangle(e.Bounds.Left + e.Bounds.Height, e.Bounds.Top, e.Bounds.Width - e.Bounds.Height, e.Bounds.Height);
-            TextRenderer.DrawText(e.Graphics, playlistItem.Title, listBox.Font, textBounds, listBox.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
         }
 
         //Playlist 고른 후 음악 아이템 추가
@@ -308,25 +219,6 @@ namespace YTMusicWidget
                 Title = title;
                 Image = image;
                 VideoId = videoId;
-            }
-        }
-
-
-        private const int PageSize = 10; // 페이지 당 아이템 수
-        private int currentPage = 1; // 현재 페이지 번호
-        private int totalMusicCount; // 총 음악 수
-        private int totalPageCount; // 총 페이지 수
-        private string nextPageToken = null; // 다음 페이지 토큰
-        private PlaylistItems selectedPlaylist; // 선택된 플레이리스트
-
-
-        private async void playlist_music_list_SelectedIndexChangedAsync(object sender, EventArgs e)
-        {
-            if (playlistListBox.SelectedItem != null)
-            {
-                selectedPlaylist = (PlaylistItems)playlistListBox.SelectedItem;
-                currentPage = 1; // 페이지 초기화
-                await GetPlaylist_Music(selectedPlaylist.Id, currentPage);
             }
         }
 
@@ -363,7 +255,7 @@ namespace YTMusicWidget
                 foreach (var item in response.Items)
                 {
                     var thumbnailUrl = item.Snippet.Thumbnails.High.Url;
-                    var musicImage = await GetImageFromUrl(thumbnailUrl);
+                    var musicImage = await playlist.GetImageFromUrl(thumbnailUrl);
                     var music_thumbheight = musicImage.Height;
                     var music_thumbwidth = musicImage.Width;
 

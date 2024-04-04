@@ -65,7 +65,7 @@ namespace YTMusicWidget.Properties {
         /// </summary>
         internal static System.Drawing.Bitmap ytmusic_logo_removebg_preview {
             get {
-                object obj = ResourceManager.GetObject("ytmusic_logo-removebg-preview", resourceCulture);
+                object obj = ResourceManager.GetObject("ytmusic_logo_removebg_preview", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

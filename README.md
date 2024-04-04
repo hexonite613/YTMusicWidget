@@ -22,8 +22,10 @@
 - ~~Bring playlist musics~~
 - ~~Get more than 50 playlists/musics~~
 - ~~Implement play music~~
-- Enhance playing music
-- - Play music on the background
+- ~~Enhance playing music~~
+- - ~~Play music on the background~~
 - - ~~Autoplay music with no mute~~
-- Seperate codes in different files(organize)
-- Develop designs
+- ~~Seperate codes in different files(organize)~~
+- Extend token expiration
+- 
+- Better designs

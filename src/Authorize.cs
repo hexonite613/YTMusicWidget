@@ -4,6 +4,7 @@ using System.IO;
 using CefSharp;
 using System.Net.Http;
 using System.Security.Cryptography;
+using System.Configuration;
 
 namespace YTMusicWidget
 {
@@ -20,15 +21,20 @@ namespace YTMusicWidget
         
         internal void Authenticate()
         {
+            //file이 없으면 다시 업데이트 시도
             if (File.Exists(AccessTokenFilePath))
+            {
+                form1.UpdateUI();
+            }
+            else
             {
                 try
                 {
                     form1.music_player.Invoke((MethodInvoker)delegate {
                         form1.music_player.Visible = true;
                         form1.music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
-                            "client_id=814015211726-nr4imda5f449vmnd6d67v5pfu2c9iubc.apps.googleusercontent.com" +
-                            "&redirect_uri=https://127.0.0.1" +
+                            "client_id=" + ConfigurationManager.AppSettings["client_id"]+
+                            "&redirect_uri=" + ConfigurationManager.AppSettings["redirect_uri"]+
                             "&response_type=token" +
                             "&scope=https://www.googleapis.com/auth/youtube");
                         form1.music_player.FrameLoadEnd += Browser_FrameLoadEnd;
@@ -39,10 +45,6 @@ namespace YTMusicWidget
                     MessageBox.Show($"로그인 중 오류가 발생했습니다: {ex.Message}");
                 }
             }
-            else
-            {
-                form1.UpdateUI();
-            }
         }
 
 
@@ -52,7 +54,7 @@ namespace YTMusicWidget
             if (e.Frame.IsMain)
             {
                 Uri url = new Uri(e.Url);
-                if (url.AbsoluteUri.StartsWith("https://127.0.0.1"))
+                if (url.AbsoluteUri.StartsWith(ConfigurationManager.AppSettings["redirect_uri"]))
                 {
                     string token = GetAuthorizationCode(url);
                     ExchangeCodeForAccessToken(token);

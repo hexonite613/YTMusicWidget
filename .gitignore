@@ -394,6 +394,5 @@ FodyWeavers.xsd
 *.msm
 *.msp
 
-# JetBrains Rider
-*.sln.iml
+# For sensitive information
 /App.config

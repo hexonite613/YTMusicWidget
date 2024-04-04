@@ -368,8 +368,8 @@
         private System.Windows.Forms.Label Logout_label;
         private Guna.UI2.WinForms.Guna2GroupBox main_content;
         private System.Windows.Forms.Label playlist_label;
-        private System.Windows.Forms.ListBox playlistListBox;
-        private System.Windows.Forms.ListBox playlist_music_list;
+        internal System.Windows.Forms.ListBox playlistListBox;
+        internal System.Windows.Forms.ListBox playlist_music_list;
         private System.Windows.Forms.Label playlist_music_label;
         private Guna.UI2.WinForms.Guna2VScrollBar guna2VScrollBar1;
         private Guna.UI2.WinForms.Guna2VScrollBar guna2VScrollBar2;
