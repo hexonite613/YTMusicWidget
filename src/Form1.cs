@@ -10,6 +10,7 @@ using System.Windows.Forms;
 using CefSharp;
 using CefSharp.WinForms;
 using System.Configuration;
+using YTMusicWidget.src;
 
 
 namespace YTMusicWidget
@@ -21,18 +22,23 @@ namespace YTMusicWidget
         private readonly Authorize Authorize;
         //playlist 객체 생성
         private readonly playlist playlist;
+        //music 객체 생성
+        private readonly Music music;
 
         public Form1()
         {
             InitializeComponent();
             InitializeCefSharp();
+
             playlistListBox.DrawMode = DrawMode.OwnerDrawVariable;
-            playlistListBox.SelectedIndexChanged += playlist_music_list_SelectedIndexChangedAsync;
-            playlist_music_list.DrawItem += playlist_music_list_DrawItem;
+            //문제인 곳
+            //playlistListBox.SelectedIndexChanged += music.playlist_music_list_SelectedIndexChangedAsync;
+            
             playlist_music_list.DrawMode = DrawMode.OwnerDrawVariable;
-            playlist_music_list.MeasureItem += Playlist_Music_MeasureItem;
+
             Authorize = new Authorize(this);
             playlist = new playlist(this);
+
             Task.Run(() => Authorize.Authenticate());
 
         }
@@ -188,24 +194,16 @@ namespace YTMusicWidget
         }
 
         //음악 부분
-        private const int PageSize = 10; // 페이지 당 아이템 수
-        private int currentPage = 1; // 현재 페이지 번호
-        private int totalMusicCount; // 총 음악 수
-        private int totalPageCount; // 총 페이지 수
-        private string nextPageToken = null; // 다음 페이지 토큰
-        private PlaylistItems selectedPlaylist; // 선택된 플레이리스트
+        public const int PageSize = 10; // 페이지 당 아이템 수
+        public int currentPage = 1; // 현재 페이지 번호
+        internal int totalMusicCount; // 총 음악 수
+        internal int totalPageCount; // 총 페이지 수
+        internal string nextPageToken = null; // 다음 페이지 토큰
+        internal PlaylistItems selectedPlaylist; // 선택된 플레이리스트
 
 
 
-        private async void playlist_music_list_SelectedIndexChangedAsync(object sender, EventArgs e)
-        {
-            if (playlistListBox.SelectedItem != null)
-            {
-                selectedPlaylist = (PlaylistItems)playlistListBox.SelectedItem;
-                currentPage = 1; // 페이지 초기화
-                await GetPlaylist_Music(selectedPlaylist.Id, currentPage);
-            }
-        }
+
 
         //Playlist 고른 후 음악 아이템 추가
         public class Playlist_Music_Items
@@ -219,151 +217,6 @@ namespace YTMusicWidget
                 Title = title;
                 Image = image;
                 VideoId = videoId;
-            }
-        }
-
-
-        private async Task GetPlaylist_Music(string playlistId, int page)
-        {
-            try
-            {
-                string token = Authorize.GetAccessToken();
-                GoogleCredential credential = GoogleCredential.FromAccessToken(token);
-                var service = new YouTubeService(new BaseClientService.Initializer()
-                {
-                    HttpClientInitializer = credential,
-                    ApplicationName = "ytmusicwidget"
-                });
-
-                var request = service.PlaylistItems.List("snippet");
-                request.PlaylistId = playlistId;
-                request.MaxResults = PageSize;
-                request.PageToken = (page > 1) ? nextPageToken : null;
-
-                var response = await request.ExecuteAsync();
-
-                // 총 음악 수와 총 페이지 수 업데이트
-                totalMusicCount = (int)response.PageInfo.TotalResults;
-                totalPageCount = (int)Math.Ceiling((double)totalMusicCount / PageSize);
-
-                // 다음 페이지 토큰 설정
-                nextPageToken = response.NextPageToken;
-
-
-                // 플레이리스트 음악들을 ListBox에 추가
-                var musicItemsToAdd = new List<Playlist_Music_Items>();
-                foreach (var item in response.Items)
-                {
-                    var thumbnailUrl = item.Snippet.Thumbnails.High.Url;
-                    var musicImage = await playlist.GetImageFromUrl(thumbnailUrl);
-                    var music_thumbheight = musicImage.Height;
-                    var music_thumbwidth = musicImage.Width;
-
-                    var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
-                    musicItemsToAdd.Add(musicItem);
-                }
-
-                // UI 업데이트를 UI 스레드에서 수행
-                Invoke((MethodInvoker)delegate
-                {
-                    playlist_music_list.Items.Clear();
-                    foreach (var musicItem in musicItemsToAdd)
-                    {
-                        playlist_music_list.Items.Add(musicItem);
-                    }
-                    UpdatePageInfo();
-                });
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"플레이리스트 음악 가져오기 중 오류가 발생했습니다: {ex.Message}");
-            }
-        }
-
-
-        private void UpdatePageInfo()
-        {
-            Mus_page_label.Text = $"{currentPage} / {totalPageCount}";
-            Before_page_mus.Enabled = (currentPage > 1);
-            Next_page_mus.Enabled = (currentPage < totalPageCount);
-        }
-
-
-        private void Playlist_Music_MeasureItem(object sender, MeasureItemEventArgs e)
-        {
-            var listBox = (ListBox)sender;
-            var musicItem = (Playlist_Music_Items)listBox.Items[e.Index];
-            e.ItemHeight = musicItem.Image.Height;
-        }
-
-
-        private void playlist_music_list_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            if (e.Index < 0)
-                return;
-
-            var listBox = (ListBox)sender;
-            var musicItem = (Playlist_Music_Items)listBox.Items[e.Index];
-
-            if (musicItem == null)
-                return;
-
-            e.DrawBackground();
-
-
-            // 썸네일 이미지 그리기
-            if (musicItem.Image != null)
-            {
-                var imageBounds = new Rectangle(e.Bounds.Left, e.Bounds.Top, e.Bounds.Height, e.Bounds.Height);
-                e.Graphics.DrawImage(musicItem.Image, imageBounds);
-            }
-
-            // 음악 이름 그리기
-            var textBounds = new Rectangle(e.Bounds.Left + e.Bounds.Height, e.Bounds.Top, e.Bounds.Width - e.Bounds.Height, e.Bounds.Height);
-            TextRenderer.DrawText(e.Graphics, musicItem.Title, listBox.Font, textBounds, listBox.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
-        }
-
-
-        //음악 선택시
-        private void playlist_music_list_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            if (playlist_music_list.SelectedItem != null)
-            {
-                // 선택한 음악 항목 가져오기
-                Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
-
-                // 음악 재생
-                PlayMusic(selectedMusic.VideoId);
-            }
-        }
-
-
-        private void PlayMusic(string videoId)
-        {
-            Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
-            string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
-            music_player.Load(url);
-            music_player.Visible = true;
-        }
-
-        //이전 페이지(음악)
-        private async void Before_page_mus_Click(object sender, EventArgs e)
-        {
-            if (currentPage > 1)
-            {
-                currentPage--;
-                var selectedPlaylist = (PlaylistItems)playlistListBox.SelectedItem;
-                await GetPlaylist_Music(selectedPlaylist.Id, currentPage);
-            }
-        }
-
-        //다음 페이지(음악)
-        private async void Next_page_mus_Click(object sender, EventArgs e)
-        {
-            if (currentPage < totalPageCount)
-            {
-                currentPage++;
-                await GetPlaylist_Music(selectedPlaylist.Id, currentPage);
             }
         }
     }

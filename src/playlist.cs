@@ -23,6 +23,8 @@ namespace YTMusicWidget
             form1.playlistListBox.MeasureItem += (sender, e) => Playlist_MeasureItem(sender, e);
             form1.playlistListBox.DrawItem += (sender, e) => Playlist_DrawItem(sender, e);
         }
+
+
         internal async Task GetPlaylists()
         {
             try

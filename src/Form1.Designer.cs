@@ -135,7 +135,6 @@
             this.playlist_music_list.Name = "playlist_music_list";
             this.playlist_music_list.Size = new System.Drawing.Size(273, 349);
             this.playlist_music_list.TabIndex = 6;
-            this.playlist_music_list.SelectedIndexChanged += new System.EventHandler(this.playlist_music_list_SelectedIndexChanged);
             // 
             // Mus_page_label
             // 
@@ -165,7 +164,6 @@
             this.Next_page_mus.Size = new System.Drawing.Size(87, 26);
             this.Next_page_mus.TabIndex = 11;
             this.Next_page_mus.Text = "다음";
-            this.Next_page_mus.Click += new System.EventHandler(this.Next_page_mus_Click);
             // 
             // Before_page_mus
             // 
@@ -184,7 +182,6 @@
             this.Before_page_mus.Size = new System.Drawing.Size(87, 26);
             this.Before_page_mus.TabIndex = 9;
             this.Before_page_mus.Text = "이전";
-            this.Before_page_mus.Click += new System.EventHandler(this.Before_page_mus_Click);
             // 
             // playlist_music_label
             // 
@@ -374,9 +371,9 @@
         private Guna.UI2.WinForms.Guna2VScrollBar guna2VScrollBar1;
         private Guna.UI2.WinForms.Guna2VScrollBar guna2VScrollBar2;
         private Guna.UI2.WinForms.Guna2Button Login_Button;
-        private Guna.UI2.WinForms.Guna2Button Next_page_mus;
-        private Guna.UI2.WinForms.Guna2Button Before_page_mus;
-        private System.Windows.Forms.Label Mus_page_label;
+        public Guna.UI2.WinForms.Guna2Button Next_page_mus;
+        public Guna.UI2.WinForms.Guna2Button Before_page_mus;
+        public System.Windows.Forms.Label Mus_page_label;
         internal CefSharp.WinForms.ChromiumWebBrowser music_player;
     }
 }
