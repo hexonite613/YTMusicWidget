@@ -31,13 +31,13 @@ namespace YTMusicWidget
             InitializeCefSharp();
 
             playlistListBox.DrawMode = DrawMode.OwnerDrawVariable;
-            //문제인 곳
-            //playlistListBox.SelectedIndexChanged += music.playlist_music_list_SelectedIndexChangedAsync;
-            
+
+
             playlist_music_list.DrawMode = DrawMode.OwnerDrawVariable;
 
             Authorize = new Authorize(this);
             playlist = new playlist(this);
+            music = new Music(this);
 
             Task.Run(() => Authorize.Authenticate());
 
@@ -219,5 +219,6 @@ namespace YTMusicWidget
                 VideoId = videoId;
             }
         }
+
     }
 }

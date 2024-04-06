@@ -17,13 +17,16 @@ namespace YTMusicWidget.src
         private readonly Form1 form1;
         private readonly playlist playlist;
 
-        public Music() {
-            this.form1 = new Form1();
+        public Music(Form1 form1)
+        {
+            this.form1 = form1;
+            this.playlist = new playlist(form1);
 
 
             form1.playlist_music_list.SelectedIndexChanged += playlist_music_list_SelectedIndexChanged;
-            //문제인 곳
-            //form1.playlistListBox.SelectedIndexChanged += (sender,e)=>playlist_music_list_SelectedIndexChangedAsync(sender,e);
+            form1.playlistListBox.SelectedIndexChanged += playlist_SelectedIndexChangedAsync;
+
+
             form1.Next_page_mus.Click += Next_page_mus_Click;
             form1.Before_page_mus.Click += Before_page_mus_Click;
 
@@ -37,10 +40,10 @@ namespace YTMusicWidget.src
 
         internal async Task GetPlaylist_Music(string playlistId, int page)
         {
-            MessageBox.Show(playlistId+" "+page);
             try
             {
                 string token = Authorize.GetAccessToken();
+
                 GoogleCredential credential = GoogleCredential.FromAccessToken(token);
                 var service = new YouTubeService(new BaseClientService.Initializer()
                 {
@@ -63,17 +66,23 @@ namespace YTMusicWidget.src
                 form1.nextPageToken = response.NextPageToken;
 
 
+
                 // 플레이리스트 음악들을 ListBox에 추가
                 var musicItemsToAdd = new List<Playlist_Music_Items>();
                 foreach (var item in response.Items)
                 {
+
                     var thumbnailUrl = item.Snippet.Thumbnails.High.Url;
+                    
                     var musicImage = await playlist.GetImageFromUrl(thumbnailUrl);
+
                     var music_thumbheight = musicImage.Height;
                     var music_thumbwidth = musicImage.Width;
 
                     var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
+
                     musicItemsToAdd.Add(musicItem);
+
                 }
 
                 // UI 업데이트를 UI 스레드에서 수행
@@ -94,7 +103,7 @@ namespace YTMusicWidget.src
         }
 
         //플레이리스트에 따른 음악 목록들 가져오기
-        public async void playlist_music_list_SelectedIndexChangedAsync(object sender, EventArgs e)
+        public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
         {
             if (form1.playlistListBox.SelectedItem != null)
             {
