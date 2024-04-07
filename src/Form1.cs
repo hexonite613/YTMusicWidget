@@ -39,7 +39,9 @@ namespace YTMusicWidget
             playlist = new playlist(this);
             music = new Music(this);
 
-            Task.Run(() => Authorize.Authenticate());
+
+            Delete_TokenFile();
+
 
         }
 
@@ -151,6 +153,7 @@ namespace YTMusicWidget
         {
             main_content.Visible = true;
             music_player.Parent = main_content;
+            music_player.Visible = true;
         }
 
         private void pos_change_Click(object sender, EventArgs e)
@@ -165,6 +168,26 @@ namespace YTMusicWidget
             Main.Location = new System.Drawing.Point(0, 0);
             pos_change.Visible = true;
             pos_complete.Visible = false;
+        }
+
+
+
+
+        private void Delete_TokenFile()
+        {
+            // 프로그램 종료 시 파일 삭제
+            if (File.Exists(Authorize.AccessTokenFilePath))
+            {
+                try
+                {
+                    File.Delete(Authorize.AccessTokenFilePath);
+                }
+                catch (Exception ex)
+                {
+                    // 파일 삭제 실패 시 예외 처리
+                    MessageBox.Show($"파일 삭제 중 오류 발생: {ex.Message}");
+                }
+            }
         }
 
 

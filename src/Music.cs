@@ -20,7 +20,8 @@ namespace YTMusicWidget.src
         public Music(Form1 form1)
         {
             this.form1 = form1;
-            this.playlist = new playlist(form1);
+            playlist = new playlist(form1);
+
 
 
             form1.playlist_music_list.SelectedIndexChanged += playlist_music_list_SelectedIndexChanged;
@@ -183,7 +184,6 @@ namespace YTMusicWidget.src
             Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
-            form1.music_player.Visible = true;
         }
 
 
