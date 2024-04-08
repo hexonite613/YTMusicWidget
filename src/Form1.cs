@@ -60,6 +60,7 @@ namespace YTMusicWidget
             music_player.Parent = Main;
             music_player.Location = new Point(0, 0);
             music_player.Size = new Size(Main.Size.Width, Main.Size.Height);
+            music_player.BringToFront();
             Task.Run(() => Authorize.Authenticate());
         }
 
@@ -98,6 +99,7 @@ namespace YTMusicWidget
                         Login_Button.Visible = false;
                         Login_com_label.Text = userName + "님, 환영합니다";
                         Login_com_label.Visible = true;
+                        music_player.Visible = false;
                     });
                 }
                 catch (Exception ex)
@@ -154,6 +156,8 @@ namespace YTMusicWidget
             main_content.Visible = true;
             music_player.Parent = main_content;
             music_player.Visible = true;
+            music_player.Location = new Point(0, 100);
+            music_player.BringToFront();
         }
 
         private void pos_change_Click(object sender, EventArgs e)

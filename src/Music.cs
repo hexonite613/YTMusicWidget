@@ -182,7 +182,7 @@ namespace YTMusicWidget.src
         private void PlayMusic(string videoId)
         {
             Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
-            string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
+            string url = $"https://music.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
         }
 
