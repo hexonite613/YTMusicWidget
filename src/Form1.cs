@@ -155,7 +155,7 @@ namespace YTMusicWidget
         {
             main_content.Visible = true;
             music_player.Parent = main_content;
-            music_player.Visible = true;
+            //music_player.Visible = true;
             music_player.Location = new Point(0, 100);
             music_player.BringToFront();
         }
@@ -247,5 +247,20 @@ namespace YTMusicWidget
             }
         }
 
+        private void Music_player_hide_Click(object sender, EventArgs e)
+        {
+            Music_Controller.Visible= false;
+        }
+
+        private void Music_player_visible_Click(object sender, EventArgs e)
+        {
+            Music_Controller.Visible = true;
+        }
+
+        private void guna2VTrackBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+            guna2VTrackBar1.
+                Orientation=Orientation.Vertical;
+        }
     }
 }

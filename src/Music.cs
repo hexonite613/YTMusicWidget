@@ -172,9 +172,13 @@ namespace YTMusicWidget.src
             {
                 // 선택한 음악 항목 가져오기
                 Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
-
+                Image musicImage = selectedMusic.Image;
+                form1.Music_Image.Image = musicImage;
+                form1.Music_Image.SizeMode =PictureBoxSizeMode.StretchImage;
                 // 음악 재생
                 PlayMusic(selectedMusic.VideoId);
+                form1.Music_player_visible.Visible= true;
+                form1.Music_Controller.Visible= true;
             }
         }
 
