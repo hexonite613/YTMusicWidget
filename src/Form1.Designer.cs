@@ -36,6 +36,7 @@
             this.playlist_music_list = new System.Windows.Forms.ListBox();
             this.Music_player_visible = new Guna.UI2.WinForms.Guna2Button();
             this.Music_Controller = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.guna2VTrackBar1 = new Guna.UI2.WinForms.Guna2VTrackBar();
             this.Music_player_hide = new Guna.UI2.WinForms.Guna2Button();
             this.Music_Before_Button = new Guna.UI2.WinForms.Guna2GradientButton();
             this.Music_Next_Button = new Guna.UI2.WinForms.Guna2GradientButton();
@@ -57,7 +58,6 @@
             this.pos_change = new System.Windows.Forms.Label();
             this.Title = new System.Windows.Forms.Label();
             this.guna2VScrollBar1 = new Guna.UI2.WinForms.Guna2VScrollBar();
-            this.guna2VTrackBar1 = new Guna.UI2.WinForms.Guna2VTrackBar();
             this.Main.SuspendLayout();
             this.main_content.SuspendLayout();
             this.Music_Controller.SuspendLayout();
@@ -183,6 +183,14 @@
             this.Music_Controller.Text = "guna2GroupBox1";
             this.Music_Controller.Visible = false;
             // 
+            // guna2VTrackBar1
+            // 
+            this.guna2VTrackBar1.Location = new System.Drawing.Point(8, 8);
+            this.guna2VTrackBar1.Name = "guna2VTrackBar1";
+            this.guna2VTrackBar1.Size = new System.Drawing.Size(23, 300);
+            this.guna2VTrackBar1.TabIndex = 20;
+            this.guna2VTrackBar1.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
+            // 
             // Music_player_hide
             // 
             this.Music_player_hide.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
@@ -244,6 +252,7 @@
             this.Music_Play_Pause_Button.Size = new System.Drawing.Size(56, 55);
             this.Music_Play_Pause_Button.TabIndex = 15;
             this.Music_Play_Pause_Button.Text = "guna2CircleButton1";
+            this.Music_Play_Pause_Button.Click += new System.EventHandler(this.Music_Play_Pause_Button_Click);
             // 
             // Music_ProgressBar
             // 
@@ -461,14 +470,6 @@
             this.guna2VScrollBar1.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(170)))), ((int)(((byte)(170)))), ((int)(((byte)(170)))));
             this.guna2VScrollBar1.ThumbSize = 5F;
             this.guna2VScrollBar1.ThumbStyle = Guna.UI2.WinForms.Enums.ThumbStyle.Inset;
-            // 
-            // guna2VTrackBar1
-            // 
-            this.guna2VTrackBar1.Location = new System.Drawing.Point(8, 8);
-            this.guna2VTrackBar1.Name = "guna2VTrackBar1";
-            this.guna2VTrackBar1.Size = new System.Drawing.Size(23, 300);
-            this.guna2VTrackBar1.TabIndex = 20;
-            this.guna2VTrackBar1.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
             // 
             // Form1
             // 

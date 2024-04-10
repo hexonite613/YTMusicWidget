@@ -259,8 +259,33 @@ namespace YTMusicWidget
 
         private void guna2VTrackBar1_Scroll(object sender, ScrollEventArgs e)
         {
-            guna2VTrackBar1.
-                Orientation=Orientation.Vertical;
+           //need to change
         }
+
+private async void Music_Play_Pause_Button_Click(object sender, EventArgs e)
+{
+    music_player.Visible = true;
+    try
+    {
+        // JavaScript 함수 호출
+        string script = "toggleVideoPlayback();";
+        var response = await music_player.EvaluateScriptAsync(script);
+
+        // 반환 값 확인
+        if (response.Success && response.Result != null)
+        {
+            bool isPlaying = Convert.ToBoolean(response.Result);
+            MessageBox.Show($"Video playback toggled: {(isPlaying ? "Playing" : "Paused")}");
+        }
+        else
+        {
+            MessageBox.Show("Failed to toggle video playback.");
+        }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"Error toggling video playback: {ex.Message}");
+    }
+}
     }
 }
