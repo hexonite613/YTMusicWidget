@@ -15,9 +15,7 @@ function setVolume(volume) {
 
 function toggleVideoPlayback() {
     var videoElement = document.getElementById('player');
-    alert("비디오 못 가");
     if (videoElement) {
-        alert("비디오는 가져옴");
         if (videoElement.paused) {
             videoElement.play();
         } else {

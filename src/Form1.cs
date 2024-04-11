@@ -264,14 +264,11 @@ namespace YTMusicWidget
 
 private async void Music_Play_Pause_Button_Click(object sender, EventArgs e)
 {
-    music_player.Visible = true;
     try
     {
-        // JavaScript 함수 호출
         string script = "toggleVideoPlayback();";
         var response = await music_player.EvaluateScriptAsync(script);
 
-        // 반환 값 확인
         if (response.Success && response.Result != null)
         {
             bool isPlaying = Convert.ToBoolean(response.Result);
