@@ -14,15 +14,5 @@ function setVolume(volume) {
 }
 
 function toggleVideoPlayback() {
-    var videoElement = document.getElementById('player');
-    if (videoElement) {
-        if (videoElement.paused) {
-            videoElement.play();
-        } else {
-            videoElement.pause(); 
-        }
-        return !videoElement.paused; 
-    } else {
-        return false; 
-    }
+    document.getElementById('play-pause-button').click();
 }

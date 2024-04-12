@@ -51,6 +51,11 @@ namespace YTMusicWidget
             settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
             settings.UserAgent = ConfigurationManager.AppSettings["cef_useragent"] + Cef.CefSharpVersion;
 
+
+
+            //여기 수정해야 한다
+            music_player.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;
+            music_player.JavascriptObjectRepository.Register("cefSharpBridge", this, isAsync: true);
             Cef.Initialize(settings, true, browserProcessHandler: null);
         }
 
@@ -266,18 +271,7 @@ private async void Music_Play_Pause_Button_Click(object sender, EventArgs e)
 {
     try
     {
-        string script = "toggleVideoPlayback();";
-        var response = await music_player.EvaluateScriptAsync(script);
-
-        if (response.Success && response.Result != null)
-        {
-            bool isPlaying = Convert.ToBoolean(response.Result);
-            MessageBox.Show($"Video playback toggled: {(isPlaying ? "Playing" : "Paused")}");
-        }
-        else
-        {
-            MessageBox.Show("Failed to toggle video playback.");
-        }
+        var response = await music_player.EvaluateScriptAsync("toggleVideoPlayback();");
     }
     catch (Exception ex)
     {
