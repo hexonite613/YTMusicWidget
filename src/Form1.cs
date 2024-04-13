@@ -11,6 +11,7 @@ using CefSharp;
 using CefSharp.WinForms;
 using System.Configuration;
 using YTMusicWidget.src;
+using System.Web.UI;
 
 
 namespace YTMusicWidget
@@ -24,6 +25,9 @@ namespace YTMusicWidget
         private readonly playlist playlist;
         //music 객체 생성
         private readonly Music music;
+
+        static string js_path="../../src/browse_control.js";
+        string scriptContent = File.ReadAllText(js_path);
 
         public Form1()
         {
@@ -50,13 +54,17 @@ namespace YTMusicWidget
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
             settings.UserAgent = ConfigurationManager.AppSettings["cef_useragent"] + Cef.CefSharpVersion;
-
-
+            
 
             //여기 수정해야 한다
+            /*
             music_player.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;
             music_player.JavascriptObjectRepository.Register("cefSharpBridge", this, isAsync: true);
+            */
+            //ScriptManager.RegisterStartupScript(this, this.GetType(), "timeout", functionScript, True);
+
             Cef.Initialize(settings, true, browserProcessHandler: null);
+
         }
 
 
@@ -269,8 +277,10 @@ namespace YTMusicWidget
 
 private async void Music_Play_Pause_Button_Click(object sender, EventArgs e)
 {
+    music_player.ShowDevTools();
     try
     {
+        JavascriptResponse result = await music_player.EvaluateScriptAsync(scriptContent);
         var response = await music_player.EvaluateScriptAsync("toggleVideoPlayback();");
     }
     catch (Exception ex)

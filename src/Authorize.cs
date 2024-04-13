@@ -31,6 +31,7 @@ namespace YTMusicWidget
                 try
                 {
                     form1.music_player.Invoke((MethodInvoker)delegate {
+
                         form1.music_player.Visible = true;
                         form1.music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
                             "client_id=" + ConfigurationManager.AppSettings["client_id"]+
@@ -39,6 +40,7 @@ namespace YTMusicWidget
                             "&scope=https://www.googleapis.com/auth/youtube");
                         form1.music_player.FrameLoadEnd += Browser_FrameLoadEnd;
                     });
+                    
                 }
                 catch (Exception ex)
                 {
