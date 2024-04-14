@@ -1,13 +1,11 @@
-﻿function playMusic() {
-    // 음악 재생 명령
-    document.getElementById('player').play();
+﻿function Nextmusic() {
+    document.querySelector('tp-yt-paper-icon-button[title="다음"]').click();
 }
 
-function pauseMusic() {
-    // 음악 일시 정지 명령
-    document.getElementById('player').pause();
+function Previousmusic() {
+    document.querySelector('tp-yt-paper-icon-button[title="이전"]').click();
 }
-
+//need to implement
 function setVolume(volume) {
     // 음량 조절 명령
     document.getElementById('player').volume = volume / 100;
@@ -15,4 +13,15 @@ function setVolume(volume) {
 
 function toggleVideoPlayback() {
     document.getElementById('play-pause-button').click();
+}
+
+function bringVideoTime() {
+    var current_time;
+    current_time = document.getElementById('progress-bar').value;
+    return current_time;
+}
+
+//수정
+function videoProgressChanged(value) {
+    dotnetHelper.invokeMethodAsync('OnVideoProgressChanged', value);
 }

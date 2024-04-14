@@ -55,14 +55,6 @@ namespace YTMusicWidget
             settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
             settings.UserAgent = ConfigurationManager.AppSettings["cef_useragent"] + Cef.CefSharpVersion;
             
-
-            //여기 수정해야 한다
-            /*
-            music_player.JavascriptObjectRepository.Settings.LegacyBindingEnabled = true;
-            music_player.JavascriptObjectRepository.Register("cefSharpBridge", this, isAsync: true);
-            */
-            //ScriptManager.RegisterStartupScript(this, this.GetType(), "timeout", functionScript, True);
-
             Cef.Initialize(settings, true, browserProcessHandler: null);
 
         }
@@ -275,18 +267,84 @@ namespace YTMusicWidget
            //need to change
         }
 
-private async void Music_Play_Pause_Button_Click(object sender, EventArgs e)
-{
-    music_player.ShowDevTools();
-    try
-    {
-        JavascriptResponse result = await music_player.EvaluateScriptAsync(scriptContent);
-        var response = await music_player.EvaluateScriptAsync("toggleVideoPlayback();");
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show($"Error toggling video playback: {ex.Message}");
-    }
-}
+        private async void Music_Play_Pause_Button_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                JavascriptResponse result = await music_player.EvaluateScriptAsync(scriptContent);
+                var response = await music_player.EvaluateScriptAsync("toggleVideoPlayback();");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error toggling video playback: {ex.Message}");
+            }
+        }
+
+        private async void Music_Next_Button_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                JavascriptResponse result = await music_player.EvaluateScriptAsync(scriptContent);
+                var response = await music_player.EvaluateScriptAsync("Nextmusic();");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error toggling video playback: {ex.Message}");
+            }
+        }
+
+        private async void Music_Before_Button_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                JavascriptResponse result = await music_player.EvaluateScriptAsync(scriptContent);
+                var response = await music_player.EvaluateScriptAsync("Previousmusic();");
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Error toggling video playback: {ex.Message}");
+            }
+        }
+
+        //수정
+        private async void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
+        {
+            try
+            {
+                var value=Music_ProgressBar.Value;
+                string script = $"document.getElementById('progress-bar').value = {value};";
+                music_player.GetMainFrame().ExecuteJavaScriptAsync(script);
+            } 
+            catch (Exception ex)
+            {
+                MessageBox.Show("영상 재생에 실패하였습니다");
+            }
+        }
+
+        private void OnVideoProgressChanged(string value)
+        {
+            int videoProgress = int.Parse(value);
+            Music_ProgressBar.Value = videoProgress;
+        }
+
+        public async void UpdateVideoProgress()
+        {
+            while (true)
+            {
+                // JavaScript를 실행하여 영상의 현재 위치를 가져옵니다.
+                var result = await music_player.GetMainFrame().EvaluateScriptAsync("document.getElementById('progress-bar').value");
+                if (result.Success && result.Result != null)
+                {
+                    string value = result.Result.ToString();
+                    // JavaScript로부터 전달된 값을 처리합니다.
+                    OnVideoProgressChanged(value);
+                }
+
+                // 적절한 시간 간격을 두고 반복적으로 호출됩니다.
+                await Task.Delay(1000); // 예시: 1초마다 업데이트
+            }
+        }
+
+
     }
 }
