@@ -307,19 +307,19 @@ namespace YTMusicWidget
         }
 
         //수정
-        private async void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
+        private void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
         {
-            try
-            {
-                var value=Music_ProgressBar.Value;
-                string script = $"document.getElementById('progress-bar').value = {value};";
-                music_player.GetMainFrame().ExecuteJavaScriptAsync(script);
-            } 
-            catch (Exception ex)
-            {
-                MessageBox.Show("영상 재생에 실패하였습니다");
-            }
+            int value=Music_ProgressBar.Value;
+            UpdateSliderValue(value.ToString());
         }
+
+
+        private void UpdateSliderValue(string value)
+        {
+            string script = $"document.getElementById('progress-bar').value = {value};";
+            music_player.GetMainFrame().ExecuteJavaScriptAsync(script);
+        }
+
 
         private void OnVideoProgressChanged(string value)
         {
