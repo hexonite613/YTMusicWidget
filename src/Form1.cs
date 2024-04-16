@@ -54,7 +54,7 @@ namespace YTMusicWidget
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
             settings.UserAgent = ConfigurationManager.AppSettings["cef_useragent"] + Cef.CefSharpVersion;
-            
+ 
             Cef.Initialize(settings, true, browserProcessHandler: null);
 
         }
@@ -306,18 +306,33 @@ namespace YTMusicWidget
             }
         }
 
-        //수정
-        private void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
+
+
+        internal void LoadYouTubeAPIScript()
         {
-            int value=Music_ProgressBar.Value;
-            UpdateSliderValue(value.ToString());
+            // YouTube iframe API 스크립트를 로드하는 JavaScript 코드
+            string script = @"
+        var tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    ";
+
+            // JavaScript 코드 실행
+            music_player.ExecuteScriptAsync(script);
         }
 
 
-        private void UpdateSliderValue(string value)
+        //수정
+        private void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
         {
-            string script = $"document.getElementById('progress-bar').value = {value};";
-            music_player.GetMainFrame().ExecuteJavaScriptAsync(script);
+
+            // JavaScript를 사용하여 YouTube 비디오를 특정 시간으로 이동시킵니다.
+            string script = $"player.seekTo({Music_ProgressBar.Value}, true);"; // player는 YouTube Iframe API에서 생성한 플레이어 객체입니다.
+
+            // JavaScript 코드 실행
+            music_player.ExecuteScriptAsync(script);
+
         }
 
 
