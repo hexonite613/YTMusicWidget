@@ -185,10 +185,9 @@ namespace YTMusicWidget.src
 
         private void PlayMusic(string videoId)
         {
-            //youtube api not working?
-            form1.LoadYouTubeAPIScript();
             Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
             string url = $"https://music.youtube.com/watch?v={videoId}?autoplay=1";
+            form1.playing_video_id(videoId);
             form1.music_player.Load(url);
             form1.UpdateVideoProgress();
         }

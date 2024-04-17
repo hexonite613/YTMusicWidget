@@ -12,6 +12,7 @@ using CefSharp.WinForms;
 using System.Configuration;
 using YTMusicWidget.src;
 using System.Web.UI;
+using Google.Apis.YouTube.v3.Data;
 
 
 namespace YTMusicWidget
@@ -25,6 +26,7 @@ namespace YTMusicWidget
         private readonly playlist playlist;
         //music 객체 생성
         private readonly Music music;
+        string video_id;
 
         static string js_path="../../src/browse_control.js";
         string scriptContent = File.ReadAllText(js_path);
@@ -306,32 +308,21 @@ namespace YTMusicWidget
             }
         }
 
-
-
-        internal void LoadYouTubeAPIScript()
+        internal void playing_video_id(string id)
         {
-            // YouTube iframe API 스크립트를 로드하는 JavaScript 코드
-            string script = @"
-        var tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    ";
-
-            // JavaScript 코드 실행
-            music_player.ExecuteScriptAsync(script);
+            video_id = id;
         }
+
+
 
 
         //수정
         private void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
         {
 
-            // JavaScript를 사용하여 YouTube 비디오를 특정 시간으로 이동시킵니다.
-            string script = $"player.seekTo({Music_ProgressBar.Value}, true);"; // player는 YouTube Iframe API에서 생성한 플레이어 객체입니다.
-
-            // JavaScript 코드 실행
-            music_player.ExecuteScriptAsync(script);
+            Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
+            string url = $"https://music.youtube.com/watch?v={video_id}?autoplay=1?start={Music_ProgressBar.Value}";
+            music_player.Load(url);
 
         }
 
