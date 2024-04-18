@@ -56,7 +56,7 @@ namespace YTMusicWidget
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
             settings.UserAgent = ConfigurationManager.AppSettings["cef_useragent"] + Cef.CefSharpVersion;
- 
+
             Cef.Initialize(settings, true, browserProcessHandler: null);
 
         }
@@ -314,16 +314,43 @@ namespace YTMusicWidget
         }
 
 
+        internal void LoadYouTubeAPIScript()
+        {
+            // YouTube iframe API 스크립트를 로드하는 JavaScript 코드
+            string script = @"
+        var tag = document.createElement('script');
+        tag.src = 'https://www.youtube.com/iframe_api';
+        var firstScriptTag = document.getElementsByTagName('script')[0];
+        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
+    ";
+
+            // JavaScript 코드 실행
+            music_player.ExecuteScriptAsync(script);
+        }
+
+        private void SeekTo(int seconds)
+        {
+            // JavaScript를 사용하여 YouTube 비디오를 특정 시간으로 이동시킵니다.
+            string script = $"player.seekTo({seconds}, true);"; // player는 YouTube Iframe API에서 생성한 플레이어 객체입니다.
+
+            // JavaScript 코드 실행
+            music_player.ExecuteScriptAsync(script);
+        }
 
 
         //수정
         private void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
         {
 
-            Playlist_Music_Items selectedMusic = (Playlist_Music_Items)playlist_music_list.SelectedItem;
-            string url = $"https://music.youtube.com/watch?v={video_id}?autoplay=1?start={Music_ProgressBar.Value}";
-            music_player.Load(url);
+            UpdateYouTubeMusicPlaybackPosition(Music_ProgressBar.Value);
 
+        }
+
+        private void UpdateYouTubeMusicPlaybackPosition(int position)
+        {
+            // JavaScript를 사용하여 YouTube Music의 재생 위치를 업데이트합니다.
+            string script = $"setPlaybackPosition({position});"; // YouTube Music의 재생 위치를 설정하는 JavaScript 함수를 호출합니다.
+            music_player.ExecuteScriptAsync(script);
         }
 
 

@@ -24,4 +24,5 @@ function bringVideoTime() {
 //수정
 function videoProgressChanged(value) {
     dotnetHelper.invokeMethodAsync('OnVideoProgressChanged', value);
+
 }
