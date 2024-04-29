@@ -38,8 +38,9 @@ namespace YTMusicWidget
 
             playlistListBox.DrawMode = DrawMode.OwnerDrawVariable;
 
-
             playlist_music_list.DrawMode = DrawMode.OwnerDrawVariable;
+
+            music_player.FrameLoadEnd += Music_Control_JS;
 
             Authorize = new Authorize(this);
             playlist = new playlist(this);
@@ -61,6 +62,23 @@ namespace YTMusicWidget
 
         }
 
+
+        private void Music_Control_JS(object sender, FrameLoadEndEventArgs e)
+        {
+            if (e.Frame.IsMain)
+            {
+                string url = e.Frame.Url;
+
+                if (url.Contains("?autoplay=1"))
+                {
+                    music_player.ExecuteScriptAsync(@"
+                    var tag = document.createElement('script');
+                    tag.src = 'https://www.youtube.com/iframe_api';
+                ");
+                    music_player.ShowDevTools();
+                }
+            }
+        }
 
         private void Login_Button_Click(object sender, EventArgs e)
         {
@@ -264,11 +282,6 @@ namespace YTMusicWidget
             Music_Controller.Visible = true;
         }
 
-        private void guna2VTrackBar1_Scroll(object sender, ScrollEventArgs e)
-        {
-           //need to change
-        }
-
         private async void Music_Play_Pause_Button_Click(object sender, EventArgs e)
         {
             try
@@ -314,44 +327,15 @@ namespace YTMusicWidget
         }
 
 
-        internal void LoadYouTubeAPIScript()
-        {
-            // YouTube iframe API 스크립트를 로드하는 JavaScript 코드
-            string script = @"
-        var tag = document.createElement('script');
-        tag.src = 'https://www.youtube.com/iframe_api';
-        var firstScriptTag = document.getElementsByTagName('script')[0];
-        firstScriptTag.parentNode.insertBefore(tag, firstScriptTag);
-    ";
-
-            // JavaScript 코드 실행
-            music_player.ExecuteScriptAsync(script);
-        }
-
-        private void SeekTo(int seconds)
-        {
-            // JavaScript를 사용하여 YouTube 비디오를 특정 시간으로 이동시킵니다.
-            string script = $"player.seekTo({seconds}, true);"; // player는 YouTube Iframe API에서 생성한 플레이어 객체입니다.
-
-            // JavaScript 코드 실행
-            music_player.ExecuteScriptAsync(script);
-        }
 
 
         //수정
-        private void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
+        private async void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
         {
-
-            UpdateYouTubeMusicPlaybackPosition(Music_ProgressBar.Value);
-
+            int sliderValue = Music_ProgressBar.Value;
+            await music_player.EvaluateScriptAsync($"player.seekTo({sliderValue}, true);");
         }
 
-        private void UpdateYouTubeMusicPlaybackPosition(int position)
-        {
-            // JavaScript를 사용하여 YouTube Music의 재생 위치를 업데이트합니다.
-            string script = $"setPlaybackPosition({position});"; // YouTube Music의 재생 위치를 설정하는 JavaScript 함수를 호출합니다.
-            music_player.ExecuteScriptAsync(script);
-        }
 
 
         private void OnVideoProgressChanged(string value)
