@@ -63,7 +63,7 @@ namespace YTMusicWidget
         }
 
 
-        private void Music_Control_JS(object sender, FrameLoadEndEventArgs e)
+        private async void Music_Control_JS(object sender, FrameLoadEndEventArgs e)
         {
             if (e.Frame.IsMain)
             {
@@ -71,9 +71,17 @@ namespace YTMusicWidget
 
                 if (url.Contains("?autoplay=1"))
                 {
-                    music_player.ExecuteScriptAsync(@"
-                    var tag = document.createElement('script');
-                    tag.src = 'https://www.youtube.com/iframe_api';
+                    await music_player.EvaluateScriptAsync(@"
+                    function playPauseVideo() {
+                        var iframe = document.querySelector('iframe');
+                        var player = new YT.Player(iframe);
+                        
+                        if (player.getPlayerState() === YT.PlayerState.PLAYING) {
+                            player.pauseVideo();
+                        } else {
+                            player.playVideo();
+                        }
+                    }
                 ");
                     music_player.ShowDevTools();
                 }
@@ -284,14 +292,17 @@ namespace YTMusicWidget
 
         private async void Music_Play_Pause_Button_Click(object sender, EventArgs e)
         {
-            try
+            var script = "player.getPlayerState() == YT.PlayerState.PLAYING;";
+            var result = await music_player.EvaluateScriptAsync(script);
+
+            // 결과 확인
+            if ((bool)result.Result)
             {
-                JavascriptResponse result = await music_player.EvaluateScriptAsync(scriptContent);
-                var response = await music_player.EvaluateScriptAsync("toggleVideoPlayback();");
+                music_player.ExecuteScriptAsync("player.pauseVideo();");
             }
-            catch (Exception ex)
+            else
             {
-                MessageBox.Show($"Error toggling video playback: {ex.Message}");
+                music_player.ExecuteScriptAsync("player.playVideo();");
             }
         }
 
@@ -319,11 +330,6 @@ namespace YTMusicWidget
             {
                 MessageBox.Show($"Error toggling video playback: {ex.Message}");
             }
-        }
-
-        internal void playing_video_id(string id)
-        {
-            video_id = id;
         }
 
 

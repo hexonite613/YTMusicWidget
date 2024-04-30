@@ -184,12 +184,56 @@ namespace YTMusicWidget.src
         }
 
 
+        private string GetHTMLContent(string videoId, Size videoSize)
+        {
+            var sb = new StringBuilder(@"
+        <html>
+        <head>
+            <!-- Include the YouTube iframe API script using HTTPS -->
+            <script src='https://www.youtube.com/iframe_api'></script>
+            <script>
+            var player;
+            function onYouTubeIframeAPIReady() {
+                player = new YT.Player('playerframe', {
+                events: {
+                    'onReady': onPlayerReady
+                },
+                videoId: '[VIDEO-ID]',
+                height: '[VIDEO-HEIGHT]',
+                width: '[VIDEO-WIDTH]',
+                playerVars : {
+                    'enablejsapi' : 1
+                }});
+            }
+
+            function PauseVideo() { player.pauseVideo(); }
+            function ResumeVideo() { player.playVideo(); }
+
+            function onPlayerReady(event) {
+                event.target.playVideo();
+            }
+            </script>
+        </head>
+        <body>
+            <!-- Element replaced with an IFrame when the YouType Player is initialized -->
+            <div id='playerframe'></div>
+        </body>
+        </html>
+    ");
+
+            sb = sb.Replace("[VIDEO-ID]", videoId)
+                   .Replace("[VIDEO-HEIGHT]", videoSize.Height.ToString())
+                   .Replace("[VIDEO-WIDTH]", videoSize.Width.ToString());
+
+            return sb.ToString();
+        }
+
         private void PlayMusic(string videoId)
         {
             Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
-            form1.playing_video_id(videoId);
             form1.music_player.Load(url);
+            form1.music_player.LoadHtml(GetHTMLContent(videoId, new Size(30, 30)));
             form1.UpdateVideoProgress();
         }
 
