@@ -8,6 +8,7 @@ using System.Drawing;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using static YTMusicWidget.Form1;
 
@@ -132,7 +133,7 @@ namespace YTMusicWidget.src
 
         private void Playlist_Music_MeasureItem(object sender, MeasureItemEventArgs e)
         {
-            var listBox = (ListBox)sender;
+            var listBox = (System.Windows.Forms.ListBox)sender;
             var musicItem = (Playlist_Music_Items)listBox.Items[e.Index];
             e.ItemHeight = musicItem.Image.Height;
         }
@@ -144,7 +145,7 @@ namespace YTMusicWidget.src
             if (e.Index < 0)
                 return;
 
-            var listBox = (ListBox)sender;
+            var listBox = (System.Windows.Forms.ListBox)sender;
             var musicItem = (Playlist_Music_Items)listBox.Items[e.Index];
 
             if (musicItem == null)
@@ -173,13 +174,14 @@ namespace YTMusicWidget.src
             {
                 // 선택한 음악 항목 가져오기
                 Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
-                Image musicImage = selectedMusic.Image;
+                System.Drawing.Image musicImage = selectedMusic.Image;
                 form1.Music_Image.Image = musicImage;
                 form1.Music_Image.SizeMode =PictureBoxSizeMode.StretchImage;
                 // 음악 재생
                 PlayMusic(selectedMusic.VideoId);
                 form1.Music_player_visible.Visible= true;
                 form1.Music_Controller.Visible= true;
+                form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusic.VideoId);
             }
         }
 
@@ -233,10 +235,58 @@ namespace YTMusicWidget.src
             Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
+            form1.getVideoID(videoId);
             form1.music_player.LoadHtml(GetHTMLContent(videoId, new Size(30, 30)));
             form1.UpdateVideoProgress();
         }
 
+        internal double getVideoLength(string videoid)
+        {
+            //hide
+            string apiKey = "AIzaSyCtIn4e8mi1GL-cIgbCazVzQ36DB5Oqg1A";
+
+            string videoId = videoid;
+
+            var youtubeService = new YouTubeService(new BaseClientService.Initializer()
+            {
+                ApiKey = apiKey,
+                ApplicationName = "YouTube Video Length"
+            });
+
+            var videoRequest = youtubeService.Videos.List("contentDetails");
+            videoRequest.Id = videoId;
+
+            var videoResponse = videoRequest.Execute();
+            var video = videoResponse.Items[0];
+            var duration = video.ContentDetails.Duration;
+            int tot_sec = ConvertISO8601DurationToSeconds(duration);
+            return tot_sec;
+        }
+
+
+        //시간 parse
+        static int ConvertISO8601DurationToSeconds(string durationString)
+        {
+            durationString = durationString.ToUpper();
+            int totalSeconds = 0;
+
+            int indexOfM = durationString.IndexOf('M');
+            int indexOfS = durationString.IndexOf('S');
+
+            if (indexOfM != -1)
+            {
+                int minutes = int.Parse(durationString.Substring(2, indexOfM - 2)); // "PT" 제외하고 분 추출
+                totalSeconds += minutes * 60; // 분을 초로 변환하여 더함
+            }
+
+            if (indexOfS != -1)
+            {
+                int seconds = int.Parse(durationString.Substring(indexOfM + 1, indexOfS - indexOfM - 1)); // 분과 초 사이의 숫자 추출
+                totalSeconds += seconds; // 초를 더함
+            }
+
+            return totalSeconds;
+        }
 
         //다음 페이지(음악)
         private async void Next_page_mus_Click(object sender, EventArgs e)

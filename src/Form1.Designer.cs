@@ -36,6 +36,7 @@
             this.playlist_music_list = new System.Windows.Forms.ListBox();
             this.Music_player_visible = new Guna.UI2.WinForms.Guna2Button();
             this.Music_Controller = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.Music_Volume_Bar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.Music_player_hide = new Guna.UI2.WinForms.Guna2Button();
             this.Music_Before_Button = new Guna.UI2.WinForms.Guna2GradientButton();
             this.Music_Next_Button = new Guna.UI2.WinForms.Guna2GradientButton();
@@ -57,7 +58,6 @@
             this.pos_change = new System.Windows.Forms.Label();
             this.Title = new System.Windows.Forms.Label();
             this.guna2VScrollBar1 = new Guna.UI2.WinForms.Guna2VScrollBar();
-            this.Music_Volume_Bar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.Main.SuspendLayout();
             this.main_content.SuspendLayout();
             this.Music_Controller.SuspendLayout();
@@ -182,6 +182,14 @@
             this.Music_Controller.TabIndex = 15;
             this.Music_Controller.Text = "guna2GroupBox1";
             this.Music_Controller.Visible = false;
+            // 
+            // Music_Volume_Bar
+            // 
+            this.Music_Volume_Bar.Location = new System.Drawing.Point(-4, 172);
+            this.Music_Volume_Bar.Name = "Music_Volume_Bar";
+            this.Music_Volume_Bar.Size = new System.Drawing.Size(128, 28);
+            this.Music_Volume_Bar.TabIndex = 20;
+            this.Music_Volume_Bar.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
             // 
             // Music_player_hide
             // 
@@ -466,14 +474,6 @@
             this.guna2VScrollBar1.ThumbSize = 5F;
             this.guna2VScrollBar1.ThumbStyle = Guna.UI2.WinForms.Enums.ThumbStyle.Inset;
             // 
-            // Music_Volume_Bar
-            // 
-            this.Music_Volume_Bar.Location = new System.Drawing.Point(-4, 172);
-            this.Music_Volume_Bar.Name = "Music_Volume_Bar";
-            this.Music_Volume_Bar.Size = new System.Drawing.Size(128, 28);
-            this.Music_Volume_Bar.TabIndex = 20;
-            this.Music_Volume_Bar.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
-            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -516,7 +516,7 @@
         public System.Windows.Forms.Label Mus_page_label;
         internal CefSharp.WinForms.ChromiumWebBrowser music_player;
         public Guna.UI2.WinForms.Guna2GroupBox Music_Controller;
-        private Guna.UI2.WinForms.Guna2TrackBar Music_ProgressBar;
+        internal Guna.UI2.WinForms.Guna2TrackBar Music_ProgressBar;
         private Guna.UI2.WinForms.Guna2GradientButton Music_Before_Button;
         private Guna.UI2.WinForms.Guna2GradientButton Music_Next_Button;
         private Guna.UI2.WinForms.Guna2CircleButton Music_Play_Pause_Button;
