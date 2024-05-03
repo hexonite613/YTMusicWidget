@@ -14,6 +14,7 @@ using YTMusicWidget.src;
 using System.Web.UI;
 using Google.Apis.YouTube.v3.Data;
 using System.Threading;
+using System.ComponentModel;
 
 
 namespace YTMusicWidget
@@ -342,38 +343,22 @@ namespace YTMusicWidget
             videoid = video_id;
         }
 
-        //수정
+
         private async void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
         {
             int sliderValue = Music_ProgressBar.Value;
             await music_player.EvaluateScriptAsync($"player.seekTo({sliderValue}, true);");
         }
 
-        private void UpdateSlider(string value)
-        {
-            // JavaScript로부터 전달된 값을 정수로 변환하여 슬라이더를 업데이트합니다.
-            int currentPosition = Convert.ToInt32(value);
-            // 슬라이더의 현재 위치를 설정합니다.
-            Music_ProgressBar.Value = currentPosition;
-        }
 
 
         public async void UpdateVideoProgress()
         {
-            // 비디오 플레이어에서 현재 위치를 가져오는 루프
             while (true)
             {
-                // JavaScript를 실행하여 영상의 현재 위치를 가져옵니다.
                 var result = await music_player.GetMainFrame().EvaluateScriptAsync("player.getCurrentTime();");
-                if (result.Success && result.Result != null)
-                {
-                    string value = result.Result.ToString();
-                    // JavaScript로부터 전달된 값을 처리하여 슬라이더를 업데이트합니다.
-                    UpdateSlider(value);
-                }
-
-                // 적절한 시간 간격을 두고 반복적으로 호출됩니다.
-                await Task.Delay(1000); // 예시: 1초마다 업데이트
+                Music_ProgressBar.Value=Convert.ToInt32(result.Result);
+                await Task.Delay(1000); 
             }
         }
 
