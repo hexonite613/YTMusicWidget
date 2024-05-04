@@ -130,7 +130,6 @@ namespace YTMusicWidget
                     string userName = channel.Snippet.Title;
                     Invoke((MethodInvoker)delegate
                     {
-
                         Login_Button.Visible = false;
                         Login_com_label.Text = userName + "님, 환영합니다";
                         Login_com_label.Visible = true;
@@ -321,6 +320,7 @@ namespace YTMusicWidget
             }
         }
 
+
         private async void Music_Before_Button_Click(object sender, EventArgs e)
         {
             try
@@ -334,16 +334,8 @@ namespace YTMusicWidget
             }
         }
 
-        String videoid;
 
-        public object Music_Progressbar { get; internal set; }
-
-        internal void getVideoID(string video_id)
-        {
-            videoid = video_id;
-        }
-
-
+        //send scroll bar value to iframe player
         private async void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
         {
             int sliderValue = Music_ProgressBar.Value;
@@ -351,7 +343,7 @@ namespace YTMusicWidget
         }
 
 
-
+        //update progress bar for each second
         public async void UpdateVideoProgress()
         {
             while (true)

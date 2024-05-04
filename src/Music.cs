@@ -4,6 +4,7 @@ using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
 using System;
 using System.Collections.Generic;
+using System.Configuration;
 using System.Drawing;
 using System.Linq;
 using System.Text;
@@ -235,15 +236,13 @@ namespace YTMusicWidget.src
             Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
-            form1.getVideoID(videoId);
             form1.music_player.LoadHtml(GetHTMLContent(videoId, new Size(30, 30)));
             form1.UpdateVideoProgress();
         }
 
         internal double getVideoLength(string videoid)
-        {
-            //hide
-            string apiKey = "AIzaSyCtIn4e8mi1GL-cIgbCazVzQ36DB5Oqg1A";
+        { 
+            string apiKey = ConfigurationManager.AppSettings["api_key"];
 
             string videoId = videoid;
 
