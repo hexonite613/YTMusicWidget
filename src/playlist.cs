@@ -9,17 +9,22 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using static YTMusicWidget.Form1;
 using System.Windows.Forms;
+using YTMusicWidget.src;
 
 namespace YTMusicWidget
 {
     internal class playlist
     {
         private readonly Form1 form1;
+        private readonly Internal_player internal_player;
+        private readonly Music music;
 
         //DI를 위한 클래스 생성
         public playlist(Form1 form1)
         {
             this.form1 = form1;
+            internal_player = new Internal_player(form1);
+            music=new Music(form1);
             form1.playlistListBox.MeasureItem += (sender, e) => Playlist_MeasureItem(sender, e);
             form1.playlistListBox.DrawItem += (sender, e) => Playlist_DrawItem(sender, e);
         }
@@ -39,12 +44,15 @@ namespace YTMusicWidget
 
                 var request = service.Playlists.List("snippet");
                 request.Mine = true;
-                request.MaxResults = 50;
 
                 var response = await request.ExecuteAsync();
 
+                //internal_player 클래스에 선택된 플레이리스트 전송
+                music.GetPlaylist(response);
+
                 // 플레이리스트를 ListBox에 추가
                 var playlistsToAdd = new List<PlaylistItems>();
+
                 foreach (var playlist in response.Items)
                 {
                     // 이미 ListBox에 추가된 플레이리스트인지 확인

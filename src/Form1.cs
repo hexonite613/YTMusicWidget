@@ -28,10 +28,8 @@ namespace YTMusicWidget
         private readonly playlist playlist;
         //music 객체 생성
         private readonly Music music;
-        string video_id;
 
-        static string js_path="../../src/browse_control.js";
-        string scriptContent = File.ReadAllText(js_path);
+
 
         public Form1()
         {
@@ -281,78 +279,12 @@ namespace YTMusicWidget
             }
         }
 
-        private void Music_player_hide_Click(object sender, EventArgs e)
-        {
-            Music_Controller.Visible= false;
-        }
 
         private void Music_player_visible_Click(object sender, EventArgs e)
         {
             Music_Controller.Visible = true;
         }
 
-        private async void Music_Play_Pause_Button_Click(object sender, EventArgs e)
-        {
-            var script = "player.getPlayerState() == YT.PlayerState.PLAYING;";
-            var result = await music_player.EvaluateScriptAsync(script);
-
-            // 결과 확인
-            if ((bool)result.Result)
-            {
-                music_player.ExecuteScriptAsync("player.pauseVideo();");
-            }
-            else
-            {
-                music_player.ExecuteScriptAsync("player.playVideo();");
-            }
-        }
-
-        private async void Music_Next_Button_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                JavascriptResponse result = await music_player.EvaluateScriptAsync(scriptContent);
-                var response = await music_player.EvaluateScriptAsync("Nextmusic();");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error toggling video playback: {ex.Message}");
-            }
-        }
-
-
-        private async void Music_Before_Button_Click(object sender, EventArgs e)
-        {
-            try
-            {
-                JavascriptResponse result = await music_player.EvaluateScriptAsync(scriptContent);
-                var response = await music_player.EvaluateScriptAsync("Previousmusic();");
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"Error toggling video playback: {ex.Message}");
-            }
-        }
-
-
-        //send scroll bar value to iframe player
-        private async void Music_ProgressBar_Scroll(object sender, ScrollEventArgs e)
-        {
-            int sliderValue = Music_ProgressBar.Value;
-            await music_player.EvaluateScriptAsync($"player.seekTo({sliderValue}, true);");
-        }
-
-
-        //update progress bar for each second
-        public async void UpdateVideoProgress()
-        {
-            while (true)
-            {
-                var result = await music_player.GetMainFrame().EvaluateScriptAsync("player.getCurrentTime();");
-                Music_ProgressBar.Value=Convert.ToInt32(result.Result);
-                await Task.Delay(1000); 
-            }
-        }
 
     }
 }

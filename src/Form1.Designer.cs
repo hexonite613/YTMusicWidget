@@ -31,10 +31,6 @@
             this.components = new System.ComponentModel.Container();
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
-            this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
-            this.guna2VScrollBar2 = new Guna.UI2.WinForms.Guna2VScrollBar();
-            this.playlist_music_list = new System.Windows.Forms.ListBox();
-            this.Music_player_visible = new Guna.UI2.WinForms.Guna2Button();
             this.Music_Controller = new Guna.UI2.WinForms.Guna2GroupBox();
             this.Music_Volume_Bar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.Music_player_hide = new Guna.UI2.WinForms.Guna2Button();
@@ -43,6 +39,10 @@
             this.Music_Play_Pause_Button = new Guna.UI2.WinForms.Guna2CircleButton();
             this.Music_ProgressBar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.Music_Image = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.guna2VScrollBar2 = new Guna.UI2.WinForms.Guna2VScrollBar();
+            this.playlist_music_list = new System.Windows.Forms.ListBox();
+            this.Music_player_visible = new Guna.UI2.WinForms.Guna2Button();
             this.music_player = new CefSharp.WinForms.ChromiumWebBrowser();
             this.Mus_page_label = new System.Windows.Forms.Label();
             this.Next_page_mus = new Guna.UI2.WinForms.Guna2Button();
@@ -60,9 +60,9 @@
             this.guna2VScrollBar1 = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.Inplay_playlist = new System.Windows.Forms.ListView();
             this.Main.SuspendLayout();
-            this.main_content.SuspendLayout();
             this.Music_Controller.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Music_Image)).BeginInit();
+            this.main_content.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -80,7 +80,6 @@
             // 
             this.Main.BackColor = System.Drawing.Color.Black;
             this.Main.BorderColor = System.Drawing.Color.Black;
-            this.Main.Controls.Add(this.Music_Controller);
             this.Main.Controls.Add(this.main_content);
             this.Main.Controls.Add(this.Login_Button);
             this.Main.Controls.Add(this.Logout_label);
@@ -98,9 +97,114 @@
             this.Main.Size = new System.Drawing.Size(586, 450);
             this.Main.TabIndex = 6;
             // 
+            // Music_Controller
+            // 
+            this.Music_Controller.Controls.Add(this.Music_Volume_Bar);
+            this.Music_Controller.Controls.Add(this.Music_player_hide);
+            this.Music_Controller.Controls.Add(this.Music_Before_Button);
+            this.Music_Controller.Controls.Add(this.Music_Next_Button);
+            this.Music_Controller.Controls.Add(this.Music_Play_Pause_Button);
+            this.Music_Controller.Controls.Add(this.Music_ProgressBar);
+            this.Music_Controller.Controls.Add(this.Music_Image);
+            this.Music_Controller.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.Music_Controller.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
+            this.Music_Controller.Location = new System.Drawing.Point(3, 0);
+            this.Music_Controller.Name = "Music_Controller";
+            this.Music_Controller.Size = new System.Drawing.Size(519, 447);
+            this.Music_Controller.TabIndex = 15;
+            this.Music_Controller.Text = "guna2GroupBox1";
+            this.Music_Controller.Visible = false;
+            // 
+            // Music_Volume_Bar
+            // 
+            this.Music_Volume_Bar.Location = new System.Drawing.Point(-4, 172);
+            this.Music_Volume_Bar.Name = "Music_Volume_Bar";
+            this.Music_Volume_Bar.Size = new System.Drawing.Size(128, 28);
+            this.Music_Volume_Bar.TabIndex = 20;
+            this.Music_Volume_Bar.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
+            // 
+            // Music_player_hide
+            // 
+            this.Music_player_hide.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Music_player_hide.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Music_player_hide.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Music_player_hide.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Music_player_hide.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.Music_player_hide.ForeColor = System.Drawing.Color.White;
+            this.Music_player_hide.Location = new System.Drawing.Point(0, 0);
+            this.Music_player_hide.Name = "Music_player_hide";
+            this.Music_player_hide.Size = new System.Drawing.Size(71, 35);
+            this.Music_player_hide.TabIndex = 19;
+            this.Music_player_hide.Text = "숨기기";
+            // 
+            // Music_Before_Button
+            // 
+            this.Music_Before_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Music_Before_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Music_Before_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Music_Before_Button.DisabledState.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Music_Before_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Music_Before_Button.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(77)))), ((int)(((byte)(165)))));
+            this.Music_Before_Button.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.Music_Before_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.Music_Before_Button.ForeColor = System.Drawing.Color.White;
+            this.Music_Before_Button.Location = new System.Drawing.Point(77, 266);
+            this.Music_Before_Button.Name = "Music_Before_Button";
+            this.Music_Before_Button.Size = new System.Drawing.Size(80, 34);
+            this.Music_Before_Button.TabIndex = 17;
+            this.Music_Before_Button.Text = "guna2GradientButton2";
+            // 
+            // Music_Next_Button
+            // 
+            this.Music_Next_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Music_Next_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Music_Next_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Music_Next_Button.DisabledState.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Music_Next_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Music_Next_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.Music_Next_Button.ForeColor = System.Drawing.Color.White;
+            this.Music_Next_Button.Location = new System.Drawing.Point(268, 266);
+            this.Music_Next_Button.Name = "Music_Next_Button";
+            this.Music_Next_Button.Size = new System.Drawing.Size(80, 34);
+            this.Music_Next_Button.TabIndex = 16;
+            this.Music_Next_Button.Text = "guna2GradientButton1";
+            // 
+            // Music_Play_Pause_Button
+            // 
+            this.Music_Play_Pause_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Music_Play_Pause_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Music_Play_Pause_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Music_Play_Pause_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Music_Play_Pause_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.Music_Play_Pause_Button.ForeColor = System.Drawing.Color.White;
+            this.Music_Play_Pause_Button.Location = new System.Drawing.Point(178, 255);
+            this.Music_Play_Pause_Button.Name = "Music_Play_Pause_Button";
+            this.Music_Play_Pause_Button.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
+            this.Music_Play_Pause_Button.Size = new System.Drawing.Size(56, 55);
+            this.Music_Play_Pause_Button.TabIndex = 15;
+            this.Music_Play_Pause_Button.Text = "guna2CircleButton1";
+            // 
+            // Music_ProgressBar
+            // 
+            this.Music_ProgressBar.Location = new System.Drawing.Point(61, 218);
+            this.Music_ProgressBar.Name = "Music_ProgressBar";
+            this.Music_ProgressBar.Size = new System.Drawing.Size(300, 31);
+            this.Music_ProgressBar.TabIndex = 14;
+            this.Music_ProgressBar.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
+            // 
+            // Music_Image
+            // 
+            this.Music_Image.ImageRotate = 0F;
+            this.Music_Image.Location = new System.Drawing.Point(118, 12);
+            this.Music_Image.Name = "Music_Image";
+            this.Music_Image.Size = new System.Drawing.Size(200, 200);
+            this.Music_Image.TabIndex = 18;
+            this.Music_Image.TabStop = false;
+            // 
             // main_content
             // 
             this.main_content.BorderColor = System.Drawing.Color.Black;
+            this.main_content.Controls.Add(this.Music_Controller);
             this.main_content.Controls.Add(this.guna2VScrollBar2);
             this.main_content.Controls.Add(this.Music_player_visible);
             this.main_content.Controls.Add(this.music_player);
@@ -165,115 +269,6 @@
             this.Music_player_visible.Text = "재생 중인 음악";
             this.Music_player_visible.Visible = false;
             this.Music_player_visible.Click += new System.EventHandler(this.Music_player_visible_Click);
-            // 
-            // Music_Controller
-            // 
-            this.Music_Controller.Controls.Add(this.Music_Volume_Bar);
-            this.Music_Controller.Controls.Add(this.Music_player_hide);
-            this.Music_Controller.Controls.Add(this.Music_Before_Button);
-            this.Music_Controller.Controls.Add(this.Music_Next_Button);
-            this.Music_Controller.Controls.Add(this.Music_Play_Pause_Button);
-            this.Music_Controller.Controls.Add(this.Music_ProgressBar);
-            this.Music_Controller.Controls.Add(this.Music_Image);
-            this.Music_Controller.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.Music_Controller.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
-            this.Music_Controller.Location = new System.Drawing.Point(3, 0);
-            this.Music_Controller.Name = "Music_Controller";
-            this.Music_Controller.Size = new System.Drawing.Size(883, 447);
-            this.Music_Controller.TabIndex = 15;
-            this.Music_Controller.Text = "guna2GroupBox1";
-            this.Music_Controller.Visible = false;
-            // 
-            // Music_Volume_Bar
-            // 
-            this.Music_Volume_Bar.Location = new System.Drawing.Point(-4, 172);
-            this.Music_Volume_Bar.Name = "Music_Volume_Bar";
-            this.Music_Volume_Bar.Size = new System.Drawing.Size(128, 28);
-            this.Music_Volume_Bar.TabIndex = 20;
-            this.Music_Volume_Bar.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
-            // 
-            // Music_player_hide
-            // 
-            this.Music_player_hide.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.Music_player_hide.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.Music_player_hide.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.Music_player_hide.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.Music_player_hide.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.Music_player_hide.ForeColor = System.Drawing.Color.White;
-            this.Music_player_hide.Location = new System.Drawing.Point(0, 0);
-            this.Music_player_hide.Name = "Music_player_hide";
-            this.Music_player_hide.Size = new System.Drawing.Size(71, 35);
-            this.Music_player_hide.TabIndex = 19;
-            this.Music_player_hide.Text = "숨기기";
-            this.Music_player_hide.Click += new System.EventHandler(this.Music_player_hide_Click);
-            // 
-            // Music_Before_Button
-            // 
-            this.Music_Before_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.Music_Before_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.Music_Before_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.Music_Before_Button.DisabledState.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.Music_Before_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.Music_Before_Button.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(77)))), ((int)(((byte)(165)))));
-            this.Music_Before_Button.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.Music_Before_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.Music_Before_Button.ForeColor = System.Drawing.Color.White;
-            this.Music_Before_Button.Location = new System.Drawing.Point(77, 266);
-            this.Music_Before_Button.Name = "Music_Before_Button";
-            this.Music_Before_Button.Size = new System.Drawing.Size(80, 34);
-            this.Music_Before_Button.TabIndex = 17;
-            this.Music_Before_Button.Text = "guna2GradientButton2";
-            this.Music_Before_Button.Click += new System.EventHandler(this.Music_Before_Button_Click);
-            // 
-            // Music_Next_Button
-            // 
-            this.Music_Next_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.Music_Next_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.Music_Next_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.Music_Next_Button.DisabledState.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.Music_Next_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.Music_Next_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.Music_Next_Button.ForeColor = System.Drawing.Color.White;
-            this.Music_Next_Button.Location = new System.Drawing.Point(268, 266);
-            this.Music_Next_Button.Name = "Music_Next_Button";
-            this.Music_Next_Button.Size = new System.Drawing.Size(80, 34);
-            this.Music_Next_Button.TabIndex = 16;
-            this.Music_Next_Button.Text = "guna2GradientButton1";
-            this.Music_Next_Button.Click += new System.EventHandler(this.Music_Next_Button_Click);
-            // 
-            // Music_Play_Pause_Button
-            // 
-            this.Music_Play_Pause_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.Music_Play_Pause_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.Music_Play_Pause_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.Music_Play_Pause_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.Music_Play_Pause_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.Music_Play_Pause_Button.ForeColor = System.Drawing.Color.White;
-            this.Music_Play_Pause_Button.Location = new System.Drawing.Point(178, 255);
-            this.Music_Play_Pause_Button.Name = "Music_Play_Pause_Button";
-            this.Music_Play_Pause_Button.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
-            this.Music_Play_Pause_Button.Size = new System.Drawing.Size(56, 55);
-            this.Music_Play_Pause_Button.TabIndex = 15;
-            this.Music_Play_Pause_Button.Text = "guna2CircleButton1";
-            this.Music_Play_Pause_Button.Click += new System.EventHandler(this.Music_Play_Pause_Button_Click);
-            // 
-            // Music_ProgressBar
-            // 
-            this.Music_ProgressBar.Location = new System.Drawing.Point(61, 218);
-            this.Music_ProgressBar.Name = "Music_ProgressBar";
-            this.Music_ProgressBar.Size = new System.Drawing.Size(300, 31);
-            this.Music_ProgressBar.TabIndex = 14;
-            this.Music_ProgressBar.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
-            this.Music_ProgressBar.Scroll += new System.Windows.Forms.ScrollEventHandler(this.Music_ProgressBar_Scroll);
-            // 
-            // Music_Image
-            // 
-            this.Music_Image.ImageRotate = 0F;
-            this.Music_Image.Location = new System.Drawing.Point(118, 12);
-            this.Music_Image.Name = "Music_Image";
-            this.Music_Image.Size = new System.Drawing.Size(200, 200);
-            this.Music_Image.TabIndex = 18;
-            this.Music_Image.TabStop = false;
             // 
             // music_player
             // 
@@ -478,7 +473,7 @@
             // Inplay_playlist
             // 
             this.Inplay_playlist.HideSelection = false;
-            this.Inplay_playlist.Location = new System.Drawing.Point(583, 0);
+            this.Inplay_playlist.Location = new System.Drawing.Point(582, 0);
             this.Inplay_playlist.Name = "Inplay_playlist";
             this.Inplay_playlist.Size = new System.Drawing.Size(303, 450);
             this.Inplay_playlist.TabIndex = 7;
@@ -496,10 +491,10 @@
             this.Text = "Form1";
             this.Main.ResumeLayout(false);
             this.Main.PerformLayout();
-            this.main_content.ResumeLayout(false);
-            this.main_content.PerformLayout();
             this.Music_Controller.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Music_Image)).EndInit();
+            this.main_content.ResumeLayout(false);
+            this.main_content.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
 
@@ -528,14 +523,14 @@
         internal CefSharp.WinForms.ChromiumWebBrowser music_player;
         public Guna.UI2.WinForms.Guna2GroupBox Music_Controller;
         internal Guna.UI2.WinForms.Guna2TrackBar Music_ProgressBar;
-        private Guna.UI2.WinForms.Guna2GradientButton Music_Before_Button;
-        private Guna.UI2.WinForms.Guna2GradientButton Music_Next_Button;
-        private Guna.UI2.WinForms.Guna2CircleButton Music_Play_Pause_Button;
+        internal Guna.UI2.WinForms.Guna2GradientButton Music_Before_Button;
+        internal Guna.UI2.WinForms.Guna2GradientButton Music_Next_Button;
+        internal Guna.UI2.WinForms.Guna2CircleButton Music_Play_Pause_Button;
         internal Guna.UI2.WinForms.Guna2PictureBox Music_Image;
         public Guna.UI2.WinForms.Guna2Button Music_player_hide;
         public Guna.UI2.WinForms.Guna2Button Music_player_visible;
         private Guna.UI2.WinForms.Guna2TrackBar Music_Volume_Bar;
-        private System.Windows.Forms.ListView Inplay_playlist;
+        internal System.Windows.Forms.ListView Inplay_playlist;
     }
 }
 

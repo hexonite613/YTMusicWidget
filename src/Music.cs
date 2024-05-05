@@ -2,14 +2,13 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using System.Web.UI.WebControls;
 using System.Windows.Forms;
 using static YTMusicWidget.Form1;
 
@@ -19,10 +18,12 @@ namespace YTMusicWidget.src
     {
         private readonly Form1 form1;
         private readonly playlist playlist;
+        private readonly Internal_player internal_player;
 
         public Music(Form1 form1)
         {
             this.form1 = form1;
+            internal_player = new Internal_player(form1);
             playlist = new playlist(form1);
 
 
@@ -39,6 +40,43 @@ namespace YTMusicWidget.src
             form1.playlist_music_list.MeasureItem += (sender,e)=>Playlist_Music_MeasureItem(sender, e);
         }
 
+        //playlist 가져와서 전처리
+        public class MusicItem
+        {
+            public string VideoId { get; set; }
+            public string Title { get; set; }
+            // 필요한 다른 속성들 추가
+        }
+
+        private List<MusicItem> PreprocessPlaylist(PlaylistListResponse response)
+        {
+            List<MusicItem> processedPlaylist = new List<MusicItem>();
+
+            // PlaylistListResponse에서 필요한 데이터 추출 및 처리
+            foreach (var item in response.Items)
+            {
+                MusicItem musicItem = new MusicItem
+                {
+                    VideoId = item.VideoId,
+                    Title = item.Title,
+                    // 다른 필요한 데이터 추가
+                };
+
+                processedPlaylist.Add(musicItem);
+            }
+
+            return processedPlaylist;
+        }
+
+
+        internal void GetPlaylist(PlaylistListResponse response)
+        {
+            // PlaylistListResponse에서 필요한 데이터 추출하여 전처리
+            List<MusicItem> processedPlaylist = PreprocessPlaylist(response);
+
+            // internal_player에 전처리된 플레이리스트 전달
+            internal_player.internal_playlist(processedPlaylist);
+        }
 
 
 
@@ -180,6 +218,7 @@ namespace YTMusicWidget.src
                 form1.Music_Image.SizeMode =PictureBoxSizeMode.StretchImage;
                 // 음악 재생
                 PlayMusic(selectedMusic.VideoId);
+                internal_player.internal_playlist((/*여기에 전처리된 playlist*/), selectedMusic.VideoId);
                 form1.Music_player_visible.Visible= true;
                 form1.Music_Controller.Visible= true;
                 form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusic.VideoId);
@@ -233,11 +272,10 @@ namespace YTMusicWidget.src
 
         private void PlayMusic(string videoId)
         {
-            Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
             form1.music_player.LoadHtml(GetHTMLContent(videoId, new Size(30, 30)));
-            form1.UpdateVideoProgress();
+            internal_player.UpdateVideoProgress();
         }
 
         internal double getVideoLength(string videoid)
@@ -304,7 +342,6 @@ namespace YTMusicWidget.src
             if (form1.currentPage > 1)
             {
                 form1.currentPage--;
-                var selectedPlaylist = (PlaylistItems)form1.playlistListBox.SelectedItem;
                 await GetPlaylist_Music(form1.selectedPlaylist.Id, form1.currentPage);
             }
         }

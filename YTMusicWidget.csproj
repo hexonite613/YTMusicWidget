@@ -135,6 +135,7 @@
     <Compile Include="src\Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
+    <Compile Include="src\Internal_player.cs" />
     <Compile Include="src\Music.cs" />
     <Compile Include="src\playlist.cs" />
     <Compile Include="src\Program.cs" />
