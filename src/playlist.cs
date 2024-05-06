@@ -47,9 +47,6 @@ namespace YTMusicWidget
 
                 var response = await request.ExecuteAsync();
 
-                //internal_player 클래스에 선택된 플레이리스트 전송
-                music.GetPlaylist(response);
-
                 // 플레이리스트를 ListBox에 추가
                 var playlistsToAdd = new List<PlaylistItems>();
 
@@ -70,6 +67,9 @@ namespace YTMusicWidget
                         playlistsToAdd.Add(playlistItem);
                     }
                 }
+
+                //Music.cs에 전송
+                music.GetPlaylist(playlistsToAdd);
 
                 // UI 업데이트를 UI 스레드에서 수행
                 form1.Invoke((MethodInvoker)delegate

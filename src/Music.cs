@@ -19,6 +19,7 @@ namespace YTMusicWidget.src
         private readonly Form1 form1;
         private readonly playlist playlist;
         private readonly Internal_player internal_player;
+        internal List<PlaylistItems> processedPlaylist;
 
         public Music(Form1 form1)
         {
@@ -40,42 +41,12 @@ namespace YTMusicWidget.src
             form1.playlist_music_list.MeasureItem += (sender,e)=>Playlist_Music_MeasureItem(sender, e);
         }
 
-        //playlist 가져와서 전처리
-        public class MusicItem
-        {
-            public string VideoId { get; set; }
-            public string Title { get; set; }
-            // 필요한 다른 속성들 추가
-        }
 
-        private List<MusicItem> PreprocessPlaylist(PlaylistListResponse response)
-        {
-            List<MusicItem> processedPlaylist = new List<MusicItem>();
-
-            // PlaylistListResponse에서 필요한 데이터 추출 및 처리
-            foreach (var item in response.Items)
-            {
-                MusicItem musicItem = new MusicItem
-                {
-                    VideoId = item.VideoId,
-                    Title = item.Title,
-                    // 다른 필요한 데이터 추가
-                };
-
-                processedPlaylist.Add(musicItem);
-            }
-
-            return processedPlaylist;
-        }
-
-
-        internal void GetPlaylist(PlaylistListResponse response)
+        internal void GetPlaylist(List<PlaylistItems> response)
         {
             // PlaylistListResponse에서 필요한 데이터 추출하여 전처리
-            List<MusicItem> processedPlaylist = PreprocessPlaylist(response);
+            processedPlaylist = response;
 
-            // internal_player에 전처리된 플레이리스트 전달
-            internal_player.internal_playlist(processedPlaylist);
         }
 
 
@@ -275,6 +246,7 @@ namespace YTMusicWidget.src
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
             form1.music_player.LoadHtml(GetHTMLContent(videoId, new Size(30, 30)));
+            internal_player.internal_playlist(processedPlaylist, videoId);
             internal_player.UpdateVideoProgress();
         }
 
