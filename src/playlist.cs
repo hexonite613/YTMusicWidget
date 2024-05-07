@@ -16,15 +16,13 @@ namespace YTMusicWidget
     internal class playlist
     {
         private readonly Form1 form1;
-        private readonly Internal_player internal_player;
-        private readonly Music music;
+
 
         //DI를 위한 클래스 생성
         public playlist(Form1 form1)
         {
             this.form1 = form1;
-            internal_player = new Internal_player(form1);
-            music=new Music(form1);
+
             form1.playlistListBox.MeasureItem += (sender, e) => Playlist_MeasureItem(sender, e);
             form1.playlistListBox.DrawItem += (sender, e) => Playlist_DrawItem(sender, e);
         }
@@ -67,9 +65,6 @@ namespace YTMusicWidget
                         playlistsToAdd.Add(playlistItem);
                     }
                 }
-
-                //Music.cs에 전송
-                music.GetPlaylist(playlistsToAdd);
 
                 // UI 업데이트를 UI 스레드에서 수행
                 form1.Invoke((MethodInvoker)delegate

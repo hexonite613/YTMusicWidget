@@ -19,7 +19,7 @@ namespace YTMusicWidget.src
         private readonly Form1 form1;
         private readonly playlist playlist;
         private readonly Internal_player internal_player;
-        internal List<PlaylistItems> processedPlaylist;
+   
 
         public Music(Form1 form1)
         {
@@ -42,14 +42,8 @@ namespace YTMusicWidget.src
         }
 
 
-        internal void GetPlaylist(List<PlaylistItems> response)
-        {
-            // PlaylistListResponse에서 필요한 데이터 추출하여 전처리
-            processedPlaylist = response;
 
-        }
-
-
+        private List<Playlist_Music_Items> musicitemstoadd = new List<Playlist_Music_Items>();
 
         internal async Task GetPlaylist_Music(string playlistId, int page)
         {
@@ -81,7 +75,7 @@ namespace YTMusicWidget.src
 
 
                 // 플레이리스트 음악들을 ListBox에 추가
-                var musicItemsToAdd = new List<Playlist_Music_Items>();
+                musicitemstoadd = new List<Playlist_Music_Items>();
                 foreach (var item in response.Items)
                 {
 
@@ -94,7 +88,7 @@ namespace YTMusicWidget.src
 
                     var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
 
-                    musicItemsToAdd.Add(musicItem);
+                    musicitemstoadd.Add(musicItem);
 
                 }
 
@@ -102,7 +96,7 @@ namespace YTMusicWidget.src
                 form1.Invoke((MethodInvoker)delegate
                 {
                     form1.playlist_music_list.Items.Clear();
-                    foreach (var musicItem in musicItemsToAdd)
+                    foreach (var musicItem in musicitemstoadd)
                     {
                         form1.playlist_music_list.Items.Add(musicItem);
                     }
@@ -189,7 +183,7 @@ namespace YTMusicWidget.src
                 form1.Music_Image.SizeMode =PictureBoxSizeMode.StretchImage;
                 // 음악 재생
                 PlayMusic(selectedMusic.VideoId);
-                internal_player.internal_playlist((/*여기에 전처리된 playlist*/), selectedMusic.VideoId);
+                internal_player.internal_playlist(musicitemstoadd, selectedMusic.VideoId);
                 form1.Music_player_visible.Visible= true;
                 form1.Music_Controller.Visible= true;
                 form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusic.VideoId);
@@ -246,7 +240,8 @@ namespace YTMusicWidget.src
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
             form1.music_player.LoadHtml(GetHTMLContent(videoId, new Size(30, 30)));
-            internal_player.internal_playlist(processedPlaylist, videoId);
+            form1.Inplay_playlist.Clear();
+            internal_player.internal_playlist(musicitemstoadd, videoId);
             internal_player.UpdateVideoProgress();
         }
 
@@ -290,7 +285,7 @@ namespace YTMusicWidget.src
 
             if (indexOfS != -1)
             {
-                int seconds = int.Parse(durationString.Substring(indexOfM + 1, indexOfS - indexOfM - 1)); // 분과 초 사이의 숫자 추출
+                int seconds = int.Parse(durationString.Substring(indexOfM + 1, indexOfS - indexOfM - 1));
                 totalSeconds += seconds; // 초를 더함
             }
 
