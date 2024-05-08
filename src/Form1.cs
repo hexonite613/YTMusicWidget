@@ -11,10 +11,6 @@ using CefSharp;
 using CefSharp.WinForms;
 using System.Configuration;
 using YTMusicWidget.src;
-using System.Web.UI;
-using Google.Apis.YouTube.v3.Data;
-using System.Threading;
-using System.ComponentModel;
 
 
 namespace YTMusicWidget
@@ -38,7 +34,6 @@ namespace YTMusicWidget
 
             playlistListBox.DrawMode = DrawMode.OwnerDrawVariable;
 
-            playlist_music_list.DrawMode = DrawMode.OwnerDrawVariable;
 
             music_player.FrameLoadEnd += Music_Control_JS;
 
@@ -284,7 +279,5 @@ namespace YTMusicWidget
         {
             Music_Controller.Visible = true;
         }
-
-
     }
 }

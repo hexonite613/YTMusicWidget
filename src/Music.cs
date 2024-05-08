@@ -37,8 +37,6 @@ namespace YTMusicWidget.src
             form1.Before_page_mus.Click += Before_page_mus_Click;
 
 
-            form1.playlist_music_list.DrawItem += (sender,e)=>playlist_music_list_DrawItem(sender,e);
-            form1.playlist_music_list.MeasureItem += (sender,e)=>Playlist_Music_MeasureItem(sender, e);
         }
 
 
@@ -83,8 +81,6 @@ namespace YTMusicWidget.src
                     
                     var musicImage = await playlist.GetImageFromUrl(thumbnailUrl);
 
-                    var music_thumbheight = musicImage.Height;
-                    var music_thumbwidth = musicImage.Width;
 
                     var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
 
@@ -96,10 +92,22 @@ namespace YTMusicWidget.src
                 form1.Invoke((MethodInvoker)delegate
                 {
                     form1.playlist_music_list.Items.Clear();
+                    form1.playlist_music_list.Columns.Add(" ", 400);
+                    form1.playlist_music_list.View = View.Details;
+                    ImageList thumbnailImageList = new ImageList();
+                    thumbnailImageList.ImageSize = new Size(180, 101);
+
                     foreach (var musicItem in musicitemstoadd)
                     {
-                        form1.playlist_music_list.Items.Add(musicItem);
+                        thumbnailImageList.Images.Add(musicItem.Image);
+
+                        ListViewItem item = new ListViewItem(musicItem.Title);
+                        item.ImageIndex = thumbnailImageList.Images.Count - 1;
+                        item.Tag = musicItem.VideoId; // VideoId를 문자열로 할당
+
+                        form1.playlist_music_list.Items.Add(item);
                     }
+
                     UpdatePageInfo();
                 });
             }
@@ -135,60 +143,22 @@ namespace YTMusicWidget.src
 
 
 
-        private void Playlist_Music_MeasureItem(object sender, MeasureItemEventArgs e)
-        {
-            var listBox = (System.Windows.Forms.ListBox)sender;
-            var musicItem = (Playlist_Music_Items)listBox.Items[e.Index];
-            e.ItemHeight = musicItem.Image.Height;
-        }
-
-
-
-        private void playlist_music_list_DrawItem(object sender, DrawItemEventArgs e)
-        {
-            if (e.Index < 0)
-                return;
-
-            var listBox = (System.Windows.Forms.ListBox)sender;
-            var musicItem = (Playlist_Music_Items)listBox.Items[e.Index];
-
-            if (musicItem == null)
-                return;
-
-            e.DrawBackground();
-
-
-            // 썸네일 이미지 그리기
-            if (musicItem.Image != null)
-            {
-                var imageBounds = new Rectangle(e.Bounds.Left, e.Bounds.Top, e.Bounds.Height, e.Bounds.Height);
-                e.Graphics.DrawImage(musicItem.Image, imageBounds);
-            }
-
-            // 음악 이름 그리기
-            var textBounds = new Rectangle(e.Bounds.Left + e.Bounds.Height, e.Bounds.Top, e.Bounds.Width - e.Bounds.Height, e.Bounds.Height);
-            TextRenderer.DrawText(e.Graphics, musicItem.Title, listBox.Font, textBounds, listBox.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
-        }
-
-
         //음악 선택시 음악 재생하기
         private void playlist_music_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (form1.playlist_music_list.SelectedItem != null)
+            if (form1.playlist_music_list.SelectedItems.Count > 0)
             {
-                // 선택한 음악 항목 가져오기
-                Playlist_Music_Items selectedMusic = (Playlist_Music_Items)form1.playlist_music_list.SelectedItem;
-                System.Drawing.Image musicImage = selectedMusic.Image;
-                form1.Music_Image.Image = musicImage;
-                form1.Music_Image.SizeMode =PictureBoxSizeMode.StretchImage;
+                String selectedMusic = form1.playlist_music_list.SelectedItems[0].Tag.ToString();
+
                 // 음악 재생
-                PlayMusic(selectedMusic.VideoId);
-                internal_player.internal_playlist(musicitemstoadd, selectedMusic.VideoId);
-                form1.Music_player_visible.Visible= true;
-                form1.Music_Controller.Visible= true;
-                form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusic.VideoId);
+                PlayMusic(selectedMusic);
+                internal_player.internal_playlist(musicitemstoadd, selectedMusic);
+                form1.Music_player_visible.Visible = true;
+                form1.Music_Controller.Visible = true;
+                form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusic);
             }
         }
+
 
 
         private string GetHTMLContent(string videoId, Size videoSize)
