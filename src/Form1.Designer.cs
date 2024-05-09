@@ -33,7 +33,6 @@
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
             this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
             this.Music_Controller = new Guna.UI2.WinForms.Guna2GroupBox();
-            this.playlist_music_list = new System.Windows.Forms.ListView();
             this.Music_Volume_Bar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.music_player = new CefSharp.WinForms.ChromiumWebBrowser();
             this.Music_player_hide = new Guna.UI2.WinForms.Guna2Button();
@@ -42,6 +41,7 @@
             this.Music_Play_Pause_Button = new Guna.UI2.WinForms.Guna2CircleButton();
             this.Music_ProgressBar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.Music_Image = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.playlist_music_list = new System.Windows.Forms.ListView();
             this.Music_player_visible = new Guna.UI2.WinForms.Guna2Button();
             this.Mus_page_label = new System.Windows.Forms.Label();
             this.Next_page_mus = new Guna.UI2.WinForms.Guna2Button();
@@ -137,15 +137,6 @@
             this.Music_Controller.Text = "guna2GroupBox1";
             this.Music_Controller.Visible = false;
             // 
-            // playlist_music_list
-            // 
-            this.playlist_music_list.HideSelection = false;
-            this.playlist_music_list.Location = new System.Drawing.Point(303, 36);
-            this.playlist_music_list.Name = "playlist_music_list";
-            this.playlist_music_list.Size = new System.Drawing.Size(273, 349);
-            this.playlist_music_list.TabIndex = 21;
-            this.playlist_music_list.UseCompatibleStateImageBehavior = false;
-            // 
             // Music_Volume_Bar
             // 
             this.Music_Volume_Bar.Location = new System.Drawing.Point(-4, 172);
@@ -240,6 +231,15 @@
             this.Music_Image.Size = new System.Drawing.Size(200, 200);
             this.Music_Image.TabIndex = 18;
             this.Music_Image.TabStop = false;
+            // 
+            // playlist_music_list
+            // 
+            this.playlist_music_list.HideSelection = false;
+            this.playlist_music_list.Location = new System.Drawing.Point(303, 36);
+            this.playlist_music_list.Name = "playlist_music_list";
+            this.playlist_music_list.Size = new System.Drawing.Size(273, 349);
+            this.playlist_music_list.TabIndex = 21;
+            this.playlist_music_list.UseCompatibleStateImageBehavior = false;
             // 
             // Music_player_visible
             // 

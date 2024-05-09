@@ -88,26 +88,28 @@ namespace YTMusicWidget.src
 
                 }
 
+                form1.playlist_music_list.Items.Clear();
+                form1.playlist_music_list.Columns.Add(" ", 400);
+                form1.playlist_music_list.View = View.Details;
+                ImageList thumbnailImageList_1 = new ImageList();
+                thumbnailImageList_1.ImageSize = new Size(180, 101);
+                form1.playlist_music_list.LargeImageList = thumbnailImageList_1;
+
+                foreach (var musicItem in musicitemstoadd)
+                {
+                    thumbnailImageList_1.Images.Add(musicItem.Image);
+
+                    // ListViewItem 생성
+                    ListViewItem item = new ListViewItem();
+                    item.Text = musicItem.Title; // 타이틀 설정
+                    item.ImageIndex = thumbnailImageList_1.Images.Count - 1;
+                    item.Tag = musicItem.VideoId; // VideoId를 문자열로 할당
+
+                    form1.playlist_music_list.Items.Add(item);
+                }
                 // UI 업데이트를 UI 스레드에서 수행
                 form1.Invoke((MethodInvoker)delegate
                 {
-                    form1.playlist_music_list.Items.Clear();
-                    form1.playlist_music_list.Columns.Add(" ", 400);
-                    form1.playlist_music_list.View = View.Details;
-                    ImageList thumbnailImageList = new ImageList();
-                    thumbnailImageList.ImageSize = new Size(180, 101);
-
-                    foreach (var musicItem in musicitemstoadd)
-                    {
-                        thumbnailImageList.Images.Add(musicItem.Image);
-
-                        ListViewItem item = new ListViewItem(musicItem.Title);
-                        item.ImageIndex = thumbnailImageList.Images.Count - 1;
-                        item.Tag = musicItem.VideoId; // VideoId를 문자열로 할당
-
-                        form1.playlist_music_list.Items.Add(item);
-                    }
-
                     UpdatePageInfo();
                 });
             }
@@ -210,8 +212,6 @@ namespace YTMusicWidget.src
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
             form1.music_player.LoadHtml(GetHTMLContent(videoId, new Size(30, 30)));
-            form1.Inplay_playlist.Clear();
-            internal_player.internal_playlist(musicitemstoadd, videoId);
             internal_player.UpdateVideoProgress();
         }
 

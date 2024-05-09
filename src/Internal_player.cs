@@ -84,9 +84,9 @@ namespace YTMusicWidget.src
             // 예시로 현재 선택된 음악을 가장 먼저 추가하고 나머지 플레이리스트를 추가하기
             // imagelist 생성하고 image 넣어야 한다
             // 현재 list에는 string 형식만 가능
-            List<string> songs = new List<string>();
             //form1.Inplay_playlist.Add(selectedMusic.VideoId); // 현재 선택된 음악 추가
             // 썸네일 컬럼 추가
+            form1.Inplay_playlist.Clear();
             form1.Inplay_playlist.Columns.Add(" ",400);
 
             // 세부 정보 보기 모드로 변경
