@@ -101,9 +101,9 @@ namespace YTMusicWidget.src
 
                     // ListViewItem 생성
                     ListViewItem item = new ListViewItem();
-                    item.Text = musicItem.Title; // 타이틀 설정
+                    item.Text = musicItem.Title;
                     item.ImageIndex = thumbnailImageList_1.Images.Count - 1;
-                    item.Tag = musicItem.VideoId; // VideoId를 문자열로 할당
+                    item.Tag = musicItem.VideoId;
 
                     form1.playlist_music_list.Items.Add(item);
                 }
