@@ -91,18 +91,15 @@ namespace YTMusicWidget.src
                 form1.playlist_music_list.Items.Clear();
                 form1.playlist_music_list.Columns.Add(" ", 400);
                 form1.playlist_music_list.View = View.Details;
-                ImageList thumbnailImageList_1 = new ImageList();
-                thumbnailImageList_1.ImageSize = new Size(180, 101);
-                form1.playlist_music_list.LargeImageList = thumbnailImageList_1;
-
+                ImageList thumbnailImageList = new ImageList();
+                thumbnailImageList.ImageSize = new Size(180, 101);
+                
                 foreach (var musicItem in musicitemstoadd)
                 {
-                    thumbnailImageList_1.Images.Add(musicItem.Image);
-
-                    // ListViewItem 생성
-                    ListViewItem item = new ListViewItem();
-                    item.Text = musicItem.Title;
-                    item.ImageIndex = thumbnailImageList_1.Images.Count - 1;
+                    thumbnailImageList.Images.Add(musicItem.Image);
+                    
+                    ListViewItem item = new ListViewItem(musicItem.Title);
+                    item.ImageIndex = thumbnailImageList.Images.Count-1;
                     item.Tag = musicItem.VideoId;
 
                     form1.playlist_music_list.Items.Add(item);

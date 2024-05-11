@@ -58,11 +58,13 @@
             this.Title = new System.Windows.Forms.Label();
             this.guna2VScrollBar1 = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.Inplay_playlist = new System.Windows.Forms.ListView();
+            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.Main.SuspendLayout();
             this.main_content.SuspendLayout();
             this.Music_Controller.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Music_Image)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // guna2BorderlessForm1
@@ -99,6 +101,7 @@
             // main_content
             // 
             this.main_content.BorderColor = System.Drawing.Color.Black;
+            this.main_content.Controls.Add(this.pictureBox2);
             this.main_content.Controls.Add(this.Music_Controller);
             this.main_content.Controls.Add(this.playlist_music_list);
             this.main_content.Controls.Add(this.Music_player_visible);
@@ -130,7 +133,7 @@
             this.Music_Controller.Controls.Add(this.Music_Image);
             this.Music_Controller.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Music_Controller.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
-            this.Music_Controller.Location = new System.Drawing.Point(36, 28);
+            this.Music_Controller.Location = new System.Drawing.Point(57, 305);
             this.Music_Controller.Name = "Music_Controller";
             this.Music_Controller.Size = new System.Drawing.Size(519, 447);
             this.Music_Controller.TabIndex = 15;
@@ -458,6 +461,14 @@
             this.Inplay_playlist.TabIndex = 7;
             this.Inplay_playlist.UseCompatibleStateImageBehavior = false;
             // 
+            // pictureBox2
+            // 
+            this.pictureBox2.Location = new System.Drawing.Point(112, 69);
+            this.pictureBox2.Name = "pictureBox2";
+            this.pictureBox2.Size = new System.Drawing.Size(401, 134);
+            this.pictureBox2.TabIndex = 22;
+            this.pictureBox2.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(7F, 12F);
@@ -475,6 +486,7 @@
             this.Music_Controller.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Music_Image)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -509,6 +521,7 @@
         private Guna.UI2.WinForms.Guna2TrackBar Music_Volume_Bar;
         internal System.Windows.Forms.ListView Inplay_playlist;
         internal System.Windows.Forms.ListView playlist_music_list;
+        internal System.Windows.Forms.PictureBox pictureBox2;
     }
 }
 
