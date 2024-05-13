@@ -27,6 +27,7 @@
 - - ~~Autoplay music with no mute~~
 - ~~Seperate codes in different files(organize)~~
 - Extend token expiration
-- Bind C# component and youtube player
-- - Need to adjust player progress slider value
+- ~~Bind C# component and youtube player~~
+- - ~~Need to adjust player progress slider value~~
+- Change playlist and playlist music list into listview for UI
 - Better designs
