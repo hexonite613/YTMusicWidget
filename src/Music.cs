@@ -88,22 +88,27 @@ namespace YTMusicWidget.src
 
                 }
 
-                form1.playlist_music_list.Items.Clear();
+                form1.playlist_music_list.Clear();
                 form1.playlist_music_list.Columns.Add(" ", 400);
+
                 form1.playlist_music_list.View = View.Details;
+
                 ImageList thumbnailImageList = new ImageList();
-                thumbnailImageList.ImageSize = new Size(180, 101);
-                
+                thumbnailImageList.ImageSize = new Size(130, 85);
+
                 foreach (var musicItem in musicitemstoadd)
                 {
                     thumbnailImageList.Images.Add(musicItem.Image);
-                    
+
                     ListViewItem item = new ListViewItem(musicItem.Title);
-                    item.ImageIndex = thumbnailImageList.Images.Count-1;
+                    item.ImageIndex = thumbnailImageList.Images.Count - 1;
                     item.Tag = musicItem.VideoId;
 
                     form1.playlist_music_list.Items.Add(item);
                 }
+
+                form1.playlist_music_list.SmallImageList = thumbnailImageList;
+
                 // UI 업데이트를 UI 스레드에서 수행
                 form1.Invoke((MethodInvoker)delegate
                 {

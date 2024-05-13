@@ -32,6 +32,7 @@
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
             this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.playlist_music_list = new System.Windows.Forms.ListView();
             this.Music_Controller = new Guna.UI2.WinForms.Guna2GroupBox();
             this.Music_Volume_Bar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.music_player = new CefSharp.WinForms.ChromiumWebBrowser();
@@ -41,7 +42,6 @@
             this.Music_Play_Pause_Button = new Guna.UI2.WinForms.Guna2CircleButton();
             this.Music_ProgressBar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.Music_Image = new Guna.UI2.WinForms.Guna2PictureBox();
-            this.playlist_music_list = new System.Windows.Forms.ListView();
             this.Music_player_visible = new Guna.UI2.WinForms.Guna2Button();
             this.Mus_page_label = new System.Windows.Forms.Label();
             this.Next_page_mus = new Guna.UI2.WinForms.Guna2Button();
@@ -58,13 +58,11 @@
             this.Title = new System.Windows.Forms.Label();
             this.guna2VScrollBar1 = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.Inplay_playlist = new System.Windows.Forms.ListView();
-            this.pictureBox2 = new System.Windows.Forms.PictureBox();
             this.Main.SuspendLayout();
             this.main_content.SuspendLayout();
             this.Music_Controller.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Music_Image)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             this.SuspendLayout();
             // 
             // guna2BorderlessForm1
@@ -101,9 +99,8 @@
             // main_content
             // 
             this.main_content.BorderColor = System.Drawing.Color.Black;
-            this.main_content.Controls.Add(this.pictureBox2);
-            this.main_content.Controls.Add(this.Music_Controller);
             this.main_content.Controls.Add(this.playlist_music_list);
+            this.main_content.Controls.Add(this.Music_Controller);
             this.main_content.Controls.Add(this.Music_player_visible);
             this.main_content.Controls.Add(this.Mus_page_label);
             this.main_content.Controls.Add(this.Next_page_mus);
@@ -120,6 +117,15 @@
             this.main_content.Size = new System.Drawing.Size(586, 450);
             this.main_content.TabIndex = 7;
             this.main_content.Visible = false;
+            // 
+            // playlist_music_list
+            // 
+            this.playlist_music_list.HideSelection = false;
+            this.playlist_music_list.Location = new System.Drawing.Point(297, 37);
+            this.playlist_music_list.Name = "playlist_music_list";
+            this.playlist_music_list.Size = new System.Drawing.Size(289, 355);
+            this.playlist_music_list.TabIndex = 17;
+            this.playlist_music_list.UseCompatibleStateImageBehavior = false;
             // 
             // Music_Controller
             // 
@@ -234,15 +240,6 @@
             this.Music_Image.Size = new System.Drawing.Size(200, 200);
             this.Music_Image.TabIndex = 18;
             this.Music_Image.TabStop = false;
-            // 
-            // playlist_music_list
-            // 
-            this.playlist_music_list.HideSelection = false;
-            this.playlist_music_list.Location = new System.Drawing.Point(303, 36);
-            this.playlist_music_list.Name = "playlist_music_list";
-            this.playlist_music_list.Size = new System.Drawing.Size(273, 349);
-            this.playlist_music_list.TabIndex = 21;
-            this.playlist_music_list.UseCompatibleStateImageBehavior = false;
             // 
             // Music_player_visible
             // 
@@ -455,19 +452,11 @@
             // 
             this.Inplay_playlist.AutoArrange = false;
             this.Inplay_playlist.HideSelection = false;
-            this.Inplay_playlist.Location = new System.Drawing.Point(582, 0);
+            this.Inplay_playlist.Location = new System.Drawing.Point(582, -3);
             this.Inplay_playlist.Name = "Inplay_playlist";
             this.Inplay_playlist.Size = new System.Drawing.Size(303, 450);
             this.Inplay_playlist.TabIndex = 7;
             this.Inplay_playlist.UseCompatibleStateImageBehavior = false;
-            // 
-            // pictureBox2
-            // 
-            this.pictureBox2.Location = new System.Drawing.Point(112, 69);
-            this.pictureBox2.Name = "pictureBox2";
-            this.pictureBox2.Size = new System.Drawing.Size(401, 134);
-            this.pictureBox2.TabIndex = 22;
-            this.pictureBox2.TabStop = false;
             // 
             // Form1
             // 
@@ -486,7 +475,6 @@
             this.Music_Controller.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Music_Image)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -500,7 +488,7 @@
         private System.Windows.Forms.Label Title;
         private System.Windows.Forms.Label Login_com_label;
         private System.Windows.Forms.Label Logout_label;
-        private Guna.UI2.WinForms.Guna2GroupBox main_content;
+        internal Guna.UI2.WinForms.Guna2GroupBox main_content;
         private System.Windows.Forms.Label playlist_label;
         internal System.Windows.Forms.ListBox playlistListBox;
         private System.Windows.Forms.Label playlist_music_label;
@@ -521,7 +509,6 @@
         private Guna.UI2.WinForms.Guna2TrackBar Music_Volume_Bar;
         internal System.Windows.Forms.ListView Inplay_playlist;
         internal System.Windows.Forms.ListView playlist_music_list;
-        internal System.Windows.Forms.PictureBox pictureBox2;
     }
 }
 
