@@ -32,6 +32,7 @@
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
             this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.playlistListBox = new System.Windows.Forms.ListView();
             this.playlist_music_list = new System.Windows.Forms.ListView();
             this.Music_Controller = new Guna.UI2.WinForms.Guna2GroupBox();
             this.Music_Volume_Bar = new Guna.UI2.WinForms.Guna2TrackBar();
@@ -47,7 +48,6 @@
             this.Next_page_mus = new Guna.UI2.WinForms.Guna2Button();
             this.Before_page_mus = new Guna.UI2.WinForms.Guna2Button();
             this.playlist_music_label = new System.Windows.Forms.Label();
-            this.playlistListBox = new System.Windows.Forms.ListBox();
             this.playlist_label = new System.Windows.Forms.Label();
             this.Login_Button = new Guna.UI2.WinForms.Guna2Button();
             this.Logout_label = new System.Windows.Forms.Label();
@@ -99,14 +99,14 @@
             // main_content
             // 
             this.main_content.BorderColor = System.Drawing.Color.Black;
-            this.main_content.Controls.Add(this.playlist_music_list);
             this.main_content.Controls.Add(this.Music_Controller);
+            this.main_content.Controls.Add(this.playlistListBox);
+            this.main_content.Controls.Add(this.playlist_music_list);
             this.main_content.Controls.Add(this.Music_player_visible);
             this.main_content.Controls.Add(this.Mus_page_label);
             this.main_content.Controls.Add(this.Next_page_mus);
             this.main_content.Controls.Add(this.Before_page_mus);
             this.main_content.Controls.Add(this.playlist_music_label);
-            this.main_content.Controls.Add(this.playlistListBox);
             this.main_content.Controls.Add(this.playlist_label);
             this.main_content.CustomBorderThickness = new System.Windows.Forms.Padding(0);
             this.main_content.FillColor = System.Drawing.Color.Black;
@@ -117,6 +117,15 @@
             this.main_content.Size = new System.Drawing.Size(586, 450);
             this.main_content.TabIndex = 7;
             this.main_content.Visible = false;
+            // 
+            // playlistListBox
+            // 
+            this.playlistListBox.HideSelection = false;
+            this.playlistListBox.Location = new System.Drawing.Point(12, 37);
+            this.playlistListBox.Name = "playlistListBox";
+            this.playlistListBox.Size = new System.Drawing.Size(279, 355);
+            this.playlistListBox.TabIndex = 18;
+            this.playlistListBox.UseCompatibleStateImageBehavior = false;
             // 
             // playlist_music_list
             // 
@@ -315,17 +324,6 @@
             this.playlist_music_label.TabIndex = 5;
             this.playlist_music_label.Text = "음악 리스트";
             // 
-            // playlistListBox
-            // 
-            this.playlistListBox.BackColor = System.Drawing.Color.Black;
-            this.playlistListBox.ForeColor = System.Drawing.Color.White;
-            this.playlistListBox.FormattingEnabled = true;
-            this.playlistListBox.ItemHeight = 15;
-            this.playlistListBox.Location = new System.Drawing.Point(16, 37);
-            this.playlistListBox.Name = "playlistListBox";
-            this.playlistListBox.Size = new System.Drawing.Size(273, 349);
-            this.playlistListBox.TabIndex = 3;
-            // 
             // playlist_label
             // 
             this.playlist_label.AutoSize = true;
@@ -434,7 +432,6 @@
             // 
             this.guna2VScrollBar1.AutoRoundedCorners = true;
             this.guna2VScrollBar1.AutoScroll = true;
-            this.guna2VScrollBar1.BindingContainer = this.playlistListBox;
             this.guna2VScrollBar1.BorderRadius = 8;
             this.guna2VScrollBar1.FillColor = System.Drawing.Color.Black;
             this.guna2VScrollBar1.InUpdate = false;
@@ -490,7 +487,6 @@
         private System.Windows.Forms.Label Logout_label;
         internal Guna.UI2.WinForms.Guna2GroupBox main_content;
         private System.Windows.Forms.Label playlist_label;
-        internal System.Windows.Forms.ListBox playlistListBox;
         private System.Windows.Forms.Label playlist_music_label;
         private Guna.UI2.WinForms.Guna2VScrollBar guna2VScrollBar1;
         private Guna.UI2.WinForms.Guna2Button Login_Button;
@@ -509,6 +505,7 @@
         private Guna.UI2.WinForms.Guna2TrackBar Music_Volume_Bar;
         internal System.Windows.Forms.ListView Inplay_playlist;
         internal System.Windows.Forms.ListView playlist_music_list;
+        internal System.Windows.Forms.ListView playlistListBox;
     }
 }
 

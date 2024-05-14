@@ -23,8 +23,6 @@ namespace YTMusicWidget
         {
             this.form1 = form1;
 
-            form1.playlistListBox.MeasureItem += (sender, e) => Playlist_MeasureItem(sender, e);
-            form1.playlistListBox.DrawItem += (sender, e) => Playlist_DrawItem(sender, e);
         }
 
 
@@ -69,17 +67,33 @@ namespace YTMusicWidget
                 // UI 업데이트를 UI 스레드에서 수행
                 form1.Invoke((MethodInvoker)delegate
                 {
+                    form1.playlistListBox.Clear();
+                    form1.playlistListBox.Columns.Add(" ", 400);
+                    form1.playlistListBox.View = View.Details;
+
+                    ImageList thumbnailImageList = new ImageList();
+                    thumbnailImageList.ImageSize = new Size(130, 85);
+
                     foreach (var playlistItem in playlistsToAdd)
                     {
-                        form1.playlistListBox.Items.Add(playlistItem);
+                        thumbnailImageList.Images.Add(playlistItem.Image);
+
+                        ListViewItem item = new ListViewItem(playlistItem.Title);
+                        item.ImageIndex = thumbnailImageList.Images.Count - 1;
+                        item.Tag = playlistItem.Id;
+
+                        form1.playlistListBox.Items.Add(item);
                     }
+                    form1.playlistListBox.SmallImageList = thumbnailImageList;
                 });
+
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"플레이리스트 가져오기 중 오류가 발생했습니다: {ex.Message}");
             }
         }
+
 
         //썸네일 이미지 수정
         public Image ResizeImage(Image image, Size size)
@@ -105,38 +119,6 @@ namespace YTMusicWidget
                     return ResizeImage(play_thumb, new Size(177, 100));
                 }
             }
-        }
-
-
-        internal void Playlist_MeasureItem(object sender, MeasureItemEventArgs e)
-        {
-            var listBox = (ListBox)sender;
-            var playlistItem = (PlaylistItems)listBox.Items[e.Index];
-            e.ItemHeight = playlistItem.thumbheight;
-        }
-
-        internal void Playlist_DrawItem(object sender, DrawItemEventArgs e)
-        {
-
-            if (e.Index < 0)
-                return;
-
-            var listBox = (ListBox)sender;
-            var playlistItem = (PlaylistItems)listBox.Items[e.Index];
-
-            if (playlistItem == null)
-                return;
-
-            e.DrawBackground();
-
-            if (playlistItem.Image != null)
-            {
-                var imageBounds = new Rectangle(e.Bounds.Left, e.Bounds.Top, e.Bounds.Height, e.Bounds.Height);
-                e.Graphics.DrawImage(playlistItem.Image, imageBounds);
-            }
-
-            var textBounds = new Rectangle(e.Bounds.Left + e.Bounds.Height, e.Bounds.Top, e.Bounds.Width - e.Bounds.Height, e.Bounds.Height);
-            TextRenderer.DrawText(e.Graphics, playlistItem.Title, listBox.Font, textBounds, listBox.ForeColor, TextFormatFlags.Left | TextFormatFlags.VerticalCenter);
         }
 
 

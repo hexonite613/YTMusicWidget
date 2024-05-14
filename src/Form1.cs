@@ -32,7 +32,6 @@ namespace YTMusicWidget
             InitializeComponent();
             InitializeCefSharp();
 
-            playlistListBox.DrawMode = DrawMode.OwnerDrawVariable;
 
 
             music_player.FrameLoadEnd += Music_Control_JS;
@@ -235,7 +234,7 @@ namespace YTMusicWidget
             public Image Image { get; }
             public int thumbheight { get; }
             public int thumbwidth { get; }
-            public string Id { get; }
+            public string Id { get; set; }
 
             public PlaylistItems(string title, Image image, int thumbheight, int thumbwidth, string id)
             {

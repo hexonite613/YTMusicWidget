@@ -124,17 +124,28 @@ namespace YTMusicWidget.src
         //플레이리스트에 따른 음악 목록들 가져오기
         public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
         {
-            if (form1.playlistListBox.SelectedItem != null)
+            if (form1.playlistListBox.SelectedItems.Count > 0)
             {
-                form1.selectedPlaylist = (PlaylistItems)form1.playlistListBox.SelectedItem;
+                // 현재 선택된 첫 번째 플레이리스트 가져오기
+                ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
+
+                // ListView의 Tag 속성에 저장된 플레이리스트 ID 가져오기
+                string playlistId = selectedListViewItem.Tag.ToString();
+
+                // 플레이리스트에 해당하는 id를 보내기
+                form1.selectedPlaylist.Id = playlistId;
                 form1.currentPage = 1; // 페이지 초기화
-                await GetPlaylist_Music(form1.selectedPlaylist.Id, form1.currentPage);
+
+                // 선택된 플레이리스트의 음악 가져오기
+                await GetPlaylist_Music(playlistId, form1.currentPage);
             }
             else
             {
-                MessageBox.Show("플레이리스트가 안 골라짐");
+                MessageBox.Show("플레이리스트를 선택해주세요.");
             }
         }
+
+
 
 
 
