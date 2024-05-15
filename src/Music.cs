@@ -2,7 +2,6 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
-using Google.Apis.YouTube.v3.Data;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -132,9 +131,6 @@ namespace YTMusicWidget.src
                 // ListView의 Tag 속성에 저장된 플레이리스트 ID 가져오기
                 string playlistId = selectedListViewItem.Tag.ToString();
 
-                // 플레이리스트에 해당하는 id를 보내기
-                form1.selectedPlaylist.Id = playlistId;
-                form1.currentPage = 1; // 페이지 초기화
 
                 // 선택된 플레이리스트의 음악 가져오기
                 await GetPlaylist_Music(playlistId, form1.currentPage);
@@ -222,6 +218,7 @@ namespace YTMusicWidget.src
 
         private void PlayMusic(string videoId)
         {
+            form1.Size = new Size(887, 450);
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
             form1.music_player.LoadHtml(GetHTMLContent(videoId, new Size(30, 30)));

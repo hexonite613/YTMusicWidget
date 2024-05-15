@@ -32,8 +32,6 @@
             this.guna2BorderlessForm1 = new Guna.UI2.WinForms.Guna2BorderlessForm(this.components);
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
             this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
-            this.playlistListBox = new System.Windows.Forms.ListView();
-            this.playlist_music_list = new System.Windows.Forms.ListView();
             this.Music_Controller = new Guna.UI2.WinForms.Guna2GroupBox();
             this.Music_Volume_Bar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.music_player = new CefSharp.WinForms.ChromiumWebBrowser();
@@ -43,6 +41,8 @@
             this.Music_Play_Pause_Button = new Guna.UI2.WinForms.Guna2CircleButton();
             this.Music_ProgressBar = new Guna.UI2.WinForms.Guna2TrackBar();
             this.Music_Image = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.playlistListBox = new System.Windows.Forms.ListView();
+            this.playlist_music_list = new System.Windows.Forms.ListView();
             this.Music_player_visible = new Guna.UI2.WinForms.Guna2Button();
             this.Mus_page_label = new System.Windows.Forms.Label();
             this.Next_page_mus = new Guna.UI2.WinForms.Guna2Button();
@@ -114,27 +114,9 @@
             this.main_content.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
             this.main_content.Location = new System.Drawing.Point(0, 3);
             this.main_content.Name = "main_content";
-            this.main_content.Size = new System.Drawing.Size(586, 450);
+            this.main_content.Size = new System.Drawing.Size(583, 450);
             this.main_content.TabIndex = 7;
             this.main_content.Visible = false;
-            // 
-            // playlistListBox
-            // 
-            this.playlistListBox.HideSelection = false;
-            this.playlistListBox.Location = new System.Drawing.Point(12, 37);
-            this.playlistListBox.Name = "playlistListBox";
-            this.playlistListBox.Size = new System.Drawing.Size(279, 355);
-            this.playlistListBox.TabIndex = 18;
-            this.playlistListBox.UseCompatibleStateImageBehavior = false;
-            // 
-            // playlist_music_list
-            // 
-            this.playlist_music_list.HideSelection = false;
-            this.playlist_music_list.Location = new System.Drawing.Point(297, 37);
-            this.playlist_music_list.Name = "playlist_music_list";
-            this.playlist_music_list.Size = new System.Drawing.Size(289, 355);
-            this.playlist_music_list.TabIndex = 17;
-            this.playlist_music_list.UseCompatibleStateImageBehavior = false;
             // 
             // Music_Controller
             // 
@@ -148,9 +130,9 @@
             this.Music_Controller.Controls.Add(this.Music_Image);
             this.Music_Controller.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Music_Controller.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
-            this.Music_Controller.Location = new System.Drawing.Point(57, 305);
+            this.Music_Controller.Location = new System.Drawing.Point(0, 0);
             this.Music_Controller.Name = "Music_Controller";
-            this.Music_Controller.Size = new System.Drawing.Size(519, 447);
+            this.Music_Controller.Size = new System.Drawing.Size(887, 450);
             this.Music_Controller.TabIndex = 15;
             this.Music_Controller.Text = "guna2GroupBox1";
             this.Music_Controller.Visible = false;
@@ -166,7 +148,7 @@
             // music_player
             // 
             this.music_player.ActivateBrowserOnCreation = false;
-            this.music_player.Location = new System.Drawing.Point(102, 22);
+            this.music_player.Location = new System.Drawing.Point(0, 423);
             this.music_player.Name = "music_player";
             this.music_player.Size = new System.Drawing.Size(365, 278);
             this.music_player.TabIndex = 13;
@@ -197,7 +179,7 @@
             this.Music_Before_Button.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
             this.Music_Before_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Music_Before_Button.ForeColor = System.Drawing.Color.White;
-            this.Music_Before_Button.Location = new System.Drawing.Point(77, 266);
+            this.Music_Before_Button.Location = new System.Drawing.Point(150, 331);
             this.Music_Before_Button.Name = "Music_Before_Button";
             this.Music_Before_Button.Size = new System.Drawing.Size(80, 34);
             this.Music_Before_Button.TabIndex = 17;
@@ -212,7 +194,7 @@
             this.Music_Next_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.Music_Next_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Music_Next_Button.ForeColor = System.Drawing.Color.White;
-            this.Music_Next_Button.Location = new System.Drawing.Point(268, 266);
+            this.Music_Next_Button.Location = new System.Drawing.Point(341, 331);
             this.Music_Next_Button.Name = "Music_Next_Button";
             this.Music_Next_Button.Size = new System.Drawing.Size(80, 34);
             this.Music_Next_Button.TabIndex = 16;
@@ -226,7 +208,7 @@
             this.Music_Play_Pause_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
             this.Music_Play_Pause_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Music_Play_Pause_Button.ForeColor = System.Drawing.Color.White;
-            this.Music_Play_Pause_Button.Location = new System.Drawing.Point(178, 255);
+            this.Music_Play_Pause_Button.Location = new System.Drawing.Point(251, 320);
             this.Music_Play_Pause_Button.Name = "Music_Play_Pause_Button";
             this.Music_Play_Pause_Button.ShadowDecoration.Mode = Guna.UI2.WinForms.Enums.ShadowMode.Circle;
             this.Music_Play_Pause_Button.Size = new System.Drawing.Size(56, 55);
@@ -235,7 +217,7 @@
             // 
             // Music_ProgressBar
             // 
-            this.Music_ProgressBar.Location = new System.Drawing.Point(61, 218);
+            this.Music_ProgressBar.Location = new System.Drawing.Point(131, 268);
             this.Music_ProgressBar.Name = "Music_ProgressBar";
             this.Music_ProgressBar.Size = new System.Drawing.Size(300, 31);
             this.Music_ProgressBar.TabIndex = 14;
@@ -249,6 +231,24 @@
             this.Music_Image.Size = new System.Drawing.Size(200, 200);
             this.Music_Image.TabIndex = 18;
             this.Music_Image.TabStop = false;
+            // 
+            // playlistListBox
+            // 
+            this.playlistListBox.HideSelection = false;
+            this.playlistListBox.Location = new System.Drawing.Point(12, 37);
+            this.playlistListBox.Name = "playlistListBox";
+            this.playlistListBox.Size = new System.Drawing.Size(279, 355);
+            this.playlistListBox.TabIndex = 18;
+            this.playlistListBox.UseCompatibleStateImageBehavior = false;
+            // 
+            // playlist_music_list
+            // 
+            this.playlist_music_list.HideSelection = false;
+            this.playlist_music_list.Location = new System.Drawing.Point(297, 37);
+            this.playlist_music_list.Name = "playlist_music_list";
+            this.playlist_music_list.Size = new System.Drawing.Size(289, 355);
+            this.playlist_music_list.TabIndex = 17;
+            this.playlist_music_list.UseCompatibleStateImageBehavior = false;
             // 
             // Music_player_visible
             // 
@@ -449,9 +449,9 @@
             // 
             this.Inplay_playlist.AutoArrange = false;
             this.Inplay_playlist.HideSelection = false;
-            this.Inplay_playlist.Location = new System.Drawing.Point(582, -3);
+            this.Inplay_playlist.Location = new System.Drawing.Point(584, -13);
             this.Inplay_playlist.Name = "Inplay_playlist";
-            this.Inplay_playlist.Size = new System.Drawing.Size(303, 450);
+            this.Inplay_playlist.Size = new System.Drawing.Size(304, 463);
             this.Inplay_playlist.TabIndex = 7;
             this.Inplay_playlist.UseCompatibleStateImageBehavior = false;
             // 

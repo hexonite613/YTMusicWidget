@@ -24,6 +24,7 @@ namespace YTMusicWidget
         private readonly playlist playlist;
         //music 객체 생성
         private readonly Music music;
+        
 
 
 
@@ -31,8 +32,7 @@ namespace YTMusicWidget
         {
             InitializeComponent();
             InitializeCefSharp();
-
-
+            this.Size = new Size(586, 450);
 
             music_player.FrameLoadEnd += Music_Control_JS;
 
