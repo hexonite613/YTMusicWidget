@@ -11,7 +11,7 @@ using CefSharp;
 using CefSharp.WinForms;
 using System.Configuration;
 using YTMusicWidget.src;
-
+using System.Reflection;
 
 namespace YTMusicWidget
 {
@@ -39,6 +39,20 @@ namespace YTMusicWidget
             Authorize = new Authorize(this);
             playlist = new playlist(this);
             music = new Music(this);
+
+            //Flicker 현상 방지
+            playlistListBox.GetType().GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(playlistListBox, true);
+            playlist_music_list.GetType().GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(playlist_music_list, true);
+            Inplay_playlist.GetType().GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Inplay_playlist, true);
+
+            //이미지 백그라운드 보이게 하기
+            pos_change.Parent = Main_Background;
+            pos_complete.Parent = Main_Background;
+            Title.Parent = Main_Background;
+            pictureBox1.Parent = Main_Background;
+            Login_com_label.Parent = Main_Background;
+            Login_Button.Parent = Main_Background;
+            Logout_label.Parent = Main_Background;
 
 
             Delete_TokenFile();
@@ -123,8 +137,10 @@ namespace YTMusicWidget
                     Invoke((MethodInvoker)delegate
                     {
                         Login_Button.Visible = false;
-                        Login_com_label.Text = userName + "님, 환영합니다";
+                        Login_com_label.Text = userName + "님"+"\n"+" 환영합니다";
+                        Login_com_label.Location = new Point((this.ClientSize.Width-Login_com_label.Width) / 2, 320);
                         Login_com_label.Visible = true;
+                        Logout_label.Visible = true;
                         music_player.Visible = false;
                     });
                 }
@@ -278,5 +294,7 @@ namespace YTMusicWidget
         {
             Music_Controller.Visible = true;
         }
+
+
     }
 }

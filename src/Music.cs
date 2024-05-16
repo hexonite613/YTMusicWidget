@@ -88,7 +88,7 @@ namespace YTMusicWidget.src
                 }
 
                 form1.playlist_music_list.Clear();
-                form1.playlist_music_list.Columns.Add(" ", 400);
+                form1.playlist_music_list.Columns.Add(" ", 250);
 
                 form1.playlist_music_list.View = View.Details;
 
@@ -106,6 +106,9 @@ namespace YTMusicWidget.src
                     form1.playlist_music_list.Items.Add(item);
                 }
 
+                //컬럼 숨기기
+                form1.playlist_music_list.HeaderStyle = ColumnHeaderStyle.None;
+                //이미지 설정
                 form1.playlist_music_list.SmallImageList = thumbnailImageList;
 
                 // UI 업데이트를 UI 스레드에서 수행

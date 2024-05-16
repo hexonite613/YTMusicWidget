@@ -50,7 +50,7 @@ namespace YTMusicWidget
                     // 이미 ListBox에 추가된 플레이리스트인지 확인
                     if (!form1.playlistListBox.Items.Cast<PlaylistItems>().Any(p => p.Title == playlist.Snippet.Title))
                     {
-                        var thumbnailUrl = playlist.Snippet.Thumbnails.High.Url;
+                        var thumbnailUrl = playlist.Snippet.Thumbnails.Maxres.Url;
                         var playlistImage = await GetImageFromUrl(thumbnailUrl);
                         var thumbheight = playlistImage.Height;
                         var thumbwidth = playlistImage.Width;
@@ -67,7 +67,7 @@ namespace YTMusicWidget
                 form1.Invoke((MethodInvoker)delegate
                 {
                     form1.playlistListBox.Clear();
-                    form1.playlistListBox.Columns.Add(" ", 400);
+                    form1.playlistListBox.Columns.Add(" ", 250);
                     form1.playlistListBox.View = View.Details;
 
                     ImageList thumbnailImageList = new ImageList();
@@ -83,6 +83,8 @@ namespace YTMusicWidget
 
                         form1.playlistListBox.Items.Add(item);
                     }
+                    //컬럼 숨기기
+                    form1.playlistListBox.HeaderStyle = ColumnHeaderStyle.None;
                     form1.playlistListBox.SmallImageList = thumbnailImageList;
                 });
 
@@ -91,18 +93,6 @@ namespace YTMusicWidget
             {
                 MessageBox.Show($"플레이리스트 가져오기 중 오류가 발생했습니다: {ex.Message}");
             }
-        }
-
-
-        //썸네일 이미지 수정
-        public Image ResizeImage(Image image, Size size)
-        {
-            Bitmap result = new Bitmap(size.Width, size.Height);
-            using (Graphics graphics = Graphics.FromImage(result))
-            {
-                graphics.DrawImage(image, new Rectangle(Point.Empty, size));
-            }
-            return result;
         }
 
 
@@ -115,7 +105,7 @@ namespace YTMusicWidget
                 using (var stream = await response.Content.ReadAsStreamAsync())
                 {
                     Image play_thumb = Image.FromStream(stream);
-                    return ResizeImage(play_thumb, new Size(177, 100));
+                    return play_thumb;
                 }
             }
         }

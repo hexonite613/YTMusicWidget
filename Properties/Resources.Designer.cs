@@ -63,6 +63,16 @@ namespace YTMusicWidget.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap revised_main {
+            get {
+                object obj = ResourceManager.GetObject("revised_main", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap ytmusic_logo_removebg_preview {
             get {
                 object obj = ResourceManager.GetObject("ytmusic_logo_removebg_preview", resourceCulture);

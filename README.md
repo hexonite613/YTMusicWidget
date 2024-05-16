@@ -14,10 +14,10 @@
 - Study C#
 - ~~Bring Youtube API~~
 - ~~Implement google login~~
-- Adjust login label position
+- ~~Adjust login label position~~
 - -~~Login Automatically in Chrominum~~
-- Main content form edit(hide logout button when not logged in) 
-- New photo for Main page
+- ~~Main content form edit(hide logout button when not logged in)~~
+- ~~New photo for Main page~~
 - ~~Bring user playlists~~
 - ~~Bring playlist musics~~
 - For UX, bring playlist and music in advance(Make loading screen)
@@ -36,11 +36,10 @@
   -Sound Scrollbar
     - +Design
   - Internal music playlist
-    - Playlist ne ed to pin first music
+    - Playlist need to pin first music
     - Shuffle musics
 - ~~Change playlist and playlist music list into listview for UI~~
   - +Design
 - Search
   - Show search result as a listview
     - If music was choosed, only play that music
-- Better designs

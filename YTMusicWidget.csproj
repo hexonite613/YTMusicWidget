@@ -188,6 +188,7 @@
     <None Include="Resources\ytmusic_logo-removebg-preview.bmp" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="Resources\revised_main.png" />
     <Content Include="src\browse_control.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
