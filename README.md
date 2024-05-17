@@ -19,7 +19,9 @@
 - ~~Main content form edit(hide logout button when not logged in)~~
 - ~~New photo for Main page~~
 - ~~Bring user playlists~~
-- ~~Bring playlist musics~~
+- Bring playlist musics
+  - Bring playlist musics in one list
+    - Need to reduce time
 - For UX, bring playlist and music in advance(Make loading screen)
 - ~~Get more than 50 playlists/musics~~
 - ~~Implement play music~~

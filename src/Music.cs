@@ -69,80 +69,69 @@ namespace YTMusicWidget.src
                 // 다음 페이지 토큰 설정
                 form1.nextPageToken = response.NextPageToken;
 
-
-
                 // 플레이리스트 음악들을 ListBox에 추가
-                musicitemstoadd = new List<Playlist_Music_Items>();
+                var musicitemstoadd = new List<Playlist_Music_Items>();
                 foreach (var item in response.Items)
                 {
-
                     var thumbnailUrl = item.Snippet.Thumbnails.High.Url;
-                    
-                    var musicImage = await playlist.GetImageFromUrl(thumbnailUrl);
-
-
+                    var musicImage = await playlist.GetImageFromUrl(thumbnailUrl); // 여기서 playlist가 아닌 별도의 메서드로 호출
                     var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
-
                     musicitemstoadd.Add(musicItem);
-
                 }
 
-                form1.playlist_music_list.Clear();
-                form1.playlist_music_list.Columns.Add(" ", 250);
-
-                form1.playlist_music_list.View = View.Details;
-
-                ImageList thumbnailImageList = new ImageList();
-                thumbnailImageList.ImageSize = new Size(130, 85);
-
-                foreach (var musicItem in musicitemstoadd)
-                {
-                    thumbnailImageList.Images.Add(musicItem.Image);
-
-                    ListViewItem item = new ListViewItem(musicItem.Title);
-                    item.ImageIndex = thumbnailImageList.Images.Count - 1;
-                    item.Tag = musicItem.VideoId;
-
-                    form1.playlist_music_list.Items.Add(item);
-                }
-
-                //컬럼 숨기기
-                form1.playlist_music_list.HeaderStyle = ColumnHeaderStyle.None;
-                //이미지 설정
-                form1.playlist_music_list.SmallImageList = thumbnailImageList;
-
-                // UI 업데이트를 UI 스레드에서 수행
                 form1.Invoke((MethodInvoker)delegate
                 {
+                    form1.playlist_music_list.Clear();
+                    form1.playlist_music_list.Columns.Add(" ", 250);
+                    form1.playlist_music_list.View = View.Details;
+
+                    ImageList thumbnailImageList = new ImageList();
+                    thumbnailImageList.ImageSize = new Size(130, 85);
+
+                    foreach (var musicItem in musicitemstoadd)
+                    {
+                        thumbnailImageList.Images.Add(musicItem.Image);
+                        ListViewItem item = new ListViewItem(musicItem.Title);
+                        item.ImageIndex = thumbnailImageList.Images.Count - 1;
+                        item.Tag = musicItem.VideoId;
+                        form1.playlist_music_list.Items.Add(item);
+                    }
+
+                    form1.playlist_music_list.HeaderStyle = ColumnHeaderStyle.None;
+                    form1.playlist_music_list.SmallImageList = thumbnailImageList;
+                    form1.playlist_music_list_ScrollBar.Visible = true;
+
                     UpdatePageInfo();
                 });
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"플레이리스트 음악 가져오기 중 오류가 발생했습니다: {ex.Message}");
+                MessageBox.Show($"플레이리스트 음악 가져오기 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
             }
         }
 
-        //플레이리스트에 따른 음악 목록들 가져오기
         public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
         {
-            if (form1.playlistListBox.SelectedItems.Count > 0)
+            try
             {
-                // 현재 선택된 첫 번째 플레이리스트 가져오기
-                ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
-
-                // ListView의 Tag 속성에 저장된 플레이리스트 ID 가져오기
-                string playlistId = selectedListViewItem.Tag.ToString();
-
-
-                // 선택된 플레이리스트의 음악 가져오기
-                await GetPlaylist_Music(playlistId, form1.currentPage);
+                if (form1.playlistListBox.SelectedItems.Count > 0)
+                {
+                    ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
+                    string playlistId = selectedListViewItem.Tag.ToString();
+                    form1.currentPage = 1; // 페이지 초기화
+                    await GetPlaylist_Music(playlistId, form1.currentPage);
+                }
+                else
+                {
+                    MessageBox.Show("플레이리스트를 선택해주세요.");
+                }
             }
-            else
+            catch (Exception ex)
             {
-                MessageBox.Show("플레이리스트를 선택해주세요.");
+                MessageBox.Show($"플레이리스트 선택 처리 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
             }
         }
+
 
 
 

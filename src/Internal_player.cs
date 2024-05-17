@@ -14,6 +14,7 @@ namespace YTMusicWidget.src
 
         //DI를 위한 클래스 생성
         public Internal_player(Form1 form1)
+
         {
             this.form1 = form1;
             form1.Music_ProgressBar.Scroll += (sender, e) => Music_ProgressBar_Scroll(sender, e);
