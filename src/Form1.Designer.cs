@@ -188,7 +188,7 @@
             this.playlistListBox_ScrollBar.FillColor = System.Drawing.Color.Gray;
             this.playlistListBox_ScrollBar.InUpdate = false;
             this.playlistListBox_ScrollBar.LargeChange = 3;
-            this.playlistListBox_ScrollBar.Location = new System.Drawing.Point(273, 37);
+            this.playlistListBox_ScrollBar.Location = new System.Drawing.Point(273, 33);
             this.playlistListBox_ScrollBar.Name = "playlistListBox_ScrollBar";
             this.playlistListBox_ScrollBar.ScrollbarSize = 18;
             this.playlistListBox_ScrollBar.Size = new System.Drawing.Size(18, 355);

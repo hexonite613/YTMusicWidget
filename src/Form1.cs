@@ -45,6 +45,7 @@ namespace YTMusicWidget
             playlist_music_list.GetType().GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(playlist_music_list, true);
             Inplay_playlist.GetType().GetProperty("DoubleBuffered", BindingFlags.NonPublic | BindingFlags.Instance).SetValue(Inplay_playlist, true);
 
+
             //이미지 백그라운드 보이게 하기
             pos_change.Parent = Main_Background;
             pos_complete.Parent = Main_Background;
@@ -262,13 +263,6 @@ namespace YTMusicWidget
             }
         }
 
-        //음악 부분
-        public const int PageSize = 10; // 페이지 당 아이템 수
-        public int currentPage = 1; // 현재 페이지 번호
-        internal int totalMusicCount; // 총 음악 수
-        internal int totalPageCount; // 총 페이지 수
-        internal string nextPageToken = null; // 다음 페이지 토큰
-        internal PlaylistItems selectedPlaylist; // 선택된 플레이리스트
 
 
 
@@ -294,7 +288,5 @@ namespace YTMusicWidget
         {
             Music_Controller.Visible = true;
         }
-
-
     }
 }
