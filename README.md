@@ -22,6 +22,8 @@
 - Bring playlist musics
   - Bring playlist musics in one list
     - Need to reduce time
+    - ~~Infinite scroll~~
+    - Need to show all items(error)
 - For UX, bring playlist and music in advance(Make loading screen)
 - ~~Get more than 50 playlists/musics~~
 - ~~Implement play music~~
