@@ -190,7 +190,7 @@ namespace YTMusicWidget
                 await GetUserName();
                 Login_Button.Visible = false;
                 Login_com_label.Visible = true;
-                Task.Run(() => playlist.GetPlaylists());
+                await Task.Run(() => playlist.GetPlaylists());
             });
         }
 
@@ -288,5 +288,6 @@ namespace YTMusicWidget
         {
             Music_Controller.Visible = true;
         }
+
     }
 }
