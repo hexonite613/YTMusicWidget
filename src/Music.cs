@@ -100,6 +100,7 @@ namespace YTMusicWidget.src
                     foreach (var musicItem in newItems)
                     {
                         thumbnailImageList.Images.Add(musicItem.Image);
+                        ListView.SelectedIndexCollection col = form1.playlist_music_list.SelectedIndices;
                     }
 
                     form1.playlist_music_list.SmallImageList = thumbnailImageList;
@@ -197,16 +198,21 @@ namespace YTMusicWidget.src
         //음악 선택시 음악 재생하기
         private void playlist_music_list_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (form1.playlist_music_list.SelectedItems.Count > 0)
+            if (form1.playlist_music_list.SelectedIndices.Count > 0)
             {
-                String selectedMusic = form1.playlist_music_list.SelectedItems[0].Tag.ToString();
+                int selectedIndex = form1.playlist_music_list.SelectedIndices[0];
+                if (selectedIndex >= 0 && selectedIndex < musicitemstoadd.Count)
+                {
+                    var selectedMusicItem = musicitemstoadd[selectedIndex];
+                    var selectedMusicId = selectedMusicItem.VideoId;
 
-                // 음악 재생
-                PlayMusic(selectedMusic);
-                internal_player.internal_playlist(musicitemstoadd, selectedMusic);
-                form1.Music_player_visible.Visible = true;
-                form1.Music_Controller.Visible = true;
-                form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusic);
+                    // 음악 재생
+                    PlayMusic(selectedMusicId);
+                    internal_player.internal_playlist(musicitemstoadd, selectedMusicId);
+                    form1.Music_Controller.Visible = true;
+                    form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusicId);
+
+                }
             }
         }
 
