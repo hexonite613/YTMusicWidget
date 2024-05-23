@@ -63,6 +63,16 @@ namespace YTMusicWidget.Properties {
         /// <summary>
         ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
         /// </summary>
+        internal static System.Drawing.Bitmap Animation___1716430543043 {
+            get {
+                object obj = ResourceManager.GetObject("Animation - 1716430543043", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
         internal static System.Drawing.Bitmap loading_gif {
             get {
                 object obj = ResourceManager.GetObject("loading gif", resourceCulture);
@@ -76,6 +86,16 @@ namespace YTMusicWidget.Properties {
         internal static System.Drawing.Bitmap revised_main {
             get {
                 object obj = ResourceManager.GetObject("revised_main", resourceCulture);
+                return ((System.Drawing.Bitmap)(obj));
+            }
+        }
+        
+        /// <summary>
+        ///   System.Drawing.Bitmap 형식의 지역화된 리소스를 찾습니다.
+        /// </summary>
+        internal static System.Drawing.Bitmap Rolling_1x_2_4s_200px_200px {
+            get {
+                object obj = ResourceManager.GetObject("Rolling@1x-2.4s-200px-200px", resourceCulture);
                 return ((System.Drawing.Bitmap)(obj));
             }
         }

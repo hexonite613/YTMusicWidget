@@ -187,6 +187,8 @@
   <ItemGroup>
     <None Include="Resources\revised_main.png" />
     <None Include="Resources\loading gif.gif" />
+    <None Include="Resources\Animation - 1716430543043.gif" />
+    <None Include="Resources\Rolling%401x-2.4s-200px-200px.gif" />
     <Content Include="src\browse_control.js" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />

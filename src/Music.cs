@@ -39,7 +39,6 @@ namespace YTMusicWidget.src
             form1.playlist_music_list.View = View.Details;
             form1.playlist_music_list.HeaderStyle = ColumnHeaderStyle.None;
 
-            form1.playlist_music_loading_img.Parent= form1.playlist_music_list;
 
             form1.playlist_music_list.SelectedIndexChanged += playlist_music_list_SelectedIndexChanged;
             form1.playlistListBox.SelectedIndexChanged += playlist_SelectedIndexChangedAsync;
@@ -76,7 +75,7 @@ namespace YTMusicWidget.src
                 var newItems = new List<Playlist_Music_Items>();
                 foreach (var item in response.Items)
                 {
-                    var thumbnailUrl = item.Snippet.Thumbnails?.Maxres?.Url;
+                    var thumbnailUrl = item.Snippet.Thumbnails?.High?.Url;
                     if (thumbnailUrl == null)
                     {
                         continue;
@@ -153,7 +152,7 @@ namespace YTMusicWidget.src
             try
             {
                 isLoading = true;
-                form1.playlist_music_loading_img.Visible=true;
+                form1.playlist_music_loading.Visible=true;
                 await GetPlaylist_Music(selectedplaylist_id, nextPageToken);
             }
             catch (Exception ex)
@@ -163,7 +162,7 @@ namespace YTMusicWidget.src
             finally
             {
                 isLoading = false;
-                form1.playlist_music_loading_img.Visible = false;
+                form1.playlist_music_loading.Visible = false;
             }
         }
 
