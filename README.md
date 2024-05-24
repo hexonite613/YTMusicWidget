@@ -8,7 +8,7 @@
 - Excluded time: 2024.02.20 ~ 2024.02.29(📘Test Period), 2024.03.23 ~ 2024.03.29(🛠️Network Project), 2024.04.20~2024.04.26(📝Midterm exam period)
 
 ## 🖽Framework
-- C#
+- C#, JS
 
 ## ✏️To-Do List
 - Study C#
@@ -20,7 +20,7 @@
 - ~~New photo for Main page~~
 - ~~Bring user playlists~~
 - Bring playlist musics
-  - Bring playlist musics in one list
+  - ~~Bring playlist musics in one list~~
     - Need to reduce time
       - Caching items
     - ~~Infinite scroll~~
