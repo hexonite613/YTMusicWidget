@@ -19,6 +19,8 @@ namespace YTMusicWidget.src
         private readonly playlist playlist;
         private readonly Internal_player internal_player;
         private List<Playlist_Music_Items> musicitemstoadd = new List<Playlist_Music_Items>();
+        //캐싱을 위해서
+        private Dictionary<int, Playlist_Music_Items> musicItemCache = new Dictionary<int, Playlist_Music_Items>();
         private String selectedplaylist_id;
         private string nextPageToken = null;
         private bool isLoading = false;
