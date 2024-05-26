@@ -55,8 +55,7 @@ namespace YTMusicWidget
             Login_Button.Parent = Main_Background;
             Logout_label.Parent = Main_Background;
 
-
-            Delete_TokenFile();
+            //Delete_TokenFile(); 구현 할 때 그대로 적기
 
 
         }
