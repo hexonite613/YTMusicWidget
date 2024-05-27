@@ -24,6 +24,7 @@ namespace YTMusicWidget.src
         private String selectedplaylist_id;
         private string nextPageToken = null;
         private bool isLoading = false;
+        private bool isHandlingSelection = false;
 
         public Music(Form1 form1)
         {
@@ -117,26 +118,26 @@ namespace YTMusicWidget.src
 
 
 
-
         private void playlist_musiclist_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             if (e.ItemIndex >= 0 && e.ItemIndex < musicitemstoadd.Count)
             {
-                var musicItem = musicitemstoadd[e.ItemIndex];
+                if (!musicItemCache.TryGetValue(e.ItemIndex, out Playlist_Music_Items musicItem))
+                {
+                    musicItem = musicitemstoadd[e.ItemIndex];
+                    musicItemCache[e.ItemIndex] = musicItem;
+                }
+
                 var item = new ListViewItem(musicItem.Title)
                 {
                     Tag = musicItem.VideoId,
                     ImageIndex = e.ItemIndex
                 };
-
-                // Add sub-items
-                item.SubItems.Add(musicItem.VideoId);
-
                 e.Item = item;
             }
         }
 
-        private async void playlist_musiclist_Scroll(object sender, ScrollEventArgs e)
+        private void playlist_musiclist_Scroll(object sender, ScrollEventArgs e)
         {
  
             int visibleItemsCount = form1.playlist_music_list.ClientSize.Height/form1.playlist_music_list.TopItem.Bounds.Height;
@@ -173,27 +174,48 @@ namespace YTMusicWidget.src
 
 
 
-        public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
+public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
+{
+    try
+    {
+        if (form1.playlistListBox.SelectedItems.Count > 0)
         {
-            try
+            // Clear the existing list and reset the cache
+            form1.Invoke((MethodInvoker)delegate
             {
-                if (form1.playlistListBox.SelectedItems.Count > 0)
+                //리스트 초기화
+                form1.playlist_music_list.Items.Clear();
+                form1.playlist_music_list.VirtualListSize = 0;
+                musicItemCache.Clear();
+                musicitemstoadd.Clear();
+                //이미지 초기화
+                form1.playlist_music_list.SmallImageList = new ImageList
                 {
-                    ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
-                    string playlistId = selectedListViewItem.Tag.ToString();
-                    selectedplaylist_id = playlistId;
-                    await GetPlaylist_Music(playlistId);
-                }
-                else
-                {
-                    MessageBox.Show("플레이리스트를 선택해주세요.");
-                }
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"플레이리스트 선택 처리 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
-            }
+                    ImageSize = new Size(130, 85)
+                };
+            });
+            
+
+            isLoading = true;
+            form1.Invoke((MethodInvoker)delegate { form1.playlist_music_loading.Visible = true; });
+
+            ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
+            string playlistId = selectedListViewItem.Tag.ToString();
+            selectedplaylist_id = playlistId;
+
+            await GetPlaylist_Music(selectedplaylist_id);
         }
+    }
+    catch (Exception ex)
+    {
+        MessageBox.Show($"플레이리스트 선택 처리 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
+    }
+    finally
+    {
+        isLoading = false;
+        form1.Invoke((MethodInvoker)delegate { form1.playlist_music_loading.Visible = false; });
+    }
+}
 
 
 

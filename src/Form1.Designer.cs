@@ -34,21 +34,21 @@
             this.Inplay_playlist = new System.Windows.Forms.ListView();
             this.Main = new Guna.UI2.WinForms.Guna2GroupBox();
             this.main_content = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.Music_Controller = new Guna.UI2.WinForms.Guna2GroupBox();
+            this.Music_player_hide = new Guna.UI2.WinForms.Guna2Button();
+            this.Music_Volume_Bar = new Guna.UI2.WinForms.Guna2TrackBar();
+            this.Music_Next_Button = new Guna.UI2.WinForms.Guna2GradientButton();
+            this.Music_Play_Pause_Button = new Guna.UI2.WinForms.Guna2CircleButton();
+            this.Music_Before_Button = new Guna.UI2.WinForms.Guna2GradientButton();
+            this.Music_ProgressBar = new Guna.UI2.WinForms.Guna2TrackBar();
+            this.Music_Image = new Guna.UI2.WinForms.Guna2PictureBox();
+            this.music_player = new CefSharp.WinForms.ChromiumWebBrowser();
             this.playlist_music_loading = new Guna.UI2.WinForms.Guna2PictureBox();
             this.playlist_music_list_ScrollBar = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.playlist_music_list = new System.Windows.Forms.ListView();
             this.playlistListBox_ScrollBar = new Guna.UI2.WinForms.Guna2VScrollBar();
             this.playlistListBox = new System.Windows.Forms.ListView();
             this.change_pos_com_playlist = new System.Windows.Forms.Label();
-            this.Music_Controller = new Guna.UI2.WinForms.Guna2GroupBox();
-            this.Music_Volume_Bar = new Guna.UI2.WinForms.Guna2TrackBar();
-            this.music_player = new CefSharp.WinForms.ChromiumWebBrowser();
-            this.Music_player_hide = new Guna.UI2.WinForms.Guna2Button();
-            this.Music_Before_Button = new Guna.UI2.WinForms.Guna2GradientButton();
-            this.Music_Next_Button = new Guna.UI2.WinForms.Guna2GradientButton();
-            this.Music_Play_Pause_Button = new Guna.UI2.WinForms.Guna2CircleButton();
-            this.Music_ProgressBar = new Guna.UI2.WinForms.Guna2TrackBar();
-            this.Music_Image = new Guna.UI2.WinForms.Guna2PictureBox();
             this.change_pos_playlist = new System.Windows.Forms.Label();
             this.Music_player_visible = new Guna.UI2.WinForms.Guna2Button();
             this.Mus_page_label = new System.Windows.Forms.Label();
@@ -66,9 +66,9 @@
             this.Main_Background = new System.Windows.Forms.PictureBox();
             this.Main.SuspendLayout();
             this.main_content.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.playlist_music_loading)).BeginInit();
             this.Music_Controller.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.Music_Image)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playlist_music_loading)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.Main_Background)).BeginInit();
             this.SuspendLayout();
@@ -159,86 +159,6 @@
             this.main_content.TabIndex = 7;
             this.main_content.Visible = false;
             // 
-            // playlist_music_loading
-            // 
-            this.playlist_music_loading.AutoRoundedCorners = true;
-            this.playlist_music_loading.BackColor = System.Drawing.Color.Transparent;
-            this.playlist_music_loading.BorderRadius = 74;
-            this.playlist_music_loading.FillColor = System.Drawing.Color.Transparent;
-            this.playlist_music_loading.Image = global::YTMusicWidget.Properties.Resources.Animation___1716430543043;
-            this.playlist_music_loading.ImageRotate = 0F;
-            this.playlist_music_loading.Location = new System.Drawing.Point(354, 134);
-            this.playlist_music_loading.Name = "playlist_music_loading";
-            this.playlist_music_loading.Size = new System.Drawing.Size(150, 150);
-            this.playlist_music_loading.SizeMode = System.Windows.Forms.PictureBoxSizeMode.AutoSize;
-            this.playlist_music_loading.TabIndex = 22;
-            this.playlist_music_loading.TabStop = false;
-            this.playlist_music_loading.UseTransparentBackground = true;
-            this.playlist_music_loading.Visible = false;
-            // 
-            // playlist_music_list_ScrollBar
-            // 
-            this.playlist_music_list_ScrollBar.BindingContainer = this.playlist_music_list;
-            this.playlist_music_list_ScrollBar.FillColor = System.Drawing.Color.Gray;
-            this.playlist_music_list_ScrollBar.InUpdate = false;
-            this.playlist_music_list_ScrollBar.LargeChange = 10;
-            this.playlist_music_list_ScrollBar.Location = new System.Drawing.Point(558, 37);
-            this.playlist_music_list_ScrollBar.Name = "playlist_music_list_ScrollBar";
-            this.playlist_music_list_ScrollBar.ScrollbarSize = 18;
-            this.playlist_music_list_ScrollBar.Size = new System.Drawing.Size(18, 355);
-            this.playlist_music_list_ScrollBar.TabIndex = 20;
-            this.playlist_music_list_ScrollBar.ThumbColor = System.Drawing.Color.Black;
-            this.playlist_music_list_ScrollBar.ThumbStyle = Guna.UI2.WinForms.Enums.ThumbStyle.Inset;
-            // 
-            // playlist_music_list
-            // 
-            this.playlist_music_list.BackColor = System.Drawing.Color.Black;
-            this.playlist_music_list.ForeColor = System.Drawing.Color.White;
-            this.playlist_music_list.HideSelection = false;
-            this.playlist_music_list.Location = new System.Drawing.Point(297, 37);
-            this.playlist_music_list.Name = "playlist_music_list";
-            this.playlist_music_list.Size = new System.Drawing.Size(279, 355);
-            this.playlist_music_list.TabIndex = 17;
-            this.playlist_music_list.UseCompatibleStateImageBehavior = false;
-            // 
-            // playlistListBox_ScrollBar
-            // 
-            this.playlistListBox_ScrollBar.BindingContainer = this.playlistListBox;
-            this.playlistListBox_ScrollBar.FillColor = System.Drawing.Color.Gray;
-            this.playlistListBox_ScrollBar.InUpdate = false;
-            this.playlistListBox_ScrollBar.LargeChange = 3;
-            this.playlistListBox_ScrollBar.Location = new System.Drawing.Point(273, 33);
-            this.playlistListBox_ScrollBar.Name = "playlistListBox_ScrollBar";
-            this.playlistListBox_ScrollBar.ScrollbarSize = 18;
-            this.playlistListBox_ScrollBar.Size = new System.Drawing.Size(18, 355);
-            this.playlistListBox_ScrollBar.TabIndex = 1;
-            this.playlistListBox_ScrollBar.ThumbColor = System.Drawing.Color.Black;
-            this.playlistListBox_ScrollBar.ThumbStyle = Guna.UI2.WinForms.Enums.ThumbStyle.Inset;
-            // 
-            // playlistListBox
-            // 
-            this.playlistListBox.BackColor = System.Drawing.Color.Black;
-            this.playlistListBox.ForeColor = System.Drawing.Color.White;
-            this.playlistListBox.HideSelection = false;
-            this.playlistListBox.Location = new System.Drawing.Point(12, 37);
-            this.playlistListBox.Name = "playlistListBox";
-            this.playlistListBox.Size = new System.Drawing.Size(279, 355);
-            this.playlistListBox.TabIndex = 18;
-            this.playlistListBox.UseCompatibleStateImageBehavior = false;
-            // 
-            // change_pos_com_playlist
-            // 
-            this.change_pos_com_playlist.AutoSize = true;
-            this.change_pos_com_playlist.BackColor = System.Drawing.Color.Transparent;
-            this.change_pos_com_playlist.Font = new System.Drawing.Font("YouTube Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.change_pos_com_playlist.ForeColor = System.Drawing.Color.White;
-            this.change_pos_com_playlist.Location = new System.Drawing.Point(30, 0);
-            this.change_pos_com_playlist.Name = "change_pos_com_playlist";
-            this.change_pos_com_playlist.Size = new System.Drawing.Size(33, 19);
-            this.change_pos_com_playlist.TabIndex = 11;
-            this.change_pos_com_playlist.Text = "완료";
-            this.change_pos_com_playlist.Visible = false;
-            // 
             // Music_Controller
             // 
             this.Music_Controller.Controls.Add(this.Music_player_hide);
@@ -251,29 +171,12 @@
             this.Music_Controller.Controls.Add(this.music_player);
             this.Music_Controller.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Music_Controller.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
-            this.Music_Controller.Location = new System.Drawing.Point(3, 3);
+            this.Music_Controller.Location = new System.Drawing.Point(3, 0);
             this.Music_Controller.Name = "Music_Controller";
             this.Music_Controller.Size = new System.Drawing.Size(887, 450);
             this.Music_Controller.TabIndex = 15;
             this.Music_Controller.Text = "guna2GroupBox1";
             this.Music_Controller.Visible = false;
-            // 
-            // Music_Volume_Bar
-            // 
-            this.Music_Volume_Bar.Location = new System.Drawing.Point(-4, 172);
-            this.Music_Volume_Bar.Name = "Music_Volume_Bar";
-            this.Music_Volume_Bar.Size = new System.Drawing.Size(128, 28);
-            this.Music_Volume_Bar.TabIndex = 20;
-            this.Music_Volume_Bar.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
-            // 
-            // music_player
-            // 
-            this.music_player.ActivateBrowserOnCreation = false;
-            this.music_player.Location = new System.Drawing.Point(0, 423);
-            this.music_player.Name = "music_player";
-            this.music_player.Size = new System.Drawing.Size(365, 278);
-            this.music_player.TabIndex = 13;
-            this.music_player.Visible = false;
             // 
             // Music_player_hide
             // 
@@ -289,22 +192,13 @@
             this.Music_player_hide.TabIndex = 19;
             this.Music_player_hide.Text = "숨기기";
             // 
-            // Music_Before_Button
+            // Music_Volume_Bar
             // 
-            this.Music_Before_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
-            this.Music_Before_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
-            this.Music_Before_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.Music_Before_Button.DisabledState.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
-            this.Music_Before_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
-            this.Music_Before_Button.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(77)))), ((int)(((byte)(165)))));
-            this.Music_Before_Button.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
-            this.Music_Before_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
-            this.Music_Before_Button.ForeColor = System.Drawing.Color.White;
-            this.Music_Before_Button.Location = new System.Drawing.Point(150, 331);
-            this.Music_Before_Button.Name = "Music_Before_Button";
-            this.Music_Before_Button.Size = new System.Drawing.Size(80, 34);
-            this.Music_Before_Button.TabIndex = 17;
-            this.Music_Before_Button.Text = "guna2GradientButton2";
+            this.Music_Volume_Bar.Location = new System.Drawing.Point(-4, 172);
+            this.Music_Volume_Bar.Name = "Music_Volume_Bar";
+            this.Music_Volume_Bar.Size = new System.Drawing.Size(128, 28);
+            this.Music_Volume_Bar.TabIndex = 20;
+            this.Music_Volume_Bar.ThumbColor = System.Drawing.Color.FromArgb(((int)(((byte)(160)))), ((int)(((byte)(113)))), ((int)(((byte)(255)))));
             // 
             // Music_Next_Button
             // 
@@ -336,6 +230,23 @@
             this.Music_Play_Pause_Button.TabIndex = 15;
             this.Music_Play_Pause_Button.Text = "guna2CircleButton1";
             // 
+            // Music_Before_Button
+            // 
+            this.Music_Before_Button.DisabledState.BorderColor = System.Drawing.Color.DarkGray;
+            this.Music_Before_Button.DisabledState.CustomBorderColor = System.Drawing.Color.DarkGray;
+            this.Music_Before_Button.DisabledState.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Music_Before_Button.DisabledState.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(169)))), ((int)(((byte)(169)))), ((int)(((byte)(169)))));
+            this.Music_Before_Button.DisabledState.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(141)))), ((int)(((byte)(141)))), ((int)(((byte)(141)))));
+            this.Music_Before_Button.FillColor = System.Drawing.Color.FromArgb(((int)(((byte)(255)))), ((int)(((byte)(77)))), ((int)(((byte)(165)))));
+            this.Music_Before_Button.FillColor2 = System.Drawing.Color.FromArgb(((int)(((byte)(94)))), ((int)(((byte)(148)))), ((int)(((byte)(255)))));
+            this.Music_Before_Button.Font = new System.Drawing.Font("Segoe UI", 9F);
+            this.Music_Before_Button.ForeColor = System.Drawing.Color.White;
+            this.Music_Before_Button.Location = new System.Drawing.Point(150, 331);
+            this.Music_Before_Button.Name = "Music_Before_Button";
+            this.Music_Before_Button.Size = new System.Drawing.Size(80, 34);
+            this.Music_Before_Button.TabIndex = 17;
+            this.Music_Before_Button.Text = "guna2GradientButton2";
+            // 
             // Music_ProgressBar
             // 
             this.Music_ProgressBar.Location = new System.Drawing.Point(131, 268);
@@ -352,6 +263,97 @@
             this.Music_Image.Size = new System.Drawing.Size(200, 200);
             this.Music_Image.TabIndex = 18;
             this.Music_Image.TabStop = false;
+            // 
+            // music_player
+            // 
+            this.music_player.ActivateBrowserOnCreation = false;
+            this.music_player.Location = new System.Drawing.Point(0, 423);
+            this.music_player.Name = "music_player";
+            this.music_player.Size = new System.Drawing.Size(365, 278);
+            this.music_player.TabIndex = 13;
+            this.music_player.Visible = false;
+            // 
+            // playlist_music_loading
+            // 
+            this.playlist_music_loading.AutoRoundedCorners = true;
+            this.playlist_music_loading.BackColor = System.Drawing.Color.Transparent;
+            this.playlist_music_loading.BorderRadius = 31;
+            this.playlist_music_loading.FillColor = System.Drawing.Color.Transparent;
+            this.playlist_music_loading.Image = global::YTMusicWidget.Properties.Resources.Animation___1716430543043;
+            this.playlist_music_loading.ImageRotate = 0F;
+            this.playlist_music_loading.Location = new System.Drawing.Point(395, 167);
+            this.playlist_music_loading.Name = "playlist_music_loading";
+            this.playlist_music_loading.Size = new System.Drawing.Size(68, 65);
+            this.playlist_music_loading.SizeMode = System.Windows.Forms.PictureBoxSizeMode.CenterImage;
+            this.playlist_music_loading.TabIndex = 22;
+            this.playlist_music_loading.TabStop = false;
+            this.playlist_music_loading.UseTransparentBackground = true;
+            this.playlist_music_loading.Visible = false;
+            // 
+            // playlist_music_list_ScrollBar
+            // 
+            this.playlist_music_list_ScrollBar.BindingContainer = this.playlist_music_list;
+            this.playlist_music_list_ScrollBar.FillColor = System.Drawing.Color.Gray;
+            this.playlist_music_list_ScrollBar.InUpdate = false;
+            this.playlist_music_list_ScrollBar.LargeChange = 10;
+            this.playlist_music_list_ScrollBar.Location = new System.Drawing.Point(558, 37);
+            this.playlist_music_list_ScrollBar.Name = "playlist_music_list_ScrollBar";
+            this.playlist_music_list_ScrollBar.ScrollbarSize = 18;
+            this.playlist_music_list_ScrollBar.Size = new System.Drawing.Size(18, 355);
+            this.playlist_music_list_ScrollBar.TabIndex = 20;
+            this.playlist_music_list_ScrollBar.ThumbColor = System.Drawing.Color.Black;
+            this.playlist_music_list_ScrollBar.ThumbStyle = Guna.UI2.WinForms.Enums.ThumbStyle.Inset;
+            // 
+            // playlist_music_list
+            // 
+            this.playlist_music_list.BackColor = System.Drawing.Color.Black;
+            this.playlist_music_list.ForeColor = System.Drawing.Color.White;
+            this.playlist_music_list.HideSelection = false;
+            this.playlist_music_list.Location = new System.Drawing.Point(297, 37);
+            this.playlist_music_list.MultiSelect = false;
+            this.playlist_music_list.Name = "playlist_music_list";
+            this.playlist_music_list.Size = new System.Drawing.Size(279, 355);
+            this.playlist_music_list.TabIndex = 17;
+            this.playlist_music_list.UseCompatibleStateImageBehavior = false;
+            // 
+            // playlistListBox_ScrollBar
+            // 
+            this.playlistListBox_ScrollBar.BindingContainer = this.playlistListBox;
+            this.playlistListBox_ScrollBar.FillColor = System.Drawing.Color.Gray;
+            this.playlistListBox_ScrollBar.InUpdate = false;
+            this.playlistListBox_ScrollBar.LargeChange = 3;
+            this.playlistListBox_ScrollBar.Location = new System.Drawing.Point(273, 33);
+            this.playlistListBox_ScrollBar.Name = "playlistListBox_ScrollBar";
+            this.playlistListBox_ScrollBar.ScrollbarSize = 18;
+            this.playlistListBox_ScrollBar.Size = new System.Drawing.Size(18, 355);
+            this.playlistListBox_ScrollBar.TabIndex = 1;
+            this.playlistListBox_ScrollBar.ThumbColor = System.Drawing.Color.Black;
+            this.playlistListBox_ScrollBar.ThumbStyle = Guna.UI2.WinForms.Enums.ThumbStyle.Inset;
+            // 
+            // playlistListBox
+            // 
+            this.playlistListBox.BackColor = System.Drawing.Color.Black;
+            this.playlistListBox.ForeColor = System.Drawing.Color.White;
+            this.playlistListBox.HideSelection = false;
+            this.playlistListBox.Location = new System.Drawing.Point(12, 37);
+            this.playlistListBox.MultiSelect = false;
+            this.playlistListBox.Name = "playlistListBox";
+            this.playlistListBox.Size = new System.Drawing.Size(279, 355);
+            this.playlistListBox.TabIndex = 18;
+            this.playlistListBox.UseCompatibleStateImageBehavior = false;
+            // 
+            // change_pos_com_playlist
+            // 
+            this.change_pos_com_playlist.AutoSize = true;
+            this.change_pos_com_playlist.BackColor = System.Drawing.Color.Transparent;
+            this.change_pos_com_playlist.Font = new System.Drawing.Font("YouTube Sans", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.change_pos_com_playlist.ForeColor = System.Drawing.Color.White;
+            this.change_pos_com_playlist.Location = new System.Drawing.Point(30, 0);
+            this.change_pos_com_playlist.Name = "change_pos_com_playlist";
+            this.change_pos_com_playlist.Size = new System.Drawing.Size(33, 19);
+            this.change_pos_com_playlist.TabIndex = 11;
+            this.change_pos_com_playlist.Text = "완료";
+            this.change_pos_com_playlist.Visible = false;
             // 
             // change_pos_playlist
             // 
@@ -572,9 +574,9 @@
             this.Main.PerformLayout();
             this.main_content.ResumeLayout(false);
             this.main_content.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.playlist_music_loading)).EndInit();
             this.Music_Controller.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.Music_Image)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.playlist_music_loading)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.Main_Background)).EndInit();
             this.ResumeLayout(false);
