@@ -5,6 +5,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 using static YTMusicWidget.Form1;
+using System.Linq;
 
 namespace YTMusicWidget.src
 {
@@ -79,28 +80,46 @@ namespace YTMusicWidget.src
         }
 
         //bring playlists into internal player Inplay_playlist
-        internal async void internal_playlist(List<Playlist_Music_Items> playlist, String sel_videoid)
+        internal void internal_playlist(List<Playlist_Music_Items> playlist, string sel_videoid)
         {
             form1.Inplay_playlist.Clear();
-            form1.Inplay_playlist.Columns.Add(" ",400);
+            form1.Inplay_playlist.Columns.Add(" ", 400);
 
             form1.Inplay_playlist.View = View.Details;
 
-            ImageList thumbnailImageList = new ImageList();
-            thumbnailImageList.ImageSize = new Size(180, 101);
+            ImageList thumbnailImageList = new ImageList
+            {
+                ImageSize = new Size(180, 101)
+            };
 
-            foreach (var musicItem in playlist)
+            // 선택한 비디오 아이템을 찾아서 리스트의 처음에 추가
+            Playlist_Music_Items selectedMusicItem = playlist.FirstOrDefault(item => item.VideoId == sel_videoid);
+            if (selectedMusicItem != null)
+            {
+                thumbnailImageList.Images.Add(selectedMusicItem.Image);
+                ListViewItem selectedItem = new ListViewItem(selectedMusicItem.Title)
+                {
+                    ImageIndex = thumbnailImageList.Images.Count - 1
+                };
+                form1.Inplay_playlist.Items.Add(selectedItem);
+                playlist.Remove(selectedMusicItem);
+            }
+
+            // 나머지 아이템들을 랜덤으로 섞기
+            var random = new Random();
+            var shuffledPlaylist = playlist.OrderBy(item => random.Next()).ToList();
+
+            foreach (var musicItem in shuffledPlaylist)
             {
                 thumbnailImageList.Images.Add(musicItem.Image);
-
-                ListViewItem item = new ListViewItem(musicItem.Title);
-                item.ImageIndex = thumbnailImageList.Images.Count - 1; 
-
+                ListViewItem item = new ListViewItem(musicItem.Title)
+                {
+                    ImageIndex = thumbnailImageList.Images.Count - 1
+                };
                 form1.Inplay_playlist.Items.Add(item);
             }
 
             form1.Inplay_playlist.SmallImageList = thumbnailImageList;
-
         }
 
     }

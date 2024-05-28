@@ -19,8 +19,6 @@ namespace YTMusicWidget.src
         private readonly playlist playlist;
         private readonly Internal_player internal_player;
         private List<Playlist_Music_Items> musicitemstoadd = new List<Playlist_Music_Items>();
-        //캐싱을 위해서
-        private Dictionary<int, Playlist_Music_Items> musicItemCache = new Dictionary<int, Playlist_Music_Items>();
         private String selectedplaylist_id;
         private string nextPageToken = null;
         private bool isLoading = false;
@@ -120,21 +118,13 @@ namespace YTMusicWidget.src
 
         private void playlist_musiclist_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            if (e.ItemIndex >= 0 && e.ItemIndex < musicitemstoadd.Count)
-            {
-                if (!musicItemCache.TryGetValue(e.ItemIndex, out Playlist_Music_Items musicItem))
-                {
-                    musicItem = musicitemstoadd[e.ItemIndex];
-                    musicItemCache[e.ItemIndex] = musicItem;
-                }
-
-                var item = new ListViewItem(musicItem.Title)
+            var musicItem = musicitemstoadd[e.ItemIndex];
+            var item = new ListViewItem(musicItem.Title)
                 {
                     Tag = musicItem.VideoId,
                     ImageIndex = e.ItemIndex
                 };
-                e.Item = item;
-            }
+            e.Item = item;
         }
 
         private void playlist_musiclist_Scroll(object sender, ScrollEventArgs e)
@@ -180,13 +170,11 @@ public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
     {
         if (form1.playlistListBox.SelectedItems.Count > 0)
         {
-            // Clear the existing list and reset the cache
             form1.Invoke((MethodInvoker)delegate
             {
                 //리스트 초기화
                 form1.playlist_music_list.Items.Clear();
                 form1.playlist_music_list.VirtualListSize = 0;
-                musicItemCache.Clear();
                 musicitemstoadd.Clear();
                 //이미지 초기화
                 form1.playlist_music_list.SmallImageList = new ImageList
@@ -232,6 +220,7 @@ public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
 
                     // 음악 재생
                     PlayMusic(selectedMusicId);
+                    form1.Music_player_visible.Visible = true;
                     internal_player.internal_playlist(musicitemstoadd, selectedMusicId);
                     form1.Music_Controller.Visible = true;
                     form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusicId);
