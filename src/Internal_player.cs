@@ -84,7 +84,6 @@ namespace YTMusicWidget.src
         {
             form1.Inplay_playlist.Clear();
             form1.Inplay_playlist.Columns.Add(" ", 400);
-
             form1.Inplay_playlist.View = View.Details;
 
             ImageList thumbnailImageList = new ImageList

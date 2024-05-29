@@ -6,6 +6,7 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -221,7 +222,7 @@ public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
                     // 음악 재생
                     PlayMusic(selectedMusicId);
                     form1.Music_player_visible.Visible = true;
-                    internal_player.internal_playlist(musicitemstoadd, selectedMusicId);
+                    internal_player.internal_playlist(musicitemstoadd.ToList(), selectedMusicId);
                     form1.Music_Controller.Visible = true;
                     form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusicId);
 
