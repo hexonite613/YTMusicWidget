@@ -276,7 +276,7 @@ public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
             return sb.ToString();
         }
 
-        private void PlayMusic(string videoId)
+        internal void PlayMusic(string videoId)
         {
             form1.Size = new Size(887, 450);
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";

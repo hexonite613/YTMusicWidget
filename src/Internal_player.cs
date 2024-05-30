@@ -12,6 +12,8 @@ namespace YTMusicWidget.src
     internal class Internal_player
     {
         private readonly Form1 form1;
+        private readonly Music music;
+        List<Playlist_Music_Items> glob_playlist;
 
         //DI를 위한 클래스 생성
         public Internal_player(Form1 form1)
@@ -23,6 +25,12 @@ namespace YTMusicWidget.src
             form1.Music_Play_Pause_Button.Click += (sender, e) => Music_Play_Pause_Button_Click(sender, e);
             form1.Music_Next_Button.Click += (sender, e) => Music_Next_Button_Click(sender, e);
             form1.Music_Before_Button.Click += (sender, e) => Music_Before_Button_Click(sender, e);
+            form1.Inplay_playlist.SelectedIndexChanged+= (sender, e) => Inplay_playlist_SelectedIndexChanged(sender, e);
+            form1.Inplay_playlist.RetrieveVirtualItem += Inplay_playlist_RetrieveVirtualItem;
+
+            //대용량 처리
+            form1.Inplay_playlist.VirtualMode = true;
+
         }
 
 
@@ -83,6 +91,8 @@ namespace YTMusicWidget.src
         internal void internal_playlist(List<Playlist_Music_Items> playlist, string sel_videoid)
         {
             form1.Inplay_playlist.Clear();
+            form1.Inplay_playlist.VirtualListSize = playlist.Count;
+            glob_playlist = playlist;
             form1.Inplay_playlist.Columns.Add(" ", 400);
             form1.Inplay_playlist.View = View.Details;
 
@@ -91,34 +101,76 @@ namespace YTMusicWidget.src
                 ImageSize = new Size(180, 101)
             };
 
+            // 원본 리스트를 변경하지 않도록 복사본 생성
+            var playlistCopy = new List<Playlist_Music_Items>(playlist);
+
             // 선택한 비디오 아이템을 찾아서 리스트의 처음에 추가
-            Playlist_Music_Items selectedMusicItem = playlist.FirstOrDefault(item => item.VideoId == sel_videoid);
+            Playlist_Music_Items selectedMusicItem = playlistCopy.FirstOrDefault(item => item.VideoId == sel_videoid);
             if (selectedMusicItem != null)
             {
                 thumbnailImageList.Images.Add(selectedMusicItem.Image);
                 ListViewItem selectedItem = new ListViewItem(selectedMusicItem.Title)
                 {
-                    ImageIndex = thumbnailImageList.Images.Count - 1
+                    ImageIndex = thumbnailImageList.Images.Count - 1,
+                    Tag = selectedMusicItem.VideoId // Tag에 VideoId를 저장
                 };
                 form1.Inplay_playlist.Items.Add(selectedItem);
-                playlist.Remove(selectedMusicItem);
+                playlistCopy.Remove(selectedMusicItem);
             }
 
             // 나머지 아이템들을 랜덤으로 섞기
             var random = new Random();
-            var shuffledPlaylist = playlist.OrderBy(item => random.Next()).ToList();
+            var shuffledPlaylist = playlistCopy.OrderBy(item => random.Next()).ToList();
 
             foreach (var musicItem in shuffledPlaylist)
             {
                 thumbnailImageList.Images.Add(musicItem.Image);
                 ListViewItem item = new ListViewItem(musicItem.Title)
                 {
-                    ImageIndex = thumbnailImageList.Images.Count - 1
+                    ImageIndex = thumbnailImageList.Images.Count - 1,
+                    Tag = musicItem.VideoId // Tag에 VideoId를 저장
                 };
                 form1.Inplay_playlist.Items.Add(item);
             }
 
             form1.Inplay_playlist.SmallImageList = thumbnailImageList;
+        }
+
+
+
+        private void Inplay_playlist_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
+        {
+            if (e.ItemIndex >= 0 && e.ItemIndex < glob_playlist.Count)
+            {
+                var musicItem = glob_playlist[e.ItemIndex];
+                var item = new ListViewItem(musicItem.Title)
+                {
+                    Tag = musicItem.VideoId,
+                    ImageIndex = e.ItemIndex
+                };
+                e.Item = item;
+            }
+        }
+
+
+
+        private void Inplay_playlist_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (form1.Inplay_playlist.SelectedIndices.Count > 0)
+            {
+                int selectedIndex = form1.Inplay_playlist.SelectedIndices[0];
+                if (selectedIndex >= 0)
+                {
+                    var selectedMusicItem = form1.Inplay_playlist.Items[selectedIndex];
+                    string selectedMusicId = (string)selectedMusicItem.Tag;
+
+                    // 음악 재생
+                    music.PlayMusic(selectedMusicId);
+                    form1.Music_player_visible.Visible = true;
+                    form1.Music_Controller.Visible = true;
+                    form1.Music_ProgressBar.Maximum = (int)music.getVideoLength(selectedMusicId);
+                }
+            }
         }
 
     }
