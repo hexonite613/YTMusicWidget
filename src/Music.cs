@@ -6,7 +6,6 @@ using System;
 using System.Collections.Generic;
 using System.Configuration;
 using System.Drawing;
-using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
@@ -23,7 +22,8 @@ namespace YTMusicWidget.src
         private String selectedplaylist_id;
         private string nextPageToken = null;
         private bool isLoading = false;
-        private bool isHandlingSelection = false;
+        private Dictionary<string, List<Playlist_Music_Items>> musicCache = new Dictionary<string, List<Playlist_Music_Items>>();
+
 
         public Music(Form1 form1)
         {
@@ -53,12 +53,11 @@ namespace YTMusicWidget.src
 
 
 
-        internal async Task GetPlaylist_Music(string playlistId, string pageToken = null)
+        internal async Task<string> FetchAndCachePlaylistAsync(string playlistId, string pageToken = null)
         {
             try
             {
                 string token = Authorize.GetAccessToken();
-
                 GoogleCredential credential = GoogleCredential.FromAccessToken(token);
                 var service = new YouTubeService(new BaseClientService.Initializer()
                 {
@@ -78,20 +77,23 @@ namespace YTMusicWidget.src
                 foreach (var item in response.Items)
                 {
                     var thumbnailUrl = item.Snippet.Thumbnails?.High?.Url;
-                    if (thumbnailUrl == null)
-                    {
-                        continue;
-                    }
+                    if (thumbnailUrl == null) continue;
 
                     var musicImage = await playlist.GetImageFromUrl(thumbnailUrl);
                     var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
                     newItems.Add(musicItem);
                 }
 
-                musicitemstoadd.AddRange(newItems); // Append new items to the existing list
+                if (!musicCache.ContainsKey(playlistId))
+                {
+                    musicCache[playlistId] = new List<Playlist_Music_Items>();
+                }
+                musicCache[playlistId].AddRange(newItems);
 
+                // Update the UI with the new items
                 form1.Invoke((MethodInvoker)delegate
                 {
+                    musicitemstoadd.AddRange(newItems);
                     form1.playlist_music_list.VirtualListSize = musicitemstoadd.Count;
 
                     ImageList thumbnailImageList = form1.playlist_music_list.SmallImageList ?? new ImageList
@@ -102,16 +104,18 @@ namespace YTMusicWidget.src
                     foreach (var musicItem in newItems)
                     {
                         thumbnailImageList.Images.Add(musicItem.Image);
-                        ListView.SelectedIndexCollection col = form1.playlist_music_list.SelectedIndices;
                     }
 
                     form1.playlist_music_list.SmallImageList = thumbnailImageList;
                     form1.playlist_music_list.Invalidate();
                 });
+
+                return nextPageToken; // Return the nextPageToken to continue fetching
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"플레이리스트 음악 가져오기 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
+                return null;
             }
         }
 
@@ -147,8 +151,8 @@ namespace YTMusicWidget.src
             try
             {
                 isLoading = true;
-                form1.playlist_music_loading.Visible=true;
-                await GetPlaylist_Music(selectedplaylist_id, nextPageToken);
+                form1.playlist_music_loading.Visible = true;
+                await FetchAndCacheAllPlaylistItemsAsync(selectedplaylist_id);
             }
             catch (Exception ex)
             {
@@ -161,50 +165,89 @@ namespace YTMusicWidget.src
             }
         }
 
-
-
-
-
-public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
-{
-    try
-    {
-        if (form1.playlistListBox.SelectedItems.Count > 0)
+        internal async Task FetchAndCacheAllPlaylistItemsAsync(string playlistId)
         {
-            form1.Invoke((MethodInvoker)delegate
+            string pageToken = nextPageToken;
+            do
             {
-                //리스트 초기화
-                form1.playlist_music_list.Items.Clear();
-                form1.playlist_music_list.VirtualListSize = 0;
-                musicitemstoadd.Clear();
-                //이미지 초기화
-                form1.playlist_music_list.SmallImageList = new ImageList
-                {
-                    ImageSize = new Size(130, 85)
-                };
-            });
-            
-
-            isLoading = true;
-            form1.Invoke((MethodInvoker)delegate { form1.playlist_music_loading.Visible = true; });
-
-            ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
-            string playlistId = selectedListViewItem.Tag.ToString();
-            selectedplaylist_id = playlistId;
-
-            await GetPlaylist_Music(selectedplaylist_id);
+                pageToken = await FetchAndCachePlaylistAsync(playlistId, pageToken);
+            } while (!string.IsNullOrEmpty(pageToken));
         }
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show($"플레이리스트 선택 처리 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
-    }
-    finally
-    {
-        isLoading = false;
-        form1.Invoke((MethodInvoker)delegate { form1.playlist_music_loading.Visible = false; });
-    }
-}
+
+        private async void LoadPlaylistsInBackground(List<string> playlistIds)
+        {
+            foreach (var playlistId in playlistIds)
+            {
+                await FetchAndCachePlaylistAsync(playlistId);
+            }
+        }
+
+
+
+
+        public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
+        {
+            try
+            {
+                if (form1.playlistListBox.SelectedItems.Count > 0)
+                {
+                    form1.playlist_music_list.Clear();
+                    form1.playlist_music_list.SmallImageList = null; // 이미지 리스트 초기화
+                    /*musicItemCache.Clear(); // 캐시 초기화*/
+                    isLoading = true;
+                    form1.playlist_music_loading.Visible = true;
+
+                    ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
+                    string playlistId = selectedListViewItem.Tag.ToString();
+                    selectedplaylist_id = playlistId;
+
+                    if (musicCache.ContainsKey(playlistId))
+                    {
+                        // 캐시에서 데이터 로드
+                        musicitemstoadd = musicCache[playlistId];
+                        UpdatePlaylistView(musicitemstoadd);
+                    }
+                    else
+                    {
+                        // 캐시에 없는 경우 데이터를 가져옴
+                        await FetchAndCacheAllPlaylistItemsAsync(playlistId);
+                        if (musicCache.ContainsKey(playlistId))
+                        {
+                            musicitemstoadd = musicCache[playlistId];
+                            UpdatePlaylistView(musicitemstoadd);
+                        }
+                    }
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"플레이리스트 선택 처리 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
+            }
+            finally
+            {
+                isLoading = false;
+                form1.playlist_music_loading.Visible = false;
+            }
+        }
+
+        private void UpdatePlaylistView(List<Playlist_Music_Items> musicItems)
+        {
+            form1.playlist_music_list.VirtualListSize = musicItems.Count;
+
+            ImageList thumbnailImageList = new ImageList
+            {
+                ImageSize = new Size(130, 85)
+            };
+
+            foreach (var musicItem in musicItems)
+            {
+                thumbnailImageList.Images.Add(musicItem.Image);
+            }
+
+            form1.playlist_music_list.SmallImageList = thumbnailImageList;
+            form1.playlist_music_list.Invalidate();
+        }
+
 
 
 

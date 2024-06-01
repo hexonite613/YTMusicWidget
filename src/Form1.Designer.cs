@@ -136,11 +136,11 @@
             // 
             this.main_content.BorderColor = System.Drawing.Color.Black;
             this.main_content.Controls.Add(this.Music_Controller);
+            this.main_content.Controls.Add(this.playlist_music_loading);
             this.main_content.Controls.Add(this.playlistListBox_ScrollBar);
             this.main_content.Controls.Add(this.playlist_music_list_ScrollBar);
             this.main_content.Controls.Add(this.playlistListBox);
             this.main_content.Controls.Add(this.playlist_music_list);
-            this.main_content.Controls.Add(this.playlist_music_loading);
             this.main_content.Controls.Add(this.change_pos_com_playlist);
             this.main_content.Controls.Add(this.change_pos_playlist);
             this.main_content.Controls.Add(this.Music_player_visible);
@@ -171,7 +171,7 @@
             this.Music_Controller.Controls.Add(this.music_player);
             this.Music_Controller.Font = new System.Drawing.Font("Segoe UI", 9F);
             this.Music_Controller.ForeColor = System.Drawing.Color.FromArgb(((int)(((byte)(125)))), ((int)(((byte)(137)))), ((int)(((byte)(149)))));
-            this.Music_Controller.Location = new System.Drawing.Point(1, 0);
+            this.Music_Controller.Location = new System.Drawing.Point(3, 3);
             this.Music_Controller.Name = "Music_Controller";
             this.Music_Controller.Size = new System.Drawing.Size(887, 450);
             this.Music_Controller.TabIndex = 15;
