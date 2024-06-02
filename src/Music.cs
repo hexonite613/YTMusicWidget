@@ -23,7 +23,7 @@ namespace YTMusicWidget.src
         private String selectedplaylist_id;
         private string nextPageToken = null;
         private bool isLoading = false;
-        private bool isHandlingSelection = false;
+        private Dictionary<string, List<Playlist_Music_Items>> musicCache = new Dictionary<string, List<Playlist_Music_Items>>();
 
         public Music(Form1 form1)
         {
@@ -53,12 +53,11 @@ namespace YTMusicWidget.src
 
 
 
-        internal async Task GetPlaylist_Music(string playlistId, string pageToken = null)
+        internal async Task FetchAndCachePlaylistAsync(string playlistId)
         {
             try
             {
                 string token = Authorize.GetAccessToken();
-
                 GoogleCredential credential = GoogleCredential.FromAccessToken(token);
                 var service = new YouTubeService(new BaseClientService.Initializer()
                 {
@@ -66,48 +65,59 @@ namespace YTMusicWidget.src
                     ApplicationName = "ytmusicwidget"
                 });
 
-                var request = service.PlaylistItems.List("snippet");
-                request.PlaylistId = playlistId;
-                request.MaxResults = 20;
-                request.PageToken = pageToken;
-
-                var response = await request.ExecuteAsync();
-                nextPageToken = response.NextPageToken;
-
-                var newItems = new List<Playlist_Music_Items>();
-                foreach (var item in response.Items)
+                string nextPageToken = null;
+                do
                 {
-                    var thumbnailUrl = item.Snippet.Thumbnails?.High?.Url;
-                    if (thumbnailUrl == null)
+                    var request = service.PlaylistItems.List("snippet");
+                    request.PlaylistId = playlistId;
+                    request.MaxResults = 20;
+                    request.PageToken = nextPageToken;
+
+                    var response = await request.ExecuteAsync();
+                    nextPageToken = response.NextPageToken;
+
+                    var newItems = new List<Playlist_Music_Items>();
+                    foreach (var item in response.Items)
                     {
-                        continue;
+                        var thumbnailUrl = item.Snippet.Thumbnails?.High?.Url;
+                        if (thumbnailUrl == null) continue;
+
+                        var musicImage = await playlist.GetImageFromUrl(thumbnailUrl);
+                        var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
+                        newItems.Add(musicItem);
                     }
 
-                    var musicImage = await playlist.GetImageFromUrl(thumbnailUrl);
-                    var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
-                    newItems.Add(musicItem);
-                }
-
-                musicitemstoadd.AddRange(newItems); // Append new items to the existing list
-
-                form1.Invoke((MethodInvoker)delegate
-                {
-                    form1.playlist_music_list.VirtualListSize = musicitemstoadd.Count;
-
-                    ImageList thumbnailImageList = form1.playlist_music_list.SmallImageList ?? new ImageList
+                    if (!musicCache.ContainsKey(playlistId))
                     {
-                        ImageSize = new Size(130, 85)
-                    };
-
-                    foreach (var musicItem in newItems)
-                    {
-                        thumbnailImageList.Images.Add(musicItem.Image);
-                        ListView.SelectedIndexCollection col = form1.playlist_music_list.SelectedIndices;
+                        musicCache[playlistId] = new List<Playlist_Music_Items>();
                     }
+                    musicCache[playlistId].AddRange(newItems);
 
-                    form1.playlist_music_list.SmallImageList = thumbnailImageList;
-                    form1.playlist_music_list.Invalidate();
-                });
+                    form1.Invoke((MethodInvoker)delegate
+                    {
+                        musicitemstoadd.Clear();
+                        foreach (var cacheItem in musicCache[playlistId])
+                        {
+                            musicitemstoadd.Add(cacheItem);
+                        }
+
+                        form1.playlist_music_list.VirtualListSize = musicitemstoadd.Count;
+
+                        ImageList thumbnailImageList = form1.playlist_music_list.SmallImageList ?? new ImageList
+                        {
+                            ImageSize = new Size(130, 85)
+                        };
+
+                        foreach (var musicItem in newItems)
+                        {
+                            thumbnailImageList.Images.Add(musicItem.Image);
+                        }
+
+                        form1.playlist_music_list.SmallImageList = thumbnailImageList;
+                        form1.playlist_music_list.Invalidate();
+                    });
+
+                } while (!string.IsNullOrEmpty(nextPageToken));
             }
             catch (Exception ex)
             {
@@ -117,22 +127,29 @@ namespace YTMusicWidget.src
 
 
 
+
         private void playlist_musiclist_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
-            var musicItem = musicitemstoadd[e.ItemIndex];
-            var item = new ListViewItem(musicItem.Title)
+            if (selectedplaylist_id != null && musicCache.ContainsKey(selectedplaylist_id))
+            {
+                var musicItem = musicCache[selectedplaylist_id][e.ItemIndex];
+                var item = new ListViewItem(musicItem.Title)
                 {
                     Tag = musicItem.VideoId,
                     ImageIndex = e.ItemIndex
                 };
-            e.Item = item;
+                e.Item = item;
+            }
+            else
+            {
+               MessageBox.Show("플레이리스트 아이템을 가져오는 중 오류가 발생했습니다.");
+            }
         }
+
 
         private void playlist_musiclist_Scroll(object sender, ScrollEventArgs e)
         {
- 
-            int visibleItemsCount = form1.playlist_music_list.ClientSize.Height/form1.playlist_music_list.TopItem.Bounds.Height;
-            if (form1.playlist_music_list.TopItem.Index + visibleItemsCount >= form1.playlist_music_list.VirtualListSize - 1)
+            if (form1.playlistListBox.SelectedItems.Count > 0)
             {
                 if (!isLoading && !string.IsNullOrEmpty(nextPageToken))
                 {
@@ -148,7 +165,7 @@ namespace YTMusicWidget.src
             {
                 isLoading = true;
                 form1.playlist_music_loading.Visible=true;
-                await GetPlaylist_Music(selectedplaylist_id, nextPageToken);
+                await FetchAndCachePlaylistAsync(selectedplaylist_id);
             }
             catch (Exception ex)
             {
@@ -165,46 +182,28 @@ namespace YTMusicWidget.src
 
 
 
-public async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
-{
-    try
-    {
-        if (form1.playlistListBox.SelectedItems.Count > 0)
+        private async void playlist_SelectedIndexChangedAsync(object sender, EventArgs e)
         {
-            form1.Invoke((MethodInvoker)delegate
+            try
             {
-                //리스트 초기화
-                form1.playlist_music_list.Items.Clear();
-                form1.playlist_music_list.VirtualListSize = 0;
-                musicitemstoadd.Clear();
-                //이미지 초기화
-                form1.playlist_music_list.SmallImageList = new ImageList
+                if (form1.playlistListBox.SelectedItems.Count > 0)
                 {
-                    ImageSize = new Size(130, 85)
-                };
-            });
-            
+                    form1.playlist_music_list.Items.Clear();
+                    form1.playlist_music_list.VirtualListSize = 0;
 
-            isLoading = true;
-            form1.Invoke((MethodInvoker)delegate { form1.playlist_music_loading.Visible = true; });
+                    ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
+                    string playlistId = selectedListViewItem.Tag.ToString();
 
-            ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
-            string playlistId = selectedListViewItem.Tag.ToString();
-            selectedplaylist_id = playlistId;
+                    selectedplaylist_id = playlistId;
 
-            await GetPlaylist_Music(selectedplaylist_id);
+                    await Task.Run(() => FetchAndCachePlaylistAsync(playlistId));
+                }
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"플레이리스트 선택 처리 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
+            }
         }
-    }
-    catch (Exception ex)
-    {
-        MessageBox.Show($"플레이리스트 선택 처리 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
-    }
-    finally
-    {
-        isLoading = false;
-        form1.Invoke((MethodInvoker)delegate { form1.playlist_music_loading.Visible = false; });
-    }
-}
 
 
 
