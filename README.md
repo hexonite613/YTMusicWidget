@@ -21,8 +21,8 @@
 - ~~Bring user playlists~~
 - Bring playlist musics
   - ~~Bring playlist musics in one list~~
-    - Need to reduce time
-      - Caching items
+    - ~~Need to reduce time~~
+      - ~~Caching items~~
     - ~~Infinite scroll~~
     - ~~Need to show all items(error)~~
 - For UX, bring playlist and music in advance ~~(Make loading screen)~~
