@@ -51,13 +51,22 @@ namespace YTMusicWidget.src
         }
 
 
-
-
         internal async Task FetchAndCachePlaylistAsync(string playlistId)
         {
             try
             {
+                // 캐시 초기화
+                if (!musicCache.ContainsKey(playlistId))
+                {
+                    musicCache[playlistId] = new List<Playlist_Music_Items>();
+                }
+
                 string token = Authorize.GetAccessToken();
+                if (string.IsNullOrEmpty(token))
+                {
+                    throw new InvalidOperationException("Access token is null or empty.");
+                }
+
                 GoogleCredential credential = GoogleCredential.FromAccessToken(token);
                 var service = new YouTubeService(new BaseClientService.Initializer()
                 {
@@ -66,7 +75,9 @@ namespace YTMusicWidget.src
                 });
 
                 string nextPageToken = null;
-                do
+                bool fetchMore = true;
+
+                while (fetchMore)
                 {
                     var request = service.PlaylistItems.List("snippet");
                     request.PlaylistId = playlistId;
@@ -80,26 +91,34 @@ namespace YTMusicWidget.src
                     foreach (var item in response.Items)
                     {
                         var thumbnailUrl = item.Snippet.Thumbnails?.High?.Url;
-                        if (thumbnailUrl == null) continue;
+                        if (thumbnailUrl == null)
+                        {
+                            continue;
+                        }
+
+                        // 캐시에 이미 있는 항목은 건너뛰기
+                        if (musicCache[playlistId].Any(mi => mi.VideoId == item.Snippet.ResourceId.VideoId))
+                        {
+                            continue;
+                        }
+
+                        if (playlist == null)
+                        {
+                            throw new InvalidOperationException("Playlist object is null.");
+                        }
 
                         var musicImage = await playlist.GetImageFromUrl(thumbnailUrl);
                         var musicItem = new Playlist_Music_Items(item.Snippet.Title, musicImage, item.Snippet.ResourceId.VideoId);
                         newItems.Add(musicItem);
                     }
 
-                    if (!musicCache.ContainsKey(playlistId))
-                    {
-                        musicCache[playlistId] = new List<Playlist_Music_Items>();
-                    }
+                    // 캐시에 새 항목 추가
                     musicCache[playlistId].AddRange(newItems);
 
-                    form1.Invoke((MethodInvoker)delegate
+                    form1?.Invoke((MethodInvoker)delegate
                     {
                         musicitemstoadd.Clear();
-                        foreach (var cacheItem in musicCache[playlistId])
-                        {
-                            musicitemstoadd.Add(cacheItem);
-                        }
+                        musicitemstoadd.AddRange(musicCache[playlistId]);
 
                         form1.playlist_music_list.VirtualListSize = musicitemstoadd.Count;
 
@@ -108,16 +127,21 @@ namespace YTMusicWidget.src
                             ImageSize = new Size(130, 85)
                         };
 
-                        foreach (var musicItem in newItems)
+                        foreach (var musicItem in musicCache[playlistId])
                         {
-                            thumbnailImageList.Images.Add(musicItem.Image);
+                            if (!thumbnailImageList.Images.ContainsKey(musicItem.VideoId))
+                            {
+                                thumbnailImageList.Images.Add(musicItem.VideoId, musicItem.Image);
+                            }
                         }
 
                         form1.playlist_music_list.SmallImageList = thumbnailImageList;
                         form1.playlist_music_list.Invalidate();
                     });
 
-                } while (!string.IsNullOrEmpty(nextPageToken));
+                    // fetchMore 조건 갱신
+                    fetchMore = !string.IsNullOrEmpty(nextPageToken);
+                }
             }
             catch (Exception ex)
             {
@@ -128,21 +152,30 @@ namespace YTMusicWidget.src
 
 
 
+
+
         private void playlist_musiclist_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
         {
             if (selectedplaylist_id != null && musicCache.ContainsKey(selectedplaylist_id))
             {
-                var musicItem = musicCache[selectedplaylist_id][e.ItemIndex];
-                var item = new ListViewItem(musicItem.Title)
+                if (e.ItemIndex >= 0 && e.ItemIndex < musicCache[selectedplaylist_id].Count)
                 {
-                    Tag = musicItem.VideoId,
-                    ImageIndex = e.ItemIndex
-                };
-                e.Item = item;
+                    var musicItem = musicCache[selectedplaylist_id][e.ItemIndex];
+                    var item = new ListViewItem(musicItem.Title)
+                    {
+                        Tag = musicItem.VideoId,
+                        ImageIndex = e.ItemIndex
+                    };
+                    e.Item = item;
+                }
+                else
+                {
+                    e.Item = new ListViewItem("");
+                }
             }
             else
             {
-               MessageBox.Show("플레이리스트 아이템을 가져오는 중 오류가 발생했습니다.");
+                e.Item = new ListViewItem("");
             }
         }
 
@@ -186,17 +219,16 @@ namespace YTMusicWidget.src
         {
             try
             {
-                if (form1.playlistListBox.SelectedItems.Count > 0)
+                if (form1.playlistListBox.SelectedItems.Count==1)
                 {
                     form1.playlist_music_list.Items.Clear();
                     form1.playlist_music_list.VirtualListSize = 0;
+                    
 
                     ListViewItem selectedListViewItem = form1.playlistListBox.SelectedItems[0];
-                    string playlistId = selectedListViewItem.Tag.ToString();
+                    selectedplaylist_id = selectedListViewItem.Tag.ToString();
 
-                    selectedplaylist_id = playlistId;
-
-                    await Task.Run(() => FetchAndCachePlaylistAsync(playlistId));
+                    await Task.Run(() => FetchAndCachePlaylistAsync(selectedplaylist_id));
                 }
             }
             catch (Exception ex)
