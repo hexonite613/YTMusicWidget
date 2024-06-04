@@ -126,6 +126,7 @@ namespace YTMusicWidget.src
                         {
                             ImageSize = new Size(130, 85)
                         };
+                        thumbnailImageList.Images.Clear();
 
                         foreach (var musicItem in musicCache[playlistId])
                         {
