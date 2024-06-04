@@ -23,6 +23,7 @@ namespace YTMusicWidget.src
         private String selectedplaylist_id;
         private string nextPageToken = null;
         private bool isLoading = false;
+        private bool fetchMore = false;
         private Dictionary<string, List<Playlist_Music_Items>> musicCache = new Dictionary<string, List<Playlist_Music_Items>>();
 
         public Music(Form1 form1)
@@ -75,7 +76,7 @@ namespace YTMusicWidget.src
                 });
 
                 string nextPageToken = null;
-                bool fetchMore = true;
+                fetchMore = true;
 
                 while (fetchMore)
                 {
@@ -185,31 +186,19 @@ namespace YTMusicWidget.src
         {
             if (form1.playlistListBox.SelectedItems.Count > 0)
             {
-                if (!isLoading && !string.IsNullOrEmpty(nextPageToken))
+                if (isLoading) return;
+                if (form1.playlist_music_list.VirtualListSize == 0) return;
+                int visibleItemsCount = form1.playlist_music_list.ClientSize.Height / form1.playlist_music_list.TopItem.Bounds.Height;
+                if (form1.playlist_music_list.TopItem.Index + visibleItemsCount >= form1.playlist_music_list.VirtualListSize - 1&&fetchMore==true)
                 {
-                    _ =LoadMoreItems();
+                    form1.playlist_music_loading.Visible = true;
+                }
+                else
+                {
+                    form1.playlist_music_loading.Visible = false;
                 }
             }
 
-        }
-
-        private async Task LoadMoreItems()
-        {
-            try
-            {
-                isLoading = true;
-                form1.playlist_music_loading.Visible=true;
-                await FetchAndCachePlaylistAsync(selectedplaylist_id);
-            }
-            catch (Exception ex)
-            {
-                MessageBox.Show($"플레이리스트 음악 가져오기 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
-            }
-            finally
-            {
-                isLoading = false;
-                form1.playlist_music_loading.Visible = false;
-            }
         }
 
 
@@ -220,6 +209,7 @@ namespace YTMusicWidget.src
         {
             try
             {
+                form1.playlist_music_loading.Visible = true;
                 if (form1.playlistListBox.SelectedItems.Count==1)
                 {
                     form1.playlist_music_list.Items.Clear();
@@ -235,6 +225,10 @@ namespace YTMusicWidget.src
             catch (Exception ex)
             {
                 MessageBox.Show($"플레이리스트 선택 처리 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
+            }
+            finally
+            {
+                form1.playlist_music_loading.Visible = false;
             }
         }
 
