@@ -287,7 +287,5 @@ namespace YTMusicWidget
         {
             Music_Controller.Visible = true;
         }
-
-
     }
 }

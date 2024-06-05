@@ -2,6 +2,7 @@
 using Google.Apis.Auth.OAuth2;
 using Google.Apis.Services;
 using Google.Apis.YouTube.v3;
+using Google.Apis.YouTube.v3.Data;
 using System;
 using System.Collections.Generic;
 using System.Configuration;
@@ -24,6 +25,7 @@ namespace YTMusicWidget.src
         private string nextPageToken = null;
         private bool isLoading = false;
         private bool fetchMore = false;
+        private bool isFetchingCompleted = false;
         private Dictionary<string, List<Playlist_Music_Items>> musicCache = new Dictionary<string, List<Playlist_Music_Items>>();
 
         public Music(Form1 form1)
@@ -56,7 +58,7 @@ namespace YTMusicWidget.src
         {
             try
             {
-                // 캐시 초기화
+                        // 캐시 초기화
                 if (!musicCache.ContainsKey(playlistId))
                 {
                     musicCache[playlistId] = new List<Playlist_Music_Items>();
@@ -75,7 +77,7 @@ namespace YTMusicWidget.src
                     ApplicationName = "ytmusicwidget"
                 });
 
-                string nextPageToken = null;
+                nextPageToken = null;
                 fetchMore = true;
 
                 while (fetchMore)
@@ -97,7 +99,7 @@ namespace YTMusicWidget.src
                             continue;
                         }
 
-                        // 캐시에 이미 있는 항목은 건너뛰기
+                                    // 캐시에 이미 있는 항목은 건너뛰기
                         if (musicCache[playlistId].Any(mi => mi.VideoId == item.Snippet.ResourceId.VideoId))
                         {
                             continue;
@@ -113,7 +115,7 @@ namespace YTMusicWidget.src
                         newItems.Add(musicItem);
                     }
 
-                    // 캐시에 새 항목 추가
+                              // 캐시에 새 항목 추가
                     musicCache[playlistId].AddRange(newItems);
 
                     form1?.Invoke((MethodInvoker)delegate
@@ -144,6 +146,23 @@ namespace YTMusicWidget.src
                     // fetchMore 조건 갱신
                     fetchMore = !string.IsNullOrEmpty(nextPageToken);
                 }
+                // 모든 페칭이 완료됨
+                isFetchingCompleted = true;
+
+                // 모든 페칭이 완료된 후 Inplay_playlist 메서드 호출
+                form1?.Invoke((MethodInvoker)delegate
+                {
+                    if (selectedplaylist_id != null)
+                    {
+                        if (form1.playlist_music_list.SelectedIndices[0] != 0)
+                        {
+                            int selectedIndex = form1.playlist_music_list.SelectedIndices[0];
+                            var selectedMusicItem = musicitemstoadd[selectedIndex];
+                            var selectedMusicId = selectedMusicItem.VideoId;
+                            internal_player.internal_playlist(musicCache[selectedplaylist_id], selectedMusicId);
+                        }
+                    }
+                });
             }
             catch (Exception ex)
             {
@@ -235,7 +254,7 @@ namespace YTMusicWidget.src
 
 
         //음악 선택시 음악 재생하기
-        private void playlist_music_list_SelectedIndexChanged(object sender, EventArgs e)
+        private async void playlist_music_list_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (form1.playlist_music_list.SelectedIndices.Count > 0)
             {
@@ -247,15 +266,26 @@ namespace YTMusicWidget.src
 
                     // 음악 재생
                     PlayMusic(selectedMusicId);
-                    form1.Music_Image.Image=musicitemstoadd[selectedIndex].Image;
+                    form1.Music_Image.Image = musicitemstoadd[selectedIndex].Image;
                     form1.Music_player_visible.Visible = true;
-                    /*internal_player.internal_playlist(musicitemstoadd.ToList(), selectedMusicId);*/
                     form1.Music_Controller.Visible = true;
                     form1.Music_ProgressBar.Maximum = (int)getVideoLength(selectedMusicId);
 
+                    if (!isFetchingCompleted)
+                    {
+                        form1.playlist_music_loading.Visible = true;
+                        while (!isFetchingCompleted)
+                        {
+                            await Task.Delay(500); // 잠시 기다리기
+                        }
+                        form1.playlist_music_loading.Visible = false;
+                    }
+
+                    internal_player.internal_playlist(musicCache[selectedplaylist_id], selectedMusicId);
                 }
             }
         }
+
 
 
 

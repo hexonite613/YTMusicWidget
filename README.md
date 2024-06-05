@@ -25,7 +25,7 @@
       - ~~Caching items~~
     - ~~Infinite scroll~~
     - ~~Need to show all items(error)~~
-- For UX, bring playlist and music in advance ~~(Make loading screen)~~
+- ~~For UX, bring playlist and music in advance (Make loading screen)~~
 - ~~Get more than 50 playlists/musics~~
 - ~~Implement play music~~
 - ~~Enhance playing music~~
@@ -41,8 +41,9 @@
   -Sound Scrollbar
     - +Design
   - Internal music playlist
-    - Playlist need to pin first music
-    - Shuffle musics
+    - ~~Playlist need to pin first music~~
+    - ~~Shuffle musics~~
+    - Minor Errors
 - ~~Change playlist and playlist music list into listview for UI~~
   - +Design
 - Search

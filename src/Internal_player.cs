@@ -26,10 +26,7 @@ namespace YTMusicWidget.src
             form1.Music_Next_Button.Click += (sender, e) => Music_Next_Button_Click(sender, e);
             form1.Music_Before_Button.Click += (sender, e) => Music_Before_Button_Click(sender, e);
             form1.Inplay_playlist.SelectedIndexChanged+= (sender, e) => Inplay_playlist_SelectedIndexChanged(sender, e);
-            form1.Inplay_playlist.RetrieveVirtualItem += Inplay_playlist_RetrieveVirtualItem;
 
-            //대용량 처리
-            form1.Inplay_playlist.VirtualMode = true;
 
         }
 
@@ -136,21 +133,6 @@ namespace YTMusicWidget.src
             form1.Inplay_playlist.SmallImageList = thumbnailImageList;
         }
 
-
-
-        private void Inplay_playlist_RetrieveVirtualItem(object sender, RetrieveVirtualItemEventArgs e)
-        {
-            if (e.ItemIndex >= 0 && e.ItemIndex < glob_playlist.Count)
-            {
-                var musicItem = glob_playlist[e.ItemIndex];
-                var item = new ListViewItem(musicItem.Title)
-                {
-                    Tag = musicItem.VideoId,
-                    ImageIndex = e.ItemIndex
-                };
-                e.Item = item;
-            }
-        }
 
 
 
