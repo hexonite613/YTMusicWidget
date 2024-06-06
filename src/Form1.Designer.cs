@@ -139,8 +139,8 @@
             // main_content
             // 
             this.main_content.BorderColor = System.Drawing.Color.Black;
-            this.main_content.Controls.Add(this.playlist_music_loading);
             this.main_content.Controls.Add(this.Music_Controller);
+            this.main_content.Controls.Add(this.playlist_music_loading);
             this.main_content.Controls.Add(this.change_pos_com_playlist);
             this.main_content.Controls.Add(this.change_pos_playlist);
             this.main_content.Controls.Add(this.Music_player_visible);
@@ -218,7 +218,7 @@
             // 
             // Music_Volume_Bar
             // 
-            this.Music_Volume_Bar.Location = new System.Drawing.Point(-4, 172);
+            this.Music_Volume_Bar.Location = new System.Drawing.Point(31, 234);
             this.Music_Volume_Bar.Name = "Music_Volume_Bar";
             this.Music_Volume_Bar.Size = new System.Drawing.Size(128, 28);
             this.Music_Volume_Bar.TabIndex = 20;

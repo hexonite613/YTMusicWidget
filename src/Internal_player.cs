@@ -16,10 +16,11 @@ namespace YTMusicWidget.src
         List<Playlist_Music_Items> glob_playlist;
 
         //DI를 위한 클래스 생성
-        public Internal_player(Form1 form1)
+        public Internal_player(Form1 form1, Music music)
 
         {
             this.form1 = form1;
+            this.music=music;
             form1.Music_ProgressBar.Scroll += (sender, e) => Music_ProgressBar_Scroll(sender, e);
             form1.Music_player_hide.Click += (sender, e) => Music_player_hide_Click(sender, e);
             form1.Music_Play_Pause_Button.Click += (sender, e) => Music_Play_Pause_Button_Click(sender, e);
@@ -88,7 +89,7 @@ namespace YTMusicWidget.src
         internal void internal_playlist(List<Playlist_Music_Items> playlist, string sel_videoid)
         {
             form1.Inplay_playlist.Clear();
-            form1.Inplay_playlist.VirtualListSize = playlist.Count;
+            form1.Inplay_playlist.VirtualListSize = 0;
             glob_playlist = playlist;
             form1.Inplay_playlist.Columns.Add(" ", 400);
             form1.Inplay_playlist.View = View.Details;
@@ -105,10 +106,10 @@ namespace YTMusicWidget.src
             Playlist_Music_Items selectedMusicItem = playlistCopy.FirstOrDefault(item => item.VideoId == sel_videoid);
             if (selectedMusicItem != null)
             {
-                thumbnailImageList.Images.Add(selectedMusicItem.Image);
+                thumbnailImageList.Images.Add(selectedMusicItem.VideoId, selectedMusicItem.Image);
                 ListViewItem selectedItem = new ListViewItem(selectedMusicItem.Title)
                 {
-                    ImageIndex = thumbnailImageList.Images.Count - 1,
+                    ImageIndex = thumbnailImageList.Images.IndexOfKey(selectedMusicItem.VideoId),
                     Tag = selectedMusicItem.VideoId // Tag에 VideoId를 저장
                 };
                 form1.Inplay_playlist.Items.Add(selectedItem);
@@ -121,39 +122,46 @@ namespace YTMusicWidget.src
 
             foreach (var musicItem in shuffledPlaylist)
             {
-                thumbnailImageList.Images.Add(musicItem.Image);
+                thumbnailImageList.Images.Add(musicItem.VideoId, musicItem.Image);
                 ListViewItem item = new ListViewItem(musicItem.Title)
                 {
-                    ImageIndex = thumbnailImageList.Images.Count - 1,
+                    ImageIndex = thumbnailImageList.Images.IndexOfKey(musicItem.VideoId),
                     Tag = musicItem.VideoId // Tag에 VideoId를 저장
                 };
                 form1.Inplay_playlist.Items.Add(item);
             }
 
             form1.Inplay_playlist.SmallImageList = thumbnailImageList;
+            form1.Inplay_playlist.VirtualListSize = form1.Inplay_playlist.Items.Count;
         }
+
 
 
 
 
         private void Inplay_playlist_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (form1.Inplay_playlist.SelectedIndices.Count > 0)
+            try
             {
-                int selectedIndex = form1.Inplay_playlist.SelectedIndices[0];
-                if (selectedIndex >= 0)
+                if (form1.Inplay_playlist.SelectedItems.Count==1)
                 {
-                    var selectedMusicItem = form1.Inplay_playlist.Items[selectedIndex];
-                    string selectedMusicId = (string)selectedMusicItem.Tag;
+                    var selectedItem = form1.Inplay_playlist.SelectedItems[0];
+                    
+                    string selectedMusicId = selectedItem.Tag.ToString();
 
-                    // 음악 재생
+                    form1.Music_Image.Image = glob_playlist.FirstOrDefault(item => item.VideoId == selectedMusicId).Image;
                     music.PlayMusic(selectedMusicId);
                     form1.Music_player_visible.Visible = true;
                     form1.Music_Controller.Visible = true;
                     form1.Music_ProgressBar.Maximum = (int)music.getVideoLength(selectedMusicId);
                 }
             }
+            catch (Exception ex)
+            {
+                MessageBox.Show($"Inplay_playlist 항목 선택 중 오류가 발생했습니다: {ex.Message}\n\n{ex.StackTrace}");
+            }
         }
+
 
     }
 }

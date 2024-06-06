@@ -31,7 +31,7 @@ namespace YTMusicWidget.src
         public Music(Form1 form1)
         {
             this.form1 = form1;
-            internal_player = new Internal_player(form1);
+            internal_player = new Internal_player(form1,this);
             playlist = new playlist(form1);
 
 
@@ -58,7 +58,7 @@ namespace YTMusicWidget.src
         {
             try
             {
-                        // 캐시 초기화
+                // 캐시 초기화
                 if (!musicCache.ContainsKey(playlistId))
                 {
                     musicCache[playlistId] = new List<Playlist_Music_Items>();
@@ -115,7 +115,7 @@ namespace YTMusicWidget.src
                         newItems.Add(musicItem);
                     }
 
-                              // 캐시에 새 항목 추가
+                    // 캐시에 새 항목 추가
                     musicCache[playlistId].AddRange(newItems);
 
                     form1?.Invoke((MethodInvoker)delegate
@@ -166,7 +166,7 @@ namespace YTMusicWidget.src
             }
             catch (Exception ex)
             {
-                MessageBox.Show($"플레이리스트 음악 가져오기 중 오류가 발생했습니다: {ex.Message}\n\n{ex.InnerException?.Message}");
+                
             }
         }
 
@@ -273,12 +273,12 @@ namespace YTMusicWidget.src
 
                     if (!isFetchingCompleted)
                     {
-                        form1.playlist_music_loading.Visible = true;
+                        form1.Inplay_playlist_loading.Visible = true;
                         while (!isFetchingCompleted)
                         {
                             await Task.Delay(500); // 잠시 기다리기
                         }
-                        form1.playlist_music_loading.Visible = false;
+                        form1.Inplay_playlist_loading.Visible = false;
                     }
 
                     internal_player.internal_playlist(musicCache[selectedplaylist_id], selectedMusicId);
