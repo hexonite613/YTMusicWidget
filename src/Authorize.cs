@@ -5,9 +5,6 @@ using CefSharp;
 using System.Net.Http;
 using System.Security.Cryptography;
 using System.Configuration;
-using Google.Apis.Auth.OAuth2.Responses;
-using System.Collections.Generic;
-using System.Threading.Tasks;
 
 namespace YTMusicWidget
 {
@@ -15,8 +12,7 @@ namespace YTMusicWidget
     {
         private readonly Form1 form1;
         internal static readonly string AccessTokenFilePath = "access_token.txt";
-        internal static readonly string RefreshTokenFilePath = "refresh_token.txt";
-
+        
         //DI를 위한 클래스 생성
         public Authorize(Form1 form1)
         {
@@ -26,9 +22,8 @@ namespace YTMusicWidget
         internal void Authenticate()
         {
             //file이 없으면 다시 업데이트 시도
-            if (File.Exists(AccessTokenFilePath) && File.Exists(RefreshTokenFilePath))
+            if (File.Exists(AccessTokenFilePath))
             {
-                CheckAndRefreshToken();
                 form1.UpdateUI();
             }
             else
@@ -53,108 +48,6 @@ namespace YTMusicWidget
                 }
             }
         }
-
-        private class TokenResponse
-        {
-            [Newtonsoft.Json.JsonProperty("access_token")]
-            public string AccessToken { get; set; }
-            [Newtonsoft.Json.JsonProperty("expires_in")]
-            public int ExpiresIn { get; set; }
-            [Newtonsoft.Json.JsonProperty("refresh_token")]
-            public string RefreshToken { get; set; }
-            [Newtonsoft.Json.JsonProperty("token_type")]
-            public string TokenType { get; set; }
-        }
-
-        private void SaveAccessToken(string accessToken, string refreshToken)
-        {
-            File.WriteAllText("access_token.txt", accessToken);
-            File.WriteAllText("refresh_token.txt", refreshToken);
-        }
-
-
-        private async void CheckAndRefreshToken()
-        {
-            string crypt_refreshToken = File.ReadAllText("refresh_token.txt");
-            string refreshToken = UnprotectData(Convert.FromBase64String(crypt_refreshToken));
-            await RefreshAccessToken(refreshToken);
-        }
-
-        public async Task RefreshAccessToken(string refreshToken)
-        {
-            string tokenEndpoint = "https://oauth2.googleapis.com/token";
-            var requestData = new Dictionary<string, string>
-            {
-                { "client_id",  ConfigurationManager.AppSettings["client_id"]},
-                { "client_secret", ConfigurationManager.AppSettings[""] },
-                { "refresh_token", refreshToken },
-                { "grant_type", "refresh_token" }
-            };
-
-            using (HttpClient client = new HttpClient())
-            {
-                var requestContent = new FormUrlEncodedContent(requestData);
-                HttpResponseMessage response = await client.PostAsync(tokenEndpoint, requestContent);
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseString = await response.Content.ReadAsStringAsync();
-                    var tokenResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<TokenResponse>(responseString);
-
-                    SaveAccessToken(tokenResponse.AccessToken, refreshToken);
-                }
-                else
-                {
-                    string errorContent = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show("토큰 갱신 중 오류가 발생했습니다: " + errorContent);
-                }
-            }
-        }
-
-
-
-        private void RequestUserAuthorization()
-        {
-            string authorizationEndpoint = "https://accounts.google.com/o/oauth2/v2/auth";
-            string scope = "https://www.googleapis.com/auth/youtube";
-
-            string authorizationRequest = $"{authorizationEndpoint}?response_type=code&scope={scope}&redirect_uri={ConfigurationManager.AppSettings["redirect_uri"]}&client_id={ConfigurationManager.AppSettings["client_id"]}";
-
-            System.Diagnostics.Process.Start(authorizationRequest);
-        }
-
-
-        public async Task ExchangeAuthorizationCodeForTokens(string authorizationCode)
-        {
-            string tokenEndpoint = "https://oauth2.googleapis.com/token";
-            var requestData = new Dictionary<string, string>
-            {
-                { "code", authorizationCode },
-                { "client_id", ConfigurationManager.AppSettings["client_id"] },
-                { "client_secret", "YOUR_CLIENT_SECRET" },
-                { "redirect_uri", ConfigurationManager.AppSettings["redirect_uri"] },
-                { "grant_type", "authorization_code" }
-            };
-
-            using (HttpClient client = new HttpClient())
-            {
-                var requestContent = new FormUrlEncodedContent(requestData);
-                HttpResponseMessage response = await client.PostAsync(tokenEndpoint, requestContent);
-                if (response.IsSuccessStatusCode)
-                {
-                    string responseString = await response.Content.ReadAsStringAsync();
-                    var tokenResponse = Newtonsoft.Json.JsonConvert.DeserializeObject<TokenResponse>(responseString);
-
-                    SaveAccessToken(tokenResponse.AccessToken, tokenResponse.RefreshToken);
-                }
-                else
-                {
-                    string errorContent = await response.Content.ReadAsStringAsync();
-                    MessageBox.Show("토큰 요청 중 오류가 발생했습니다: " + errorContent);
-                }
-            }
-        }
-
-
 
 
         private void Browser_FrameLoadEnd(object sender, FrameLoadEndEventArgs e)
@@ -240,7 +133,6 @@ namespace YTMusicWidget
                 return null;
             }
         }
-
 
 
         internal string GetAuthorizationCode(Uri url)
