@@ -40,12 +40,12 @@
     - +Design
   -Sound Scrollbar
     - +Design
-  - Internal music playlist
+  - ~~Internal music playlist~~
     - ~~Playlist need to pin first music~~
     - ~~Shuffle musics~~
-    - Minor Errors
+    - ~~Minor Errors~~
 - ~~Change playlist and playlist music list into listview for UI~~
-  - +Design
+  - ~~+Design~~
 - Search
   - Show search result as a listview
     - If music was choosed, only play that music
