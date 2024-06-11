@@ -19,7 +19,7 @@
 - ~~Main content form edit(hide logout button when not logged in)~~
 - ~~New photo for Main page~~
 - ~~Bring user playlists~~
-- Bring playlist musics
+- ~~Bring playlist musics~~
   - ~~Bring playlist musics in one list~~
     - ~~Need to reduce time~~
       - ~~Caching items~~
@@ -32,7 +32,7 @@
 - - ~~Play music on the background~~
 - - ~~Autoplay music with no mute~~
 - ~~Seperate codes in different files(organize)~~
-- Extend token expiration 
+- ~~Extend token expiration~~
   -!Temporarily logout when restarting
 - Bind C# component and youtube player(Internal Player)
   - ~~Need to adjust player progress slider value~~
