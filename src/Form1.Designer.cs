@@ -632,13 +632,13 @@
         private System.Windows.Forms.PictureBox pictureBox1;
         private System.Windows.Forms.Label pos_change;
         private System.Windows.Forms.Label Title;
-        private System.Windows.Forms.Label Login_com_label;
+        internal System.Windows.Forms.Label Login_com_label;
         private System.Windows.Forms.Label Logout_label;
         internal Guna.UI2.WinForms.Guna2GroupBox main_content;
         private System.Windows.Forms.Label playlist_label;
         private System.Windows.Forms.Label playlist_music_label;
         private Guna.UI2.WinForms.Guna2VScrollBar guna2VScrollBar1;
-        private Guna.UI2.WinForms.Guna2Button Login_Button;
+        public Guna.UI2.WinForms.Guna2Button Login_Button;
         public Guna.UI2.WinForms.Guna2Button Next_page_mus;
         public Guna.UI2.WinForms.Guna2Button Before_page_mus;
         public System.Windows.Forms.Label Mus_page_label;

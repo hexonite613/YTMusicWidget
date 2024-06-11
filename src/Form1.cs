@@ -102,7 +102,7 @@ namespace YTMusicWidget
             music_player.Location = new Point(0, 0);
             music_player.Size = new Size(Main.Size.Width, Main.Size.Height);
             music_player.BringToFront();
-            Task.Run(() => Authorize.Authenticate());
+            Task.Run(() => Authorize.AuthenticateAsync());
         }
 
 
@@ -160,7 +160,7 @@ namespace YTMusicWidget
                     Invoke((MethodInvoker)delegate
                     {
                         Cef.GetGlobalCookieManager().DeleteCookies(string.Empty, string.Empty);
-                        File.Delete(Authorize.AccessTokenFilePath);
+                        Delete_TokenFile();
                         Login_com_label.Visible = false;
                         Login_Button.Visible = true;
                         MessageBox.Show("로그아웃 되었습니다.");
@@ -182,6 +182,8 @@ namespace YTMusicWidget
             Task.Run(() => Logout());
         }
 
+
+        //username과 playlist 가져오기(로그인 버튼 수정)
         internal void UpdateUI()
         {
             this.Invoke((MethodInvoker)async delegate
@@ -222,11 +224,12 @@ namespace YTMusicWidget
         private void Delete_TokenFile()
         {
             // 프로그램 종료 시 파일 삭제
-            if (File.Exists(Authorize.AccessTokenFilePath))
+            if (File.Exists(Authorize.AccessTokenFilePath)&&File.Exists(Authorize.RefreshTokenFilePath))
             {
                 try
                 {
                     File.Delete(Authorize.AccessTokenFilePath);
+                    File.Delete(Authorize.RefreshTokenFilePath);
                 }
                 catch (Exception ex)
                 {
