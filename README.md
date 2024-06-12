@@ -5,7 +5,11 @@
 
 ## ⏱️Development Time
 - 2024.02.15~
-- Excluded time: 2024.02.20 ~ 2024.02.29(📘Test Period), 2024.03.23 ~ 2024.03.29(🛠️Network Project), 2024.04.20~2024.04.26(📝Midterm exam period), 2024.06.12~2024.06.22(📝Final exam period)
+- Excluded time:
+  - 2024.02.20 ~ 2024.02.29(📘Test Period)
+  - 2024.03.23 ~ 2024.03.29(🛠️Network Project)
+  - 2024.04.20 ~ 2024.04.26(📝Midterm exam period)
+  - 2024.06.12 ~ 2024.06.22(📝Final exam period)
 
 ## 🖽Framework
 - C#, JS
