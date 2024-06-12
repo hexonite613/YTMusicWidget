@@ -6,7 +6,6 @@ using System.Net.Http;
 using System.Security.Cryptography;
 using System.Configuration;
 using Google.Apis.Auth.OAuth2.Responses;
-using Google.Apis.Auth.OAuth2;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using Newtonsoft.Json.Linq;
@@ -15,6 +14,8 @@ namespace YTMusicWidget
 {
     partial class Authorize
     {
+       
+
         private readonly Form1 form1;
         private readonly playlist playlist;
         internal static readonly string AccessTokenFilePath = "access_token.txt";
@@ -29,7 +30,9 @@ namespace YTMusicWidget
         {
             this.form1 = form1;
         }
-        
+
+
+
         internal async Task AuthenticateAsync()
         {
             //리프레시 토큰이 있을 때 항상 access token 갱신
@@ -55,8 +58,7 @@ namespace YTMusicWidget
                 try
                 {
                     form1.music_player.Invoke((MethodInvoker)delegate {
-
-                        form1.music_player.Visible = true;
+                        
                         form1.music_player.Load("https://accounts.google.com/o/oauth2/auth?" +
                             "client_id=" + client_id +
                             "&redirect_uri=" + redirect_uri +
@@ -65,7 +67,9 @@ namespace YTMusicWidget
                             "&access_type=offline" +
                             "&prompt=consent");
                         form1.music_player.FrameLoadEnd += Browser_FrameLoadEnd;
+                        form1.music_player.Visible = true;
                     });
+
                     
                 }
                 catch (Exception ex)

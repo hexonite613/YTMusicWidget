@@ -54,6 +54,8 @@ namespace YTMusicWidget.src
         }
 
 
+
+
         internal async Task FetchAndCachePlaylistAsync(string playlistId)
         {
             try
@@ -99,7 +101,7 @@ namespace YTMusicWidget.src
                             continue;
                         }
 
-                                    // 캐시에 이미 있는 항목은 건너뛰기
+                        // 캐시에 이미 있는 항목은 건너뛰기
                         if (musicCache[playlistId].Any(mi => mi.VideoId == item.Snippet.ResourceId.VideoId))
                         {
                             continue;
@@ -339,6 +341,8 @@ namespace YTMusicWidget.src
             string url = $"https://www.youtube.com/watch?v={videoId}?autoplay=1";
             form1.music_player.Load(url);
             form1.music_player.LoadHtml(GetHTMLContent(videoId, new Size(30, 30)));
+
+
             internal_player.UpdateVideoProgress();
         }
 

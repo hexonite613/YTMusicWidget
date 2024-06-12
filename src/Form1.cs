@@ -12,6 +12,7 @@ using CefSharp.WinForms;
 using System.Configuration;
 using YTMusicWidget.src;
 using System.Reflection;
+using System.Drawing.Text;
 
 namespace YTMusicWidget
 {
@@ -24,6 +25,8 @@ namespace YTMusicWidget
         private readonly playlist playlist;
         //music 객체 생성
         private readonly Music music;
+
+        private String cachePath = Path.Combine(Environment.CurrentDirectory, "cache");
         
 
 
@@ -32,6 +35,11 @@ namespace YTMusicWidget
         {
             InitializeComponent();
             InitializeCefSharp();
+            if(Directory.Exists(cachePath))
+            {
+                InitializeBrowser();
+            }
+
             this.Size = new Size(586, 450);
 
             music_player.FrameLoadEnd += Music_Control_JS;
@@ -60,15 +68,29 @@ namespace YTMusicWidget
 
         }
 
-        private void InitializeCefSharp()
+        internal void InitializeCefSharp()
         {
             var settings = new CefSettings();
             settings.CefCommandLineArgs.Add("autoplay-policy", "no-user-gesture-required");
             settings.UserAgent = ConfigurationManager.AppSettings["cef_useragent"] + Cef.CefSharpVersion;
+            settings.CachePath = cachePath;
+            settings.PersistSessionCookies = true;
 
             Cef.Initialize(settings, true, browserProcessHandler: null);
 
         }
+
+        //브라우저 초기화
+        private void InitializeBrowser()
+        {
+            music_player.Visible = true;
+            music_player.Load("about:blank");
+            if (music_player.IsBrowserInitialized)
+            {
+                music_player.Visible = false;
+            }
+        }
+
 
 
         private async void Music_Control_JS(object sender, FrameLoadEndEventArgs e)
@@ -102,6 +124,7 @@ namespace YTMusicWidget
             music_player.Location = new Point(0, 0);
             music_player.Size = new Size(Main.Size.Width, Main.Size.Height);
             music_player.BringToFront();
+            
             Task.Run(() => Authorize.AuthenticateAsync());
         }
 
@@ -160,6 +183,7 @@ namespace YTMusicWidget
                     Invoke((MethodInvoker)delegate
                     {
                         Cef.GetGlobalCookieManager().DeleteCookies(string.Empty, string.Empty);
+                        deleteCookie();
                         Delete_TokenFile();
                         Login_com_label.Visible = false;
                         Login_Button.Visible = true;
@@ -199,7 +223,6 @@ namespace YTMusicWidget
         {
             main_content.Visible = true;
             music_player.Parent = main_content;
-            //music_player.Visible = true;
             music_player.Location = new Point(0, 100);
             music_player.BringToFront();
         }
@@ -237,6 +260,12 @@ namespace YTMusicWidget
                     MessageBox.Show($"파일 삭제 중 오류 발생: {ex.Message}");
                 }
             }
+        }
+
+
+        private void deleteCookie()
+        {
+            Directory.Delete(cachePath, true);
         }
 
 
